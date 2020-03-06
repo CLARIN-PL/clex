@@ -1,0 +1,13 @@
+#!/bin/bash
+# Get bash script location location
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+jar=`find target -name clex*.jar -type f`
+
+if [ -f "$jar" ]
+then
+  java -Xss4m -Xmx10000M -jar $jar $@
+else
+  echo "Jar file not found."
+  echo "Run ./mvn package first."
+fi

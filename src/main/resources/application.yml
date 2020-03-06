@@ -1,0 +1,11 @@
+debug: false
+spring:
+  profiles:
+    active: cli
+
+  main:
+    web-environment: false
+    banner-mode: "off"
+
+logging.level:
+  root: ERROR
