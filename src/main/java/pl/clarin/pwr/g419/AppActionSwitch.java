@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.MissingOptionException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.Action;
@@ -20,18 +22,28 @@ public class AppActionSwitch implements CommandLineRunner {
 
   @Override
   public void run(final String[] args) throws IOException {
+    System.out.println(getHelpHeader());
+    Action action = null;
     try {
       final String actionName = getActionName(args);
-      final Action action = getAction(actionName);
-      System.out.println(getHelpHeader());
+      action = getAction(actionName);
+      action.parseOptions(args);
       action.run();
+    } catch (final MissingOptionException ex) {
+      printError(ex.getMessage(), action);
     } catch (final CommandLineRunnerException ex) {
-      System.out.println("[ERROR] " + ex.getMessage());
-      System.out.println("Run: ");
-      System.out.println("  ./clex [ACTION] [ACTION_PARAMETERS]");
+      printError(ex.getMessage(), action);
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+  public void printError(final String msg, final Action action) {
+    System.out.println("[ERROR] " + msg + "\n");
+    final HelpFormatter formatter = new HelpFormatter();
+    formatter.setWidth(98);
+    formatter.printHelp(String.format("./clex %s [ACTION_PARAMETERS]", action.getName()),
+        action.getOptions());
   }
 
   private String getActionName(final String[] args) throws CommandLineRunnerException {

@@ -50,7 +50,12 @@ public class HocrReader extends DefaultHandler {
     final InputStream is = new ByteArrayInputStream(textWithoutMarkers.getBytes());
     this.document = new HocrDocument();
     parser.parse(is, this);
+    this.document.setId(getIdFromPath(path));
     return document;
+  }
+
+  private static String getIdFromPath(final Path path) {
+    return path.getParent().toFile().getName();
   }
 
   private static String cleanHocr(final String text) {

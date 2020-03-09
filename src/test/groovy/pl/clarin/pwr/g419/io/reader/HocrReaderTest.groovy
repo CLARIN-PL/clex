@@ -5,6 +5,8 @@ import pl.clarin.pwr.g419.struct.Box
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.nio.file.Paths
+
 class HocrReaderTest extends Specification {
 
     def "Hocr parser should read a valid list of bounding boxes"() {
@@ -54,5 +56,17 @@ class HocrReaderTest extends Specification {
         where:
             title             || box
             "aaa 10 20 30 40" || new Box(10, 20, 30, 40)
+    }
+
+    def "getIdFromPath(#path) should return #id"() {
+        when:
+            def output = HocrReader.getIdFromPath(Paths.get(path))
+
+        then:
+            output == id
+
+        where:
+            path                                                                         || id
+            "../task4-train/reports/105194/Grupa_AMBRA_raport_polroczny_31.12.2008.hocr" || "105194"
     }
 }
