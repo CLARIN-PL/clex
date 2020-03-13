@@ -21,6 +21,12 @@ import pl.clarin.pwr.g419.struct.Metadata;
 
 public class DocumentsReader implements HasLogger {
 
+  private final int threads;
+
+  public DocumentsReader(final int threads) {
+    this.threads = threads;
+  }
+
   public List<HocrDocument> parse(final Path metadataCsv, final Path hocrIndex) throws Exception {
     final List<HocrDocument> hocrs = loadHocr(hocrIndex);
 
@@ -40,7 +46,7 @@ public class DocumentsReader implements HasLogger {
   private List<HocrDocument> loadHocr(final Path hocrIndex) throws Exception {
     final List<HocrDocument> documents = Lists.newArrayList();
     final ThreadPoolExecutor pool =
-        (ThreadPoolExecutor) Executors.newFixedThreadPool(33);
+        (ThreadPoolExecutor) Executors.newFixedThreadPool(this.threads);
 
     CompletableFuture.allOf(loadPaths(hocrIndex).stream()
         .map(path -> CompletableFuture.runAsync(() -> {

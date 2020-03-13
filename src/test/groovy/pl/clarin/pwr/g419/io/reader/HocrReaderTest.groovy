@@ -19,7 +19,7 @@ class HocrReaderTest extends Specification {
             document.size() == 2
 
         and:
-            document.get(0).size() == 17
+            document.get(0).size() == 13
 
         and:
             document.get(0).get(0).getText() == "PROSPER"

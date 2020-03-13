@@ -12,6 +12,7 @@ public abstract class ActionOption {
   protected String description = null;
   protected boolean required = false;
   protected boolean hasArg = false;
+  protected String defaultValue = null;
 
   Option option = null;
   private CommandLine line;
@@ -49,6 +50,15 @@ public abstract class ActionOption {
   }
 
   public String getString() {
-    return line.getOptionValue(name);
+    if (defaultValue != null) {
+      return line.getOptionValue(name, defaultValue);
+    } else {
+      return line.getOptionValue(name);
+    }
+  }
+
+  public int getInteger() {
+    final String value = getString();
+    return Integer.parseInt(value);
   }
 }

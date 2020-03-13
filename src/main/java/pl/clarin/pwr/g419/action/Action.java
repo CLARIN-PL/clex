@@ -24,6 +24,10 @@ abstract public class Action implements HasLogger {
     this.description = description;
   }
 
+  public void addOption(final ActionOption option) {
+    this.options.add(option);
+  }
+
   public void parseOptions(final String[] args) throws Exception {
     final CommandLine line = new DefaultParser().parse(getOptions(), args);
     checkOptionRepetition(line);

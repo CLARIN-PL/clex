@@ -1,6 +1,7 @@
 package pl.clarin.pwr.g419;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,10 +33,19 @@ public class AppActionSwitch implements CommandLineRunner {
     } catch (final MissingOptionException ex) {
       printError(ex.getMessage(), action);
     } catch (final CommandLineRunnerException ex) {
-      printError(ex.getMessage(), action);
+      printError(ex.getMessage());
     } catch (final Exception ex) {
       ex.printStackTrace();
     }
+  }
+
+  public void printError(final String msg) {
+    System.out.println("[ERROR] " + msg + "\n");
+    System.out.println("Actions:");
+    this.actions.values().stream()
+        .sorted(Comparator.comparing(Action::getName))
+        .map(a -> String.format("- %-10s -- %s", a.getName(), a.getDescription()))
+        .forEach(System.out::println);
   }
 
   public void printError(final String msg, final Action action) {

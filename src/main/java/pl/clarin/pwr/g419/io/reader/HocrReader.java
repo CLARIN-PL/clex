@@ -103,6 +103,7 @@ public class HocrReader extends DefaultHandler {
                          final String elementName) {
     if (elementName.equalsIgnoreCase(TAG_SPAN) && ATTR_CLASS_WORD.equals(lastClass)) {
       page.add(new Bbox(value.toString(), lastBox));
+      lastClass = null;
     }
   }
 
