@@ -22,7 +22,7 @@ class MatcherAnnotationTypeTest extends Specification {
             def result = matcher.matchesAt(page, index)
 
         then:
-            result.orElse(0) == length
+            result.orElse(new MatcherResult(0)).getLength() == length
 
         where:
             index || length

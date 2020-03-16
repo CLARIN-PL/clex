@@ -1,6 +1,8 @@
 package pl.clarin.pwr.g419.struct;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.Data;
 
 @Data
@@ -20,6 +22,16 @@ public class Annotation {
 
   public int getLength() {
     return indexEnd - indexBegin;
+  }
+
+  public String getText() {
+    return IntStream.range(indexBegin, indexEnd).mapToObj(page::get).map(Bbox::getText).
+        collect(Collectors.joining(" "));
+  }
+
+  @Override
+  public String toString() {
+    return String.format("[%s] %s", type, getText());
   }
 
   @Override

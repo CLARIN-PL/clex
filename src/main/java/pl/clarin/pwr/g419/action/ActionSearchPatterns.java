@@ -1,22 +1,22 @@
 package pl.clarin.pwr.g419.action;
 
-import com.google.common.collect.Sets;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.ActionOptionInput;
 import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
 import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
+import pl.clarin.pwr.g419.struct.Annotation;
+import pl.clarin.pwr.g419.struct.AnnotationList;
 import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.text.pattern.Pattern;
-import pl.clarin.pwr.g419.text.pattern.PatternMatch;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
+import pl.clarin.pwr.g419.struct.HocrPage;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorDate;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorPeriod;
 
 @Component
 public class ActionSearchPatterns extends Action {
@@ -25,7 +25,8 @@ public class ActionSearchPatterns extends Action {
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionThreads optionThreads = new ActionOptionThreads();
 
-  Pattern pattern = getPattern();
+  AnnotatorDate annotatorDate = new AnnotatorDate();
+  AnnotatorPeriod annotatorPeriod = new AnnotatorPeriod();
 
   public ActionSearchPatterns() {
     super("search-patterns", "search predefined patterns in the documents");
@@ -44,29 +45,37 @@ public class ActionSearchPatterns extends Action {
   }
 
   private void processDocument(final HocrDocument document) {
-    System.out.println(document.getId());
-    final List<String> matches = document.stream()
-        .map(pattern::find)
+    AnnotationList alist = new AnnotationList(document.stream()
+        .peek(this::processPage)
+        .map(HocrPage::getAnnotations)
         .flatMap(Collection::stream)
-        .map(PatternMatch::toString)
-        .collect(Collectors.toList());
+        .collect(Collectors.toList()));
 
-    if (matches.size() == 0) {
-      System.out.println(document.getId() + " NOT FOUND");
+    alist = alist.filterByType(AnnotatorPeriod.PERIOD);
+
+    final String referenceRange = getMetadataDateRange(document);
+
+    if (alist.size() == 0) {
+      System.out.println(String.format("[%s]\t%s\t0\tNOT_FOUND", document.getId(), referenceRange));
     } else {
-      matches.forEach(System.out::println);
+      final Set<String> periods = alist.stream()
+          .map(Annotation::toString)
+          .collect(Collectors.toSet());
+
+      System.out.println(
+          String.format("[%s]\t%s\t%d\t%s", document.getId(), referenceRange, periods.size(),
+              String.join(", ", periods)));
     }
   }
 
-  private Pattern getPattern() {
-    final Set<String> months = Sets.newHashSet("stycznia", "lutego");
-    final Set<String> years = IntStream.range(1900, 2020)
-        .mapToObj(Objects::toString).collect(Collectors.toSet());
-    final Set<String> days = IntStream.range(1, 13)
-        .mapToObj(Objects::toString).collect(Collectors.toSet());
-    return new Pattern()
-        .next(new MatcherLowerText(days))
-        .next(new MatcherLowerText(months))
-        .next(new MatcherLowerText(years));
+  private String getMetadataDateRange(final HocrDocument document) {
+    final SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+    return format.format(document.getMetadata().getPeriodFrom()) + ":" +
+        format.format(document.getMetadata().getPeriodTo());
+  }
+
+  private void processPage(final HocrPage page) {
+    annotatorDate.annotate(page);
+    annotatorPeriod.annotate(page);
   }
 }

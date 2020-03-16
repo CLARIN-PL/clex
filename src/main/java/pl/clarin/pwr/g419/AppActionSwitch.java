@@ -23,7 +23,6 @@ public class AppActionSwitch implements CommandLineRunner {
 
   @Override
   public void run(final String[] args) throws IOException {
-    System.out.println(getHelpHeader());
     Action action = null;
     try {
       final String actionName = getActionName(args);
@@ -40,6 +39,7 @@ public class AppActionSwitch implements CommandLineRunner {
   }
 
   public void printError(final String msg) {
+    System.out.println(getHelpHeader());
     System.out.println("[ERROR] " + msg + "\n");
     System.out.println("Actions:");
     this.actions.values().stream()

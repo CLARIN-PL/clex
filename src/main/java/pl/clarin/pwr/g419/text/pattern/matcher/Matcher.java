@@ -5,6 +5,16 @@ import pl.clarin.pwr.g419.struct.HocrPage;
 
 public abstract class Matcher {
 
-  public abstract Optional<Integer> matchesAt(HocrPage page, int index);
+  boolean optional = false;
 
+  public abstract Optional<MatcherResult> matchesAt(HocrPage page, int index);
+
+  public Matcher optional() {
+    optional = true;
+    return this;
+  }
+
+  public boolean isOptional() {
+    return this.optional;
+  }
 }

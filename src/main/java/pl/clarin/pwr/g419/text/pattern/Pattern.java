@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import pl.clarin.pwr.g419.struct.HocrPage;
 import pl.clarin.pwr.g419.text.pattern.matcher.Matcher;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherResult;
 
 public class Pattern {
 
@@ -21,9 +22,11 @@ public class Pattern {
   public Optional<Integer> matchesAt(final HocrPage page, final int index) {
     int i = index;
     for (final Matcher matcher : matchers) {
-      final Optional<Integer> length = matcher.matchesAt(page, i);
+      final Optional<MatcherResult> length = matcher.matchesAt(page, i);
       if (length.isPresent()) {
-        i += length.get();
+        i += length.get().getLength();
+      } else if (matcher.isOptional()) {
+        // just ignore optional matcher
       } else {
         return Optional.empty();
       }

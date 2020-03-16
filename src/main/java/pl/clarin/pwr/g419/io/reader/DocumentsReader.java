@@ -28,14 +28,18 @@ public class DocumentsReader implements HasLogger {
   }
 
   public List<HocrDocument> parse(final Path metadataCsv, final Path hocrIndex) throws Exception {
-    final List<HocrDocument> hocrs = loadHocr(hocrIndex);
+    final List<HocrDocument> hocrs;
+    if (hocrIndex.toString().endsWith(".hocr")) {
+      hocrs = List.of(loadHocrDocument(hocrIndex));
+    } else {
+      hocrs = loadHocr(hocrIndex);
+    }
 
     final List<Metadata> metadata = loadMetadata(metadataCsv);
-
     final Map<String, Metadata> idToMetadata =
         metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
-
     hocrs.forEach(d -> d.setMetadata(idToMetadata.get(d.getId())));
+
     return hocrs;
   }
 
@@ -53,7 +57,7 @@ public class DocumentsReader implements HasLogger {
           try {
             final HocrDocument document = loadHocrDocument(path);
             documents.add(document);
-            System.out.println(String.format("%3d page(s) in %s", document.size(), path.toString()));
+            getLogger().info(String.format("%3d page(s) in %s", document.size(), path.toString()));
           } catch (final Exception ex) {
             getLogger().error("Failed to read {}", path.toString());
           }

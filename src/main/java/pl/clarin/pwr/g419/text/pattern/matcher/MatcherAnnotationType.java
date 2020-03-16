@@ -13,13 +13,13 @@ public class MatcherAnnotationType extends Matcher {
   }
 
   @Override
-  public Optional<Integer> matchesAt(final HocrPage page, final int index) {
+  public Optional<MatcherResult> matchesAt(final HocrPage page, final int index) {
     final Optional<Annotation> annotation = page.getAnnotations().getStartingAt(index)
         .filterByType(type)
         .sortByLengthDesc()
         .stream().findFirst();
     if (annotation.isPresent()) {
-      return Optional.of(annotation.get().getLength());
+      return Optional.of(new MatcherResult(annotation.get().getLength()));
     } else {
       return Optional.empty();
     }

@@ -15,4 +15,7 @@ public class HocrPage extends Bboxes {
     this.addAll(bboxes);
   }
 
+  public void addAnnotation(final Annotation annotation) {
+    this.annotations.add(annotation);
+  }
 }

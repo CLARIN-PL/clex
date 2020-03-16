@@ -6,15 +6,17 @@ import pl.clarin.pwr.g419.struct.HocrPage
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class MatcherLowerTextTest extends Specification {
+import java.util.regex.Pattern
+
+class MatcherRegexTextTest extends Specification {
 
     @Unroll
     def "matchesAt for index #index should return #length"() {
         given:
-            def texts = ["stycznia", "lutego"] as Set
+            def pattern = Pattern.compile("[0-9]{1,2}[.-][0-9]{1,2}[.-][0-9]{4}")
             def page = new HocrPage(
-                    getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
-            def matcher = new MatcherLowerText(texts)
+                    getSequenceOfBboxes(["1.01.2020", ";", "02.02", ".2020", "2020"] as List))
+            def matcher = new MatcherRegexText(pattern, 10)
 
         when:
             def result = matcher.matchesAt(page, index)
@@ -24,13 +26,11 @@ class MatcherLowerTextTest extends Specification {
 
         where:
             index || length
-            0     || 0
-            1     || 1
-            2     || 0
+            0     || 1
+            1     || 0
+            2     || 2
             3     || 0
-            4     || 1
-            5     || 0
-            6     || 0
+            4     || 0
     }
 
 
@@ -38,4 +38,5 @@ class MatcherLowerTextTest extends Specification {
         Box box = new Box(0, 0, 10, 10)
         return words.collect { new Bbox(it, box) } as List
     }
+
 }
