@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class Bbox {
 
+  private int no;
   private String text;
-
   private Box box;
 
-  public Bbox(final String text, final Box box) {
+  public Bbox(final int no, final String text, final Box box) {
     this.text = text;
     this.box = box;
   }

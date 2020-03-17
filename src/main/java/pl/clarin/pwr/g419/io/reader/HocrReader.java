@@ -35,6 +35,8 @@ public class HocrReader extends DefaultHandler {
   private static final Pattern hocrPageMarker = Pattern.compile("- Page [#][0-9]+\n");
   private static final Pattern hocrConvertMarker = Pattern.compile("Converting [^:]+[:]\n");
 
+  private int bboxNo = 1;
+  private int pageNo = 1;
   private HocrDocument document = null;
   private HocrPage page = null;
   private String lastClass = "";
@@ -83,6 +85,7 @@ public class HocrReader extends DefaultHandler {
     } else if (elementName.equalsIgnoreCase(TAG_DIV)) {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
         this.page = new HocrPage();
+        this.page.setNo(pageNo++);
         document.add(page);
       }
     }
@@ -102,7 +105,7 @@ public class HocrReader extends DefaultHandler {
                          final String localName,
                          final String elementName) {
     if (elementName.equalsIgnoreCase(TAG_SPAN) && ATTR_CLASS_WORD.equals(lastClass)) {
-      page.add(new Bbox(value.toString(), lastBox));
+      page.add(new Bbox(bboxNo++, value.toString(), lastBox));
       lastClass = null;
     }
   }

@@ -1,6 +1,7 @@
 package pl.clarin.pwr.g419.struct;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.Data;
@@ -11,6 +12,7 @@ public class Annotation {
   HocrPage page;
   int indexBegin;
   int indexEnd;
+  Optional<String> norm = Optional.empty();
 
   public Annotation(final String type, final HocrPage page,
                     final int indexBegin, final int indexEnd) {
@@ -20,6 +22,11 @@ public class Annotation {
     this.indexEnd = indexEnd;
   }
 
+  public Annotation withNorm(final String norm) {
+    this.norm = Optional.of(norm);
+    return this;
+  }
+
   public int getLength() {
     return indexEnd - indexBegin;
   }
@@ -27,6 +34,14 @@ public class Annotation {
   public String getText() {
     return IntStream.range(indexBegin, indexEnd).mapToObj(page::get).map(Bbox::getText).
         collect(Collectors.joining(" "));
+  }
+
+  public String getNorm() {
+    return norm.orElse(getText());
+  }
+
+  public Bbox getFirst() {
+    return page.get(indexBegin);
   }
 
   @Override

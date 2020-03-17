@@ -3,11 +3,13 @@ package pl.clarin.pwr.g419.text.annotator;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
+import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.Annotation;
 import pl.clarin.pwr.g419.struct.HocrPage;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
+import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 
-public class Annotator {
+public class Annotator implements HasLogger {
 
   List<Pattern> patterns;
   String type;
@@ -26,8 +28,12 @@ public class Annotator {
     patterns.stream()
         .map(p -> p.find(page))
         .flatMap(Collection::stream)
-        .map(m -> new Annotation(type, page, m.getIndexBegin(), m.getIndexEnd()))
+        .map(m ->
+            new Annotation(type, page, m.getIndexBegin(), m.getIndexEnd()).withNorm(normalize(m)))
         .forEach(page::addAnnotation);
   }
 
+  protected String normalize(final PatternMatch pm) {
+    return pm.getText();
+  }
 }

@@ -30,7 +30,7 @@ class AnnotatorTest extends Specification {
 
     def getSequenceOfBboxes(List<String> words) {
         Box box = new Box(0, 0, 10, 10)
-        return words.collect { new Bbox(it, box) } as List
+        return words.collect { new Bbox(0, it, box) } as List
     }
 
 }

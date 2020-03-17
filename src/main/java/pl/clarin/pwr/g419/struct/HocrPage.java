@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class HocrPage extends Bboxes {
 
+  int no;
   Annotations annotations = new Annotations();
 
   public HocrPage() {

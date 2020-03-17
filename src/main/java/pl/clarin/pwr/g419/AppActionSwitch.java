@@ -44,7 +44,7 @@ public class AppActionSwitch implements CommandLineRunner {
     System.out.println("Actions:");
     this.actions.values().stream()
         .sorted(Comparator.comparing(Action::getName))
-        .map(a -> String.format("- %-10s -- %s", a.getName(), a.getDescription()))
+        .map(a -> String.format("- %-20s -- %s", a.getName(), a.getDescription()))
         .forEach(System.out::println);
   }
 

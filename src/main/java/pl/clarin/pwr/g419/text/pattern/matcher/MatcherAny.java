@@ -10,7 +10,8 @@ public class MatcherAny extends Matcher {
     if (index < 0 || index >= page.size()) {
       return Optional.empty();
     } else {
-      return Optional.of(new MatcherResult(1));
+      return Optional.of(
+          postprocessMatcherResult(new MatcherResult(1), page.get(index).getText()));
     }
   }
 }

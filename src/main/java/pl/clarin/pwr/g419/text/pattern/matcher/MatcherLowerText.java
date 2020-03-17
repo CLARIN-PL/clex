@@ -17,8 +17,9 @@ public class MatcherLowerText extends Matcher {
     if (index < 0 || index >= page.size()) {
       return Optional.empty();
     }
+    final String matchValue = page.get(index).getText().toLowerCase();
     if (texts.contains(page.get(index).getText().toLowerCase())) {
-      return Optional.of(new MatcherResult(1));
+      return Optional.of(postprocessMatcherResult(new MatcherResult(1), matchValue));
     }
     return Optional.empty();
   }

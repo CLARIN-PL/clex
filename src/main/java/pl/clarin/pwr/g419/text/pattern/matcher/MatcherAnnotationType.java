@@ -19,7 +19,8 @@ public class MatcherAnnotationType extends Matcher {
         .sortByLengthDesc()
         .stream().findFirst();
     if (annotation.isPresent()) {
-      return Optional.of(new MatcherResult(annotation.get().getLength()));
+      return Optional.of(postprocessMatcherResult(
+          new MatcherResult(annotation.get().getLength()), annotation.get().getNorm()));
     } else {
       return Optional.empty();
     }
