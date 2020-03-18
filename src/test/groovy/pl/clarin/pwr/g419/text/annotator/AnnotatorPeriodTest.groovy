@@ -1,8 +1,7 @@
 package pl.clarin.pwr.g419.text.annotator
 
-import pl.clarin.pwr.g419.struct.Bbox
-import pl.clarin.pwr.g419.struct.Box
 import pl.clarin.pwr.g419.struct.HocrPage
+import pl.clarin.pwr.g419.utils.TestUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -11,7 +10,7 @@ class AnnotatorPeriodTest extends Specification {
     @Unroll
     def "annotate on '#text' should return '#norm"() {
         given:
-            def page = new HocrPage(getSequenceOfBboxes(text.split(" ") as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text.split(" ") as List))
             def annotatorDate = new AnnotatorDate()
             def annotatorPeriod = new AnnotatorPeriod()
             annotatorDate.annotate(page)
@@ -44,11 +43,8 @@ class AnnotatorPeriodTest extends Specification {
             "1 stycznia do 30 czerwca 2013 roku"               || "2013-01-01:2013-06-30"
             "od dnia 01.01.2012 roku do dnia 30.06.2012 roku"  || "2012-01-01:2012-06-30"
             "26.11.2004 r. do 30.06.2005 r."                   || "2004-11-26:2005-06-30"
-    }
-
-    def getSequenceOfBboxes(List<String> words) {
-        Box box = new Box(0, 0, 10, 10)
-        return words.collect { new Bbox(0, it, box) } as List
+            "1 lipca 2008 r. do 31 grudnia 2008 r."            || "2008-07-01:2008-12-31"
+            "ZA OKRES OD 01.01.2008 DO 30.06.2008"             || "2008-01-01:2008-06-30"
     }
 
 }

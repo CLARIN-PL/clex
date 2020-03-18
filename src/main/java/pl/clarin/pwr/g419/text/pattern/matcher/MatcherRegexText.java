@@ -12,6 +12,7 @@ public class MatcherRegexText extends Matcher {
   Pattern pattern;
   int maxLength;
   Map<Integer, String> groupNames;
+  private boolean lowerCase = false;
 
   public MatcherRegexText(final Pattern pattern, final int maxLength) {
     this(pattern, maxLength, Maps.newHashMap());
@@ -37,6 +38,11 @@ public class MatcherRegexText extends Matcher {
     this(Pattern.compile(pattern), maxLength, groupNames);
   }
 
+  public MatcherRegexText lowerCase() {
+    lowerCase = true;
+    return this;
+  }
+
   @Override
   public Optional<MatcherResult> matchesAt(final HocrPage page, final int index) {
     final StringJoiner sj = new StringJoiner("");
@@ -45,7 +51,11 @@ public class MatcherRegexText extends Matcher {
       if (n >= 0 && n < page.size()) {
         sj.add(page.get(n++).getText());
       }
-      final java.util.regex.Matcher m = pattern.matcher(sj.toString());
+      String text = sj.toString();
+      if (lowerCase) {
+        text = text.toLowerCase();
+      }
+      final java.util.regex.Matcher m = pattern.matcher(text);
       if (m.matches()) {
         final MatcherResult mr = new MatcherResult(n - index);
         for (final Map.Entry<Integer, String> entry : groupNames.entrySet()) {

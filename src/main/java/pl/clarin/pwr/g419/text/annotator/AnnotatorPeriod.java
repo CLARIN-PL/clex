@@ -45,6 +45,8 @@ public class AnnotatorPeriod extends Annotator {
     final Map<String, String> months = AnnotatorDate.getMonths();
 
     patterns.add(new Pattern()
+        .next(new MatcherLowerText(Set.of("okres")).optional())
+        .next(new MatcherLowerText(Set.of("od")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_BEGIN))
         .next(new MatcherLowerText(Set.of("roku", "r.")).optional())
         .next(new MatcherLowerText(Sets.newHashSet("do", "–", "-")))

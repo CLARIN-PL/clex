@@ -24,11 +24,15 @@ public class Pattern {
   public Optional<PatternMatch> matchesAt(final HocrPage page, final int index) {
     int i = index;
     final Map<String, String> groups = Maps.newHashMap();
-    for (final Matcher matcher : matchers) {
+    for (int n = 0; n < matchers.size(); n++) {
+      final Matcher matcher = matchers.get(n);
       final Optional<MatcherResult> length = matcher.matchesAt(page, i);
       if (length.isPresent()) {
         i += length.get().getLength();
-        groups.putAll(length.get().getGroups());
+        for (final Map.Entry<String, String> entry : length.get().getGroups().entrySet()) {
+          groups.put(entry.getKey(),
+              (groups.getOrDefault(entry.getKey(), "") + " " + entry.getValue()).trim());
+        }
       } else if (matcher.isOptional()) {
         // just ignore optional matcher
       } else {

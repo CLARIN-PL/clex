@@ -9,6 +9,8 @@ import pl.clarin.pwr.g419.text.normalization.Normalizer;
 public abstract class Matcher {
 
   boolean optional = false;
+
+  Optional<Integer> repeatMax = Optional.empty();
   Optional<String> groupName = Optional.empty();
   Map<String, Normalizer> normalizerMap = Maps.newHashMap();
 
@@ -31,6 +33,11 @@ public abstract class Matcher {
 
   public Matcher normalizer(final String groupName, final Normalizer normalizer) {
     normalizerMap.put(groupName, normalizer);
+    return this;
+  }
+
+  public Matcher repeat(final int maxRepeat) {
+    this.repeatMax = Optional.of(maxRepeat);
     return this;
   }
 

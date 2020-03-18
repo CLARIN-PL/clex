@@ -29,6 +29,23 @@ class HocrReaderTest extends Specification {
             FileUtils.deleteQuietly(hocr)
     }
 
+    def "Hocr parser should read a valid list of bounding boxes with valid no"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
+
+        expect:
+            document.get(0).get(0).getNo() == 1
+            document.get(0).get(1).getNo() == 2
+
+        and:
+            document.get(1).get(0).getNo() == document.get(0).size() + 1
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
+
     @Unroll
     def "cleanHocr(#input) should return '#expected'"() {
         when:

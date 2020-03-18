@@ -10,6 +10,7 @@ public class Bbox {
   private Box box;
 
   public Bbox(final int no, final String text, final Box box) {
+    this.no = no;
     this.text = text;
     this.box = box;
   }
