@@ -80,6 +80,7 @@ public class ActionEval extends Action {
       try {
         csvPrinter.printRecords(records.stream()
             .sorted(Comparator.comparing(o -> o.get(1)))
+            .filter(r -> r.get(0).equals("ERROR"))
             .collect(Collectors.toList()));
       } catch (final Exception ex) {
         getLogger().error("Failed to write to CSV", ex);

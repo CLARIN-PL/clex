@@ -5,15 +5,23 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
+import pl.clarin.pwr.g419.struct.Bbox;
 import pl.clarin.pwr.g419.struct.HocrPage;
 import pl.clarin.pwr.g419.text.pattern.matcher.Matcher;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherResult;
 
 public class Pattern {
 
+  boolean matchLine = false;
   List<Matcher> matchers = Lists.newArrayList();
 
   public Pattern() {
+  }
+
+  public Pattern matchLine() {
+    matchLine = true;
+    return this;
   }
 
   public Pattern next(final Matcher matcher) {
@@ -24,6 +32,12 @@ public class Pattern {
   public Optional<PatternMatch> matchesAt(final HocrPage page, final int index) {
     int i = index;
     final Map<String, String> groups = Maps.newHashMap();
+    if (index >= page.size()) {
+      return Optional.empty();
+    }
+    if (matchLine && page.get(index).isLineBegin() == false) {
+      return Optional.empty();
+    }
     for (int n = 0; n < matchers.size(); n++) {
       final Matcher matcher = matchers.get(n);
       final Optional<MatcherResult> length = matcher.matchesAt(page, i);
@@ -40,6 +54,12 @@ public class Pattern {
       }
     }
     final PatternMatch pm = new PatternMatch(index, i, page, groups);
+    if (matchLine) {
+      if (page.get(i - 1).isLineEnd() == false
+          || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 1) {
+        return Optional.empty();
+      }
+    }
     return Optional.of(pm);
   }
 

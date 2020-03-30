@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -41,6 +42,8 @@ public class HocrReader extends DefaultHandler {
   private HocrPage page = null;
   private String lastClass = "";
   private Box lastBox = null;
+  private boolean lineNew = false;
+  private Optional<Bbox> lastBbox = Optional.empty();
 
   public HocrDocument parse(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
@@ -81,6 +84,9 @@ public class HocrReader extends DefaultHandler {
       if (ATTR_CLASS_WORD.equals(attrClass)) {
         final String title = attributes.getValue(ATTR_TITLE);
         lastBox = titleToBox(title);
+      } else if (ATTR_CLASS_LINE.equals(attrClass)) {
+        lastBbox.ifPresent(b -> b.setLineEnd(true));
+        lineNew = true;
       }
     } else if (elementName.equalsIgnoreCase(TAG_DIV)) {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
@@ -105,7 +111,12 @@ public class HocrReader extends DefaultHandler {
                          final String localName,
                          final String elementName) {
     if (elementName.equalsIgnoreCase(TAG_SPAN) && ATTR_CLASS_WORD.equals(lastClass)) {
-      page.add(new Bbox(bboxNo++, value.toString(), lastBox));
+      lastBbox = Optional.of(new Bbox(bboxNo++, value.toString(), lastBox));
+      if (lineNew) {
+        lastBbox.get().setLineBegin(true);
+        lineNew = false;
+      }
+      page.add(lastBbox.get());
       lastClass = null;
     }
   }

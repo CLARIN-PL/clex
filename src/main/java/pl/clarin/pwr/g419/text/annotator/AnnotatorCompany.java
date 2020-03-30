@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Set;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherNotAnnotationType;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherNotLowerText;
+import pl.clarin.pwr.g419.text.pattern.matcher.*;
 
 public class AnnotatorCompany extends Annotator {
 
@@ -26,7 +23,7 @@ public class AnnotatorCompany extends Annotator {
         .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
     );
 
-    final Set<String> preposition = Set.of("w", "za");
+    final Set<String> preposition = Set.of("w");
     patterns.add(new Pattern()
         .next(new MatcherAnnotationType(AnnotatorCompanyPrefix.COMPANY_PREFIX))
         .next(new MatcherNotLowerText(preposition).group(COMPANY))
@@ -35,6 +32,29 @@ public class AnnotatorCompany extends Annotator {
         .next(new MatcherNotLowerText(preposition).group(COMPANY).optional())
         .next(new MatcherLowerText(preposition))
         .next(new MatcherAnnotationType(AnnotatorPeriod.PERIOD))
+    );
+
+    patterns.add(new Pattern().matchLine()
+        .next(new MatcherLowerText("grupy"))
+        .next(new MatcherLowerText("kapitałowej"))
+        .next(new MatcherAny().group(COMPANY))
+    );
+
+    patterns.add(new Pattern().matchLine()
+        .next(new MatcherLowerText("grupa"))
+        .next(new MatcherLowerText("kapitałowa"))
+        .next(new MatcherAny().group(COMPANY))
+    );
+
+    patterns.add(new Pattern().matchLine()
+        .next(new MatcherLowerText("zarządu"))
+        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
+        .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
+    );
+
+    patterns.add(new Pattern().matchLine()
+        .next(new MatcherAny().group(COMPANY))
+        .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
     );
 
     return patterns;

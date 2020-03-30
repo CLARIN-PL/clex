@@ -47,6 +47,30 @@ class HocrReaderTest extends Specification {
     }
 
     @Unroll
+    def "bbox no #no should have lineBegin #lineBegin and lineEnd #lineEnd"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
+
+        expect:
+            document.get(0).get(no).isLineBegin() == lineBegin
+            document.get(0).get(no).isLineEnd() == lineEnd
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+
+        where:
+            no || lineBegin | lineEnd
+            0  || true      | false
+            1  || false     | true
+            2  || true      | false
+            3  || false     | false
+            4  || false     | true
+
+    }
+
+    @Unroll
     def "cleanHocr(#input) should return '#expected'"() {
         when:
             def output = HocrReader.cleanHocr(input)

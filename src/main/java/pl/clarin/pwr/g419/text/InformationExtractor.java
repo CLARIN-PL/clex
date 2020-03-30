@@ -39,6 +39,7 @@ public class InformationExtractor implements HasLogger {
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
     ignore.add("SPÓŁKI");
+    ignore.add("FIRMY");
   }
 
   public Metadata extract(final HocrDocument document) {

@@ -1,11 +1,11 @@
 package pl.clarin.pwr.g419.text.pattern
 
-import pl.clarin.pwr.g419.struct.Bbox
-import pl.clarin.pwr.g419.struct.Box
+
 import pl.clarin.pwr.g419.struct.HocrPage
 import pl.clarin.pwr.g419.text.normalization.NormalizerMap
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText
+import pl.clarin.pwr.g419.utils.TestUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -16,8 +16,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set))
                     .next(new MatcherLowerText(months))
@@ -44,8 +43,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set))
                     .next(new MatcherLowerText(months))
@@ -71,8 +69,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set).group("day"))
                     .next(new MatcherLowerText(months).group("month"))
@@ -99,8 +96,7 @@ class PatternTest extends Specification {
         given:
             def monthsMap = Map.of("stycznia", "01", "lutego", "02")
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set).group("day"))
                     .next(new MatcherLowerText(monthsMap.keySet())
@@ -127,10 +123,7 @@ class PatternTest extends Specification {
 
     def "find for a pattern with regex should return matches with valid set of groups"() {
         given:
-            def months = ["stycznia", "lutego"] as Set
-            def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["01.12.2020", "stycznia", "2020", "2", "LUTEGO"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("01.12.2020 stycznia 2020 2 LUTEGO"))
             def pattern = new Pattern()
                     .next(new MatcherRegexText("([0-9]{1,2})[.]([0-9]{1,2})[.]([0-9]{4})", 10,
                             Map.of(1, "day", 2, "month", 3, "year")).group("date"));
@@ -148,8 +141,26 @@ class PatternTest extends Specification {
             result.get(0).getGroupValue("date").orElse("") == "01.12.2020"
     }
 
-    def getSequenceOfBboxes(List<String> words) {
-        Box box = new Box(0, 0, 10, 10)
-        return words.collect { new Bbox(0, it, box) } as List
+    @Unroll
+    def "find for pattern with matchLine should return valid result for '#text'"() {
+        given:
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def pattern = new Pattern().matchLine()
+                    .next(new MatcherLowerText("grupa"))
+                    .next(new MatcherLowerText("abc"))
+
+        when:
+            def result = pattern.find(page)
+
+        then:
+            result.size() == found
+
+        where:
+            text                   || found
+            "Grupa abc"            || 1
+            "Grupa abc| Grupa abc" || 2
+            "Grupa| abc"           || 0
+            "Grupa abc def"        || 0
+            "prev Grupa abc"       || 0
     }
 }
