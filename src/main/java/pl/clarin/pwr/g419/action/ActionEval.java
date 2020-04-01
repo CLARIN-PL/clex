@@ -110,6 +110,11 @@ public class ActionEval extends Action {
     final Metadata metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList();
 
+    records.add(evalField(document.getId(), "drawing_date",
+        formatDate(document.getMetadata().getDrawingDate()),
+        formatDate(metadata.getDrawingDate()))
+    );
+
     records.add(evalField(document.getId(), "period_from",
         formatDate(document.getMetadata().getPeriodFrom()),
         formatDate(metadata.getPeriodFrom()))

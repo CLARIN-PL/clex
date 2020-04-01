@@ -47,6 +47,7 @@ class AnnotatorDateTest extends Specification {
             "01.02 .2019"     || "2019-02-01"
             "31 grudnia 2009" || "2009-12-31"
             "30.09.2008)"     || "2008-09-30"
+            "2 września 2005" || "2005-09-02"
     }
 
     def getSequenceOfBboxes(List<String> words) {

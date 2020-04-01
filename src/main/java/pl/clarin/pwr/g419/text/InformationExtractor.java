@@ -1,8 +1,8 @@
 package pl.clarin.pwr.g419.text;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,12 +12,16 @@ import pl.clarin.pwr.g419.text.annotator.*;
 
 public class InformationExtractor implements HasLogger {
 
-  AnnotatorDate annotatorDate = new AnnotatorDate();
-  AnnotatorPeriod annotatorPeriod = new AnnotatorPeriod();
-  AnnotatorCompanyPrefix annotatorCompanyPrefix = new AnnotatorCompanyPrefix();
-  AnnotatorCompanySuffix annotatorCompanySuffix = new AnnotatorCompanySuffix();
-  AnnotatorCompany annotatorCompany = new AnnotatorCompany();
-  AnnotatorPerson annotatorPerson = new AnnotatorPerson();
+
+  List<Annotator> annotators = Lists.newArrayList(
+      new AnnotatorDate(),
+      new AnnotatorPeriod(),
+      new AnnotatorCompanyPrefix(),
+      new AnnotatorCompanySuffix(),
+      new AnnotatorCompany(),
+      new AnnotatorPerson(),
+      new AnnotatorDrawingDate()
+  );
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -44,14 +48,7 @@ public class InformationExtractor implements HasLogger {
   }
 
   public Metadata extract(final HocrDocument document) {
-    document.stream().forEach(page -> {
-      annotatorDate.annotate(page);
-      annotatorPeriod.annotate(page);
-      annotatorCompanyPrefix.annotate(page);
-      annotatorCompanySuffix.annotate(page);
-      annotatorCompany.annotate(page);
-      annotatorPerson.annotate(page);
-    });
+    document.stream().forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
     final Metadata metadata = new Metadata();
 
@@ -62,6 +59,7 @@ public class InformationExtractor implements HasLogger {
       metadata.setPeriodTo(parseDate(parts[1]));
     }
     metadata.setCompany(getCompany(document));
+    metadata.setDrawingDate(parseDate(getDrawingDate(document)));
 
     metadata.setPeople(document.getAnnotations().filterByType(AnnotatorPerson.PERSON)
         .stream().map(Annotation::getNorm)
@@ -100,6 +98,14 @@ public class InformationExtractor implements HasLogger {
     return periods.stream().findFirst().orElse("");
   }
 
+  private String getDrawingDate(final HocrDocument document) {
+    final AnnotationList annotations = document
+        .getAnnotations()
+        .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
+        .sortByPos();
+    return annotations.getFirstNomOrEmpty();
+  }
+
   private String getCompany(final HocrDocument document) {
     final AnnotationList alist = new AnnotationList(document.stream()
         .map(HocrPage::getAnnotations)
@@ -130,7 +136,7 @@ public class InformationExtractor implements HasLogger {
   private Date parseDate(final String str) {
     try {
       return format.parse(str);
-    } catch (final ParseException e) {
+    } catch (final Exception e) {
       return null;
     }
   }

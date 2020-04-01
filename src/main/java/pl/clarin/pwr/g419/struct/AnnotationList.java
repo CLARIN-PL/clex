@@ -17,10 +17,19 @@ public class AnnotationList extends ArrayList<Annotation> {
         .collect(Collectors.toList()));
   }
 
+  public AnnotationList sortByPos() {
+    return new AnnotationList(this.stream()
+        .sorted(Comparator.comparingInt(o -> o.getFirst().getNo()))
+        .collect(Collectors.toList()));
+  }
+
   public AnnotationList filterByType(final String type) {
     return new AnnotationList(this.stream()
         .filter(a -> a.getType().equals(type))
         .collect(Collectors.toList()));
   }
 
+  public String getFirstNomOrEmpty() {
+    return stream().map(Annotation::getNorm).findFirst().orElse("");
+  }
 }
