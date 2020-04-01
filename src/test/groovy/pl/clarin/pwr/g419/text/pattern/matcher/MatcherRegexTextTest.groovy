@@ -1,8 +1,7 @@
 package pl.clarin.pwr.g419.text.pattern.matcher
 
-import pl.clarin.pwr.g419.struct.Bbox
-import pl.clarin.pwr.g419.struct.Box
 import pl.clarin.pwr.g419.struct.HocrPage
+import pl.clarin.pwr.g419.utils.TestUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -14,8 +13,7 @@ class MatcherRegexTextTest extends Specification {
     def "matchesAt for index #index should return #length"() {
         given:
             def pattern = Pattern.compile("[0-9]{1,2}[.-][0-9]{1,2}[.-][0-9]{4}")
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1.01.2020", ";", "02.02", ".2020", "2020"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1.01.2020 ; 02.02 .2020 2020"))
             def matcher = new MatcherRegexText(pattern, 10)
 
         when:
@@ -36,8 +34,7 @@ class MatcherRegexTextTest extends Specification {
     def "matchesAt should return matcherResult with valid groups"() {
         given:
             def pattern = Pattern.compile("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4})")
-            def page = new HocrPage(
-                    getSequenceOfBboxes(["1.01.2020", ";", "02.02", ".2020", "2020"] as List))
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1.01.2020 ; 02.02 .2020 2020"))
             def matcher = new MatcherRegexText(pattern, 10,
                     Map.of(1, "day", 2, "month", 3, "year"))
 
@@ -58,10 +55,24 @@ class MatcherRegexTextTest extends Specification {
             3     || 0      | ""   | ""    | ""
             4     || 0      | ""   | ""    | ""
     }
-    
-    def getSequenceOfBboxes(List<String> words) {
-        Box box = new Box(0, 0, 10, 10)
-        return words.collect { new Bbox(0, it, box) } as List
-    }
 
+    @Unroll
+    def "matchesAt with ignore should return valid results"() {
+        given:
+            def page = new HocrPage(TestUtils.getSequenceOfBboxes("11 22 33 44"))
+            def matcher = new MatcherRegexText("([0-9]{2})", 2).ignore(Set.of("11", "22"))
+
+        when:
+            def result = matcher.matchesAt(page, index)
+
+        then:
+            result.orElse(new MatcherResult(0)).getLength() == length
+
+        where:
+            index || length
+            0     || 0
+            1     || 0
+            2     || 1
+            3     || 1
+    }
 }

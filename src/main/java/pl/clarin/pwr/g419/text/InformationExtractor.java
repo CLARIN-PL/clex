@@ -47,10 +47,10 @@ public class InformationExtractor implements HasLogger {
     ignore.add("FIRMY");
   }
 
-  public Metadata extract(final HocrDocument document) {
+  public MetadataWithContext extract(final HocrDocument document) {
     document.stream().forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
-    final Metadata metadata = new Metadata();
+    final MetadataWithContext metadata = new MetadataWithContext();
 
     final String period = getPeriod(document);
     final String[] parts = period.split(":");
@@ -59,7 +59,10 @@ public class InformationExtractor implements HasLogger {
       metadata.setPeriodTo(parseDate(parts[1]));
     }
     metadata.setCompany(getCompany(document));
-    metadata.setDrawingDate(parseDate(getDrawingDate(document)));
+
+    final ValueContext vcDrawingDate = getDrawingDate(document);
+    metadata.setDrawingDate(parseDate(vcDrawingDate.getValue()));
+    metadata.setDrawingDateContext(vcDrawingDate.getContext());
 
     metadata.setPeople(document.getAnnotations().filterByType(AnnotatorPerson.PERSON)
         .stream().map(Annotation::getNorm)
@@ -98,12 +101,12 @@ public class InformationExtractor implements HasLogger {
     return periods.stream().findFirst().orElse("");
   }
 
-  private String getDrawingDate(final HocrDocument document) {
+  private ValueContext getDrawingDate(final HocrDocument document) {
     final AnnotationList annotations = document
         .getAnnotations()
         .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
         .sortByPos();
-    return annotations.getFirstNomOrEmpty();
+    return annotations.getFirstNomContext();
   }
 
   private String getCompany(final HocrDocument document) {

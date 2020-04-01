@@ -1,6 +1,7 @@
 package pl.clarin.pwr.g419.text.annotator;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.util.List;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
@@ -15,17 +16,17 @@ public class AnnotatorDrawingDate extends Annotator {
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
 
-    patterns.add(new Pattern()
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+,", 20))
+    patterns.add(new Pattern().matchLine()
+        .next(new MatcherRegexText("\\p{Lu}\\p{L}{3,20}(,)?", 20).join(" ")
+            .ignore(Sets.newHashSet("dzień", "dnia",
+                "zakończony", "zakończonego", "zakończonych", "zakończone", "zakooczone", "zakooczony",
+                "aktywa", "długoterminowe", "dominującej", "sporządzone", "zobowiązania",
+                "wrażliwość", "noty", "nota", "waluta", "inwestycje",
+                "wyszczególnienie", "bilans", "pasywa", "limit", "część", "wibor", "wskaźniki"))
+        )
         .next(new MatcherLowerText("dnia").optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DRAWING_DATE))
     );
-
-//    patterns.add(new Pattern()
-//        .next(new MatcherLowerText("w"))
-//        .next(new MatcherLowerText("dniu"))
-//        .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DRAWING_DATE))
-//    );
 
     return patterns;
   }

@@ -162,5 +162,9 @@ public class HocrReader extends DefaultHandler {
         bbox.setBlockEnd(true);
       }
     }
+    if (page.size() > 0) {
+      page.get(page.size() - 1).setLineEnd(true);
+      page.get(page.size() - 1).setBlockEnd(true);
+    }
   }
 }

@@ -89,6 +89,7 @@ class HocrReaderTest extends Specification {
             7  || true     | false
             8  || true     | false
             10 || true     | true
+            28 || true     | true
 
     }
 

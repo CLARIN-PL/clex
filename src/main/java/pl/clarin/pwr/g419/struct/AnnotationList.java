@@ -29,7 +29,12 @@ public class AnnotationList extends ArrayList<Annotation> {
         .collect(Collectors.toList()));
   }
 
-  public String getFirstNomOrEmpty() {
-    return stream().map(Annotation::getNorm).findFirst().orElse("");
+  public ValueContext getFirstNomContext() {
+    final ValueContext vc = new ValueContext();
+    stream().findFirst().ifPresent(an -> {
+      vc.setValue(an.getNorm());
+      vc.setContext(an.getText());
+    });
+    return vc;
   }
 }

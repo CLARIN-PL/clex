@@ -1,8 +1,10 @@
 package pl.clarin.pwr.g419.text.pattern.matcher;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Pattern;
 import pl.clarin.pwr.g419.struct.HocrPage;
@@ -13,6 +15,8 @@ public class MatcherRegexText extends Matcher {
   int maxLength;
   Map<Integer, String> groupNames;
   private boolean lowerCase = false;
+  Set<String> ignoreValues = Sets.newHashSet();
+  String joinSeparator = "";
 
   public MatcherRegexText(final Pattern pattern, final int maxLength) {
     this(pattern, maxLength, Maps.newHashMap());
@@ -43,9 +47,19 @@ public class MatcherRegexText extends Matcher {
     return this;
   }
 
+  public MatcherRegexText ignore(final Set<String> lowerCaseValues) {
+    ignoreValues = lowerCaseValues;
+    return this;
+  }
+
+  public MatcherRegexText join(final String joinSeparator) {
+    this.joinSeparator = joinSeparator;
+    return this;
+  }
+
   @Override
   public Optional<MatcherResult> matchesAt(final HocrPage page, final int index) {
-    final StringJoiner sj = new StringJoiner("");
+    final StringJoiner sj = new StringJoiner(joinSeparator);
     int n = index;
     while (sj.length() < maxLength && n < page.size()) {
       if (n >= 0 && n < page.size()) {
@@ -56,7 +70,7 @@ public class MatcherRegexText extends Matcher {
         text = text.toLowerCase();
       }
       final java.util.regex.Matcher m = pattern.matcher(text);
-      if (m.matches()) {
+      if (m.matches() && !ignoreValues.contains(text.toLowerCase())) {
         final MatcherResult mr = new MatcherResult(n - index);
         for (final Map.Entry<Integer, String> entry : groupNames.entrySet()) {
           mr.getGroups().put(entry.getValue(), m.group(entry.getKey()));
