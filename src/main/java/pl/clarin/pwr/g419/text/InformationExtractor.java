@@ -17,6 +17,7 @@ public class InformationExtractor implements HasLogger {
   AnnotatorCompanyPrefix annotatorCompanyPrefix = new AnnotatorCompanyPrefix();
   AnnotatorCompanySuffix annotatorCompanySuffix = new AnnotatorCompanySuffix();
   AnnotatorCompany annotatorCompany = new AnnotatorCompany();
+  AnnotatorPerson annotatorPerson = new AnnotatorPerson();
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -49,6 +50,7 @@ public class InformationExtractor implements HasLogger {
       annotatorCompanyPrefix.annotate(page);
       annotatorCompanySuffix.annotate(page);
       annotatorCompany.annotate(page);
+      annotatorPerson.annotate(page);
     });
 
     final Metadata metadata = new Metadata();
@@ -61,7 +63,24 @@ public class InformationExtractor implements HasLogger {
     }
     metadata.setCompany(getCompany(document));
 
+    metadata.setPeople(document.getAnnotations().filterByType(AnnotatorPerson.PERSON)
+        .stream().map(Annotation::getNorm)
+        .collect(Collectors.toSet())
+        .stream()
+        .map(this::strToPerson)
+        .collect(Collectors.toList()));
+
     return metadata;
+  }
+
+  private Person strToPerson(final String str) {
+    final Person person = new Person();
+    final String[] parts = str.split("[|]");
+    if (parts.length == 2) {
+      person.setRole(parts[0].toLowerCase());
+      person.setName(parts[1]);
+    }
+    return person;
   }
 
   private String getPeriod(final HocrDocument document) {

@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.io.reader;
 
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,19 +8,19 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import pl.clarin.pwr.g419.struct.Bbox;
-import pl.clarin.pwr.g419.struct.Box;
-import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.struct.HocrPage;
+import pl.clarin.pwr.g419.struct.*;
 
 public class HocrReader extends DefaultHandler {
 
@@ -56,6 +57,7 @@ public class HocrReader extends DefaultHandler {
     this.document = new HocrDocument();
     parser.parse(is, this);
     this.document.setId(getIdFromPath(path));
+    this.document.stream().forEach(this::mergeLines);
     return document;
   }
 
@@ -125,6 +127,40 @@ public class HocrReader extends DefaultHandler {
   public void characters(final char[] ac, final int start, final int length) {
     for (int i = start; i < start + length; i++) {
       value.append(ac[i]);
+    }
+  }
+
+  private void mergeLines(final HocrPage page) {
+    Optional<Range> lineRange = Optional.empty();
+    final List<Pair<Range, Integer>> ranges = Lists.newArrayList();
+    for (int i = 0; i < page.size(); i++) {
+      final Bbox bbox = page.get(i);
+      if (lineRange.isPresent()) {
+        lineRange.get().merge(bbox.getBox().getTop(), bbox.getBox().getBottom());
+      } else {
+        lineRange = Optional.of(new Range(bbox.getBox().getTop(), bbox.getBox().getBottom()));
+      }
+      if (bbox.isLineEnd()) {
+        ranges.add(new ImmutablePair<>(lineRange.get(), i));
+        lineRange = Optional.empty();
+      }
+    }
+    for (int i = 0; i < ranges.size() - 1; i++) {
+      final Pair<Range, Integer> range = ranges.get(i);
+      final Pair<Range, Integer> nextRange = ranges.get(i + 1);
+      final Bbox bbox = page.get(range.getRight());
+      final Bbox nextBbox = page.get(range.getRight() + 1);
+      final Range r1 = range.getKey();
+      final Range r2 = nextRange.getKey();
+      if ((r1.overlap(r2) > 0.8 || r1.within(r2) > 0.8 || r2.within(r1) > 0.8)
+          && bbox.getBox().getRight() <= nextBbox.getBox().getLeft()) {
+        bbox.setLineEnd(false);
+        bbox.setBlockEnd(true);
+        nextBbox.setLineBegin(false);
+      } else {
+        // End of line also indicates end of block
+        bbox.setBlockEnd(true);
+      }
     }
   }
 }

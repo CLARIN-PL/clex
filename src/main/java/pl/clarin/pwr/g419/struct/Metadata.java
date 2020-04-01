@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.struct;
 
+import com.google.common.collect.Lists;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -27,5 +28,5 @@ public class Metadata {
   String city;
   String street;
   String streetNo;
-  List<Person> people;
+  List<Person> people = Lists.newArrayList();
 }

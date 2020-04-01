@@ -23,6 +23,7 @@ import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.Metadata;
+import pl.clarin.pwr.g419.struct.Person;
 import pl.clarin.pwr.g419.text.InformationExtractor;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
@@ -70,7 +71,7 @@ public class ActionEval extends Action {
       try {
         records.addAll(future.get());
       } catch (final Exception ex) {
-        getLogger().error("Failed to write to CSV", ex);
+        getLogger().error("Failed evaluate the document", ex);
       }
     });
     service.shutdown();
@@ -80,7 +81,7 @@ public class ActionEval extends Action {
       try {
         csvPrinter.printRecords(records.stream()
             .sorted(Comparator.comparing(o -> o.get(1)))
-            .filter(r -> r.get(0).equals("ERROR"))
+            //.filter(r -> r.get(0).equals("ERROR"))
             .collect(Collectors.toList()));
       } catch (final Exception ex) {
         getLogger().error("Failed to write to CSV", ex);
@@ -124,7 +125,25 @@ public class ActionEval extends Action {
         normalizeCompany(metadata.getCompany()))
     );
 
+    records.addAll(evalSets(document.getId(),
+        "person",
+        peopleToString(document.getMetadata().getPeople()),
+        peopleToString(metadata.getPeople())));
+
     return records;
+  }
+
+  private Set<String> peopleToString(final Collection<Person> people) {
+    return people.stream().map(this::formatPerson).collect(Collectors.toSet());
+  }
+
+  private String formatPerson(final Person person) {
+    return String.format("%s_%s_%s",
+        //formatDate(person.getDate()),
+        "",
+        person.getRole().toLowerCase(),
+        person.getName()
+    );
   }
 
   private String formatDate(final Date date) {
@@ -147,15 +166,10 @@ public class ActionEval extends Action {
     return text;
   }
 
-  synchronized private List<String> evalField(final String id, final String fieldName,
-                                              final String referenceValue, final String extractedValue) {
-    final List<String> record = Lists.newArrayList();
-    record.add(Objects.equals(referenceValue, extractedValue) ? "OK" : "ERROR");
-    record.add(id);
-    record.add(fieldName);
-    record.add(referenceValue);
-    record.add(extractedValue);
-
+  synchronized private List<String> evalField(final String id,
+                                              final String fieldName,
+                                              final String referenceValue,
+                                              final String extractedValue) {
     if (Objects.equals(referenceValue, extractedValue)) {
       globalCounter.addTrue();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
@@ -164,7 +178,38 @@ public class ActionEval extends Action {
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
     }
 
-    return record;
+    final String label = Objects.equals(referenceValue, extractedValue) ? "OK" : "ERROR";
+    return record(label, id, fieldName, referenceValue, extractedValue);
+  }
+
+  synchronized private List<List<String>> evalSets(final String id,
+                                                   final String fieldName,
+                                                   final Set<String> referenceValues,
+                                                   final Set<String> extractedValues) {
+    final List<List<String>> records = Lists.newArrayList();
+    for (final String reference : referenceValues) {
+      if (extractedValues.contains(reference)) {
+        records.add(record("OK", id, fieldName, reference, reference));
+        globalCounter.addTrue();
+        counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
+      } else {
+        records.add(record("ERROR", id, fieldName, reference, "FalseNegative"));
+        globalCounter.addFalse();
+        counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
+      }
+    }
+    extractedValues.removeAll(referenceValues);
+    for (final String value : extractedValues) {
+      records.add(record("ERROR", id, fieldName, "FalsePositive", value));
+      globalCounter.addFalse();
+      counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
+    }
+    return records;
+  }
+
+  private List<String> record(final String label, final String id, final String field,
+                              final String valueReference, final String valueExtracted) {
+    return Lists.newArrayList(label, id, field, valueReference, valueExtracted);
   }
 
 }

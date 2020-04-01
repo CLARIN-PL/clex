@@ -1,0 +1,72 @@
+Converting '/tmp/b0018609-c98f-4903-b6fa-6c4c68a5bd4a':
+- Page #1
+- Page #2
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="ocr-system" content="djvu2hocr 0.10.2" />
+  <meta name="ocr-capabilities" content="ocr_carea ocr_page ocr_par ocrx_block ocrx_line ocrx_word" />
+  <title>DjVu hidden text layer</title>
+</head>
+<body>
+<div class="ocr_page" title="bbox 0 0 2479 3508">
+    <span class="ocrx_line" title="bbox 226 1837 1000 1876">
+        <span class="ocrx_word" title="bbox 226 1840 509 1876">Czteroosobowy</span>
+        <span class="ocrx_word" title="bbox 525 1840 649 1876">Zarząd</span>
+        <span class="ocrx_word" title="bbox 668 1837 778 1876">Spółki</span>
+        <span class="ocrx_word" title="bbox 796 1848 823 1868">w</span>
+        <span class="ocrx_word" title="bbox 840 1840 1000 1869">składzie:</span>
+    </span>
+    <span class="ocrx_line" title="bbox 379 1910 799 1946">
+        <span class="ocrx_word" title="bbox 379 1911 407 1938">1.</span>
+        <span class="ocrx_word" title="bbox 451 1910 677 1939">Włodzimierz</span>
+        <span class="ocrx_word" title="bbox 695 1910 799 1946">Dyrka</span>
+    </span>
+    <span class="ocrx_line" title="bbox 977 1924 988 1928">
+        <span class="ocrx_word" title="bbox 977 1924 988 1928">-</span>
+    </span>
+    <span class="ocrx_line" title="bbox 1053 1910 1335 1946">
+        <span class="ocrx_word" title="bbox 1053 1911 1170 1938">Prezes</span>
+        <span class="ocrx_word" title="bbox 1187 1910 1335 1946">Zarządu</span>
+    </span>
+    <span class="ocrx_line" title="bbox 377 1977 859 2013">
+        <span class="ocrx_word" title="bbox 377 1977 407 2005">2.</span>
+        <span class="ocrx_word" title="bbox 453 1977 670 2013">Przemysław</span>
+        <span class="ocrx_word" title="bbox 689 1977 859 2006">Milczarek</span>
+    </span>
+    <span class="ocrx_line" title="bbox 977 1991 988 1995">
+        <span class="ocrx_word" title="bbox 977 1991 988 1995">-</span>
+    </span>
+    <span class="ocrx_line" title="bbox 1051 1977 1425 2013">
+        <span class="ocrx_word" title="bbox 1051 1978 1261 2013">Wiceprezes</span>
+        <span class="ocrx_word" title="bbox 1277 1977 1425 2013">Zarządu</span>
+    </span>
+    <span class="ocrx_line" title="bbox 377 2040 744 2079">
+        <span class="ocrx_word" title="bbox 377 2043 407 2072">3.</span>
+        <span class="ocrx_word" title="bbox 449 2043 590 2079">Andrzej</span>
+        <span class="ocrx_word" title="bbox 608 2040 744 2072">Orliński</span>
+    </span>
+    <span class="ocrx_line" title="bbox 977 2057 988 2061">
+        <span class="ocrx_word" title="bbox 977 2057 988 2061">-</span>
+    </span>
+    <span class="ocrx_line" title="bbox 1051 2043 1425 2079">
+        <span class="ocrx_word" title="bbox 1051 2044 1261 2079">Wiceprezes</span>
+        <span class="ocrx_word" title="bbox 1277 2043 1425 2079">Zarządu</span>
+    </span>
+    <span class="ocrx_line" title="bbox 375 2110 854 2146">
+        <span class="ocrx_word" title="bbox 375 2111 407 2138">4.</span>
+        <span class="ocrx_word" title="bbox 453 2110 612 2139">Mirosław</span>
+        <span class="ocrx_word" title="bbox 630 2110 854 2146">Białogłowski</span>
+    </span>
+    <span class="ocrx_line" title="bbox 977 2124 988 2128">
+        <span class="ocrx_word" title="bbox 977 2124 988 2128">-</span>
+    </span>
+    <span class="ocrx_line" title="bbox 1051 2110 1360 2146">
+        <span class="ocrx_word" title="bbox 1051 2110 1196 2139">Członek</span>
+        <span class="ocrx_word" title="bbox 1212 2110 1360 2146">Zarządu</span>
+    </span>
+</div>
+</body>
+</html>
