@@ -28,7 +28,7 @@ public class AnnotatorPerson extends Annotator {
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(NAME))
     );
 
-    patterns.add(new Pattern().singleLine()
+    patterns.add(new Pattern()
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME))
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))

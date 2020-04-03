@@ -1,9 +1,11 @@
 package pl.clarin.pwr.g419.struct;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AnnotationList extends ArrayList<Annotation> {
 
@@ -27,6 +29,22 @@ public class AnnotationList extends ArrayList<Annotation> {
     return new AnnotationList(this.stream()
         .filter(a -> a.getType().equals(type))
         .collect(Collectors.toList()));
+  }
+
+  public AnnotationList removeNested() {
+    final Map<HocrPage, Set<Integer>> pageTokens = Maps.newHashMap();
+    final List<Annotation> selected = Lists.newArrayList();
+    this.stream()
+        .sorted(Comparator.comparing(Annotation::getLength).reversed())
+        .forEach(an -> {
+          if (!pageTokens.computeIfAbsent(an.page, n -> Sets.newHashSet()).contains(an.indexBegin)) {
+            IntStream.range(an.indexBegin, an.indexEnd).forEach(
+                i -> pageTokens.computeIfAbsent(an.page, n -> Sets.newHashSet()).add(i)
+            );
+            selected.add(an);
+          }
+        });
+    return new AnnotationList(selected);
   }
 
   public ValueContext getFirstNomContext() {

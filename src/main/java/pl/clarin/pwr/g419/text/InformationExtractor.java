@@ -64,14 +64,21 @@ public class InformationExtractor implements HasLogger {
     metadata.setDrawingDate(parseDate(vcDrawingDate.getValue()));
     metadata.setDrawingDateContext(vcDrawingDate.getContext());
 
-    metadata.setPeople(document.getAnnotations().filterByType(AnnotatorPerson.PERSON)
-        .stream().map(Annotation::getNorm)
+    metadata.setPeople(getPoeple(document));
+
+    return metadata;
+  }
+
+  private List<Person> getPoeple(final HocrDocument document) {
+    return document.getAnnotations()
+        .filterByType(AnnotatorPerson.PERSON)
+        .removeNested()
+        .stream()
+        .map(Annotation::getNorm)
         .collect(Collectors.toSet())
         .stream()
         .map(this::strToPerson)
-        .collect(Collectors.toList()));
-
-    return metadata;
+        .collect(Collectors.toList());
   }
 
   private Person strToPerson(final String str) {
