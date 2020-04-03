@@ -14,6 +14,7 @@ import pl.clarin.pwr.g419.text.pattern.matcher.MatcherResult;
 public class Pattern {
 
   boolean matchLine = false;
+  boolean singleLine = false;
   List<Matcher> matchers = Lists.newArrayList();
 
   public Pattern() {
@@ -21,6 +22,11 @@ public class Pattern {
 
   public Pattern matchLine() {
     matchLine = true;
+    return this;
+  }
+
+  public Pattern singleLine() {
+    singleLine = true;
     return this;
   }
 
@@ -59,6 +65,10 @@ public class Pattern {
           || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 1) {
         return Optional.empty();
       }
+    }
+    if (singleLine
+        && IntStream.range(index, i - 2).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 0) {
+      return Optional.empty();
     }
     return Optional.of(pm);
   }

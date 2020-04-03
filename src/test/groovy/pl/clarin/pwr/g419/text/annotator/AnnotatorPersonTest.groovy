@@ -27,6 +27,7 @@ class AnnotatorPersonTest extends Specification {
             text                                           || norm
             "Prezes – Piotr Bieliński"                     || ["prezes|Piotr Bieliński"]
             "Julianna Boniuk-Gorzelańczyk Członek Zarządu" || ["członek zarządu|Julianna Boniuk-Gorzelańczyk"]
+            "Rui Manuel Teixeira wiceprezes zarządu"       || ["wiceprezes zarządu|Rui Manuel Teixeira"]
     }
 
 }

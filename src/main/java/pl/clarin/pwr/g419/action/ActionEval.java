@@ -141,7 +141,10 @@ public class ActionEval extends Action {
   }
 
   private Set<String> peopleToString(final Collection<Person> people) {
-    return people.stream().map(this::formatPerson).collect(Collectors.toSet());
+    return people.stream()
+        .map(this::formatPerson)
+        .map(this::normalizePerson)
+        .collect(Collectors.toSet());
   }
 
   private String formatPerson(final Person person) {
@@ -170,7 +173,14 @@ public class ActionEval extends Action {
         return text.substring(0, text.length() - suffix.length()).trim();
       }
     }
-    return text;
+    return text.replaceAll("( )*([-])( )*", "$2");
+  }
+
+  private String normalizePerson(final String value) {
+    if (value == null) {
+      return "";
+    }
+    return value.replaceAll("( )*([-])( )*", "$2");
   }
 
   synchronized private List<String> evalField(final String id,
