@@ -15,6 +15,7 @@ public class Pattern {
 
   boolean matchLine = false;
   boolean singleLine = false;
+  int score = 100;
   List<Matcher> matchers = Lists.newArrayList();
 
   public Pattern() {
@@ -27,6 +28,11 @@ public class Pattern {
 
   public Pattern singleLine() {
     singleLine = true;
+    return this;
+  }
+
+  public Pattern score(final int score) {
+    this.score = score;
     return this;
   }
 
@@ -59,7 +65,7 @@ public class Pattern {
         return Optional.empty();
       }
     }
-    final PatternMatch pm = new PatternMatch(index, i, page, groups);
+    final PatternMatch pm = new PatternMatch(index, i, page, groups).withScore(score);
     if (matchLine) {
       if (page.get(i - 1).isLineEnd() == false
           || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 1) {

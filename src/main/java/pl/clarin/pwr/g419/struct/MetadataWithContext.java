@@ -6,5 +6,8 @@ import lombok.Data;
 public class MetadataWithContext extends Metadata {
 
   String drawingDateContext;
+  String companyContext;
+  String periodFromContext;
+  String periodToContext;
 
 }

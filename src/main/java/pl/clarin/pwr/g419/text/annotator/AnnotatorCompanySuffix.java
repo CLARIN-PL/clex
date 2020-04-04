@@ -23,6 +23,10 @@ public class AnnotatorCompanySuffix extends Annotator {
         .next(new MatcherLowerText(Set.of("akcyjna")))
     );
 
+    patterns.add(new Pattern()
+        .next(new MatcherLowerText(Set.of("se")))
+    );
+
     return patterns;
   }
 

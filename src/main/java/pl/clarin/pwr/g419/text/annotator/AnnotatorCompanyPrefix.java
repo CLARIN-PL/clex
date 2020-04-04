@@ -25,7 +25,7 @@ public class AnnotatorCompanyPrefix extends Annotator {
         .next(new MatcherLowerText(Set.of("działalności", "raport")))
         .next(new MatcherLowerText(Set.of("gospodarczej")).optional())
         .next(new MatcherLowerText(Set.of("finansowy")).optional())
-        .next(new MatcherLowerText(Set.of("półroczny")).optional())
+        .next(new MatcherLowerText(Set.of("półroczny", "okresowy")).optional())
         .next(new MatcherLowerText(Set.of("grupy")).optional())
         .next(new MatcherLowerText(Set.of("kapitałowej")).optional())
     );

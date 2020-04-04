@@ -11,10 +11,12 @@ import pl.clarin.pwr.g419.struct.HocrPage;
 
 @Data
 public class PatternMatch {
+
   int indexBegin;
   int indexEnd;
   HocrPage page;
   Map<String, String> groups = Maps.newHashMap();
+  int score;
 
   public PatternMatch(final int begin, final int end,
                       final HocrPage page, final Map<String, String> groups) {
@@ -22,6 +24,11 @@ public class PatternMatch {
     this.indexEnd = end;
     this.page = page;
     this.groups = groups;
+  }
+
+  PatternMatch withScore(final int score) {
+    this.score = score;
+    return this;
   }
 
   public String getText() {

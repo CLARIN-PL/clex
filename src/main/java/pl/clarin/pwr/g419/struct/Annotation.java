@@ -8,11 +8,13 @@ import lombok.Data;
 
 @Data
 public class Annotation {
+
   String type;
   HocrPage page;
   int indexBegin;
   int indexEnd;
   Optional<String> norm = Optional.empty();
+  int score;
 
   public Annotation(final String type, final HocrPage page,
                     final int indexBegin, final int indexEnd) {
@@ -24,6 +26,11 @@ public class Annotation {
 
   public Annotation withNorm(final String norm) {
     this.norm = Optional.of(norm);
+    return this;
+  }
+
+  public Annotation withScore(final int score) {
+    this.score = score;
     return this;
   }
 

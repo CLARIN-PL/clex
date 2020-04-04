@@ -29,7 +29,9 @@ public class Annotator implements HasLogger {
         .map(p -> p.find(page))
         .flatMap(Collection::stream)
         .map(m ->
-            new Annotation(type, page, m.getIndexBegin(), m.getIndexEnd()).withNorm(normalize(m)))
+            new Annotation(type, page, m.getIndexBegin(), m.getIndexEnd())
+                .withNorm(normalize(m))
+                .withScore(m.getScore()))
         .forEach(page::addAnnotation);
   }
 

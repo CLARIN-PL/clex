@@ -119,17 +119,20 @@ public class ActionEval extends Action {
 
     records.add(evalField(document.getId(), "period_from",
         formatDate(document.getMetadata().getPeriodFrom()),
-        formatDate(metadata.getPeriodFrom()))
+        formatDate(metadata.getPeriodFrom()),
+        metadata.getPeriodFromContext())
     );
 
     records.add(evalField(document.getId(), "period_to",
         formatDate(document.getMetadata().getPeriodTo()),
-        formatDate(metadata.getPeriodTo()))
+        formatDate(metadata.getPeriodTo()),
+        metadata.getPeriodFromContext())
     );
 
     records.add(evalField(document.getId(), "company",
         normalizeCompany(document.getMetadata().getCompany()),
-        normalizeCompany(metadata.getCompany()))
+        normalizeCompany(metadata.getCompany()),
+        metadata.getCompanyContext())
     );
 
     records.addAll(evalSets(document.getId(),
@@ -167,13 +170,17 @@ public class ActionEval extends Action {
     if (value == null) {
       return "";
     }
-    final String text = value.toUpperCase();
+    String text = value.toUpperCase();
     for (final String suffix : companySuffixes) {
       if (text.endsWith(" " + suffix)) {
-        return text.substring(0, text.length() - suffix.length()).trim();
+        text = text.substring(0, text.length() - suffix.length()).trim();
       }
     }
-    return text.replaceAll("( )*([-])( )*", "$2");
+    return text.replaceAll("( )*([-.-])( )*", "$2")
+        .replaceAll("–", "-")
+        .replaceAll("[„”\"]", "")
+        .replaceAll("[.]$", "")
+        .replaceAll("4FUN", "4 FUN");
   }
 
   private String normalizePerson(final String value) {

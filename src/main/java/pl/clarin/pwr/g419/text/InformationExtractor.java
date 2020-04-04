@@ -30,21 +30,29 @@ public class InformationExtractor implements HasLogger {
   Set<String> ignore = Sets.newHashSet();
 
   public InformationExtractor() {
+    lemmas.put("AGORY", "AGORA");
     lemmas.put("BANKU", "BANK");
+    lemmas.put("DOMU", "DOM");
+    lemmas.put("FABRYKI", "FABRYKA");
+    lemmas.put("GRUPY", "GRUPA");
+    lemmas.put("HANDLOWEGO", "HANDLOWY");
+    lemmas.put("MAKLERSKIEGO", "MAKLERSKI");
+    lemmas.put("NARODOWEGO", "NARODOWY");
     lemmas.put("TOWARZYSTWA", "TOWARZYSTWO");
     lemmas.put("ZACHODNIEGO", "ZACHODNI");
     lemmas.put("FUNDUSZU", "FUNDUSZ");
     lemmas.put("PRZEDSIĘBIORSTWA", "PRZEDSIĘBIORSTWO");
     lemmas.put("PRODUKCYJNO-HANDLOWEGO", "PRODUKCYJNO-HANDLOWE");
-    lemmas.put("NARODOWEGO", "NARODOWY");
     lemmas.put("INWESTYCYJNEGO", "INWESTYCYJNY");
-    lemmas.put("GRUPY", "GRUPA");
-    lemmas.put("AGORY", "AGORA");
+    lemmas.put("FABRYK", "FABRYKI");
+    lemmas.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
 
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
     ignore.add("SPÓŁKI");
     ignore.add("FIRMY");
+    ignore.add("UDZIAŁ");
+    ignore.add("%");
   }
 
   public MetadataWithContext extract(final HocrDocument document) {
@@ -52,13 +60,18 @@ public class InformationExtractor implements HasLogger {
 
     final MetadataWithContext metadata = new MetadataWithContext();
 
-    final String period = getPeriod(document);
-    final String[] parts = period.split(":");
+    final ValueContext vcPeriod = getPeriod(document);
+    final String[] parts = vcPeriod.getValue().split(":");
     if (parts.length > 1) {
       metadata.setPeriodFrom(parseDate(parts[0]));
+      metadata.setPeriodFromContext(vcPeriod.getContext());
       metadata.setPeriodTo(parseDate(parts[1]));
+      metadata.setPeriodToContext(vcPeriod.getContext());
     }
-    metadata.setCompany(getCompany(document));
+
+    final ValueContext vcCompany = getCompany(document);
+    metadata.setCompany(vcCompany.getValue());
+    metadata.setCompanyContext(vcCompany.getContext());
 
     final ValueContext vcDrawingDate = getDrawingDate(document);
     metadata.setDrawingDate(parseDate(vcDrawingDate.getValue()));
@@ -91,21 +104,12 @@ public class InformationExtractor implements HasLogger {
     return person;
   }
 
-  private String getPeriod(final HocrDocument document) {
-    AnnotationList alist = new AnnotationList(document.stream()
-        .map(HocrPage::getAnnotations)
-        .flatMap(Collection::stream)
-        .sorted(Comparator.comparingInt(o -> o.getFirst().getNo()))
-        .collect(Collectors.toList()));
-
-    alist = alist.filterByType(AnnotatorPeriod.PERIOD);
-
-    final List<String> periods = alist.stream()
-        .sorted((a1, a2) -> compareByLocation(a1, a2))
-        .map(Annotation::getNorm)
-        .collect(Collectors.toList());
-
-    return periods.stream().findFirst().orElse("");
+  private ValueContext getPeriod(final HocrDocument document) {
+    return document.getAnnotations()
+        .filterByType(AnnotatorPeriod.PERIOD)
+        .topScore()
+        .sortByLoc()
+        .getFirstNomContext();
   }
 
   private ValueContext getDrawingDate(final HocrDocument document) {
@@ -116,24 +120,14 @@ public class InformationExtractor implements HasLogger {
     return annotations.getFirstNomContext();
   }
 
-  private String getCompany(final HocrDocument document) {
-    final AnnotationList alist = new AnnotationList(document.stream()
-        .map(HocrPage::getAnnotations)
-        .flatMap(Collection::stream)
-        .sorted((a1, a2) -> compareByLocation(a1, a2))
-        .collect(Collectors.toList()));
-
-    final String name = alist.filterByType(AnnotatorCompany.COMPANY)
-        .stream()
-        .sorted((a1, a2) -> compareByLocation(a1, a2))
-        .findFirst()
-        .map(Annotation::getNorm).orElse("");
-
-    final String stripped = name
-        .replaceAll("[„”]", "")
-        .replaceAll("[ ][.]", ".");
-
-    return simpyLemmatize(stripped.toUpperCase());
+  private ValueContext getCompany(final HocrDocument document) {
+    final ValueContext vc = document.getAnnotations()
+        .filterByType(AnnotatorCompany.COMPANY)
+        .topScore()
+        .sortByLoc()
+        .getFirstNomContext();
+    vc.setValue(simpyLemmatize(vc.getValue().toUpperCase()));
+    return vc;
   }
 
   private String simpyLemmatize(final String text) {
@@ -151,15 +145,4 @@ public class InformationExtractor implements HasLogger {
     }
   }
 
-  private int compareByLocation(final Annotation a1, final Annotation a2) {
-    final int page = Integer.compare(a1.getPage().getNo(), a2.getPage().getNo());
-    if (page != 0) {
-      return page;
-    }
-    final int top = Integer.compare(a1.getFirst().getBox().getTop(), a2.getFirst().getBox().getTop());
-    if (top != 0) {
-      return top;
-    }
-    return Integer.compare(a1.getFirst().getBox().getLeft(), a2.getFirst().getBox().getLeft());
-  }
 }

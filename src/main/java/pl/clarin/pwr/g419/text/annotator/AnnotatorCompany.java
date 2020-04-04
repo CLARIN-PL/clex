@@ -53,9 +53,20 @@ public class AnnotatorCompany extends Annotator {
     );
 
     patterns.add(new Pattern().matchLine()
-        .next(new MatcherAny().group(COMPANY))
+        .next(new MatcherRegexText("\\p{Lu}.+", 20).group(COMPANY))
+        .next(new MatcherRegexText("\\p{Lu}.+", 20).group(COMPANY).optional())
         .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
     );
+
+//    patterns.add(new Pattern().matchLine().score(10)
+//        .next(new MatcherRegexText("\\p{Lu}.+", 20).group(COMPANY))
+//        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY).optional())
+//        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY).optional())
+//        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY).optional())
+//        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY).optional())
+//        .next(new MatcherNotAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY).optional())
+//        .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
+//    );
 
     return patterns;
   }
