@@ -175,6 +175,8 @@ public class ActionEval extends Action {
         .replaceAll("_główna księgowa_", "_główny księgowy_")
         .replaceAll("zarzadu", "zarządu")
         .replaceAll("wieceprezes", "wiceprezes")
+        .replaceAll("wiceprezez", "wiceprezes")
+        .replace("czlonek", "członek")
         .replaceAll(" (spółki|banku)", "")
         .replaceAll(" (zarządu)", "")
         .replaceAll(" ds[.] [^_]+", "_")

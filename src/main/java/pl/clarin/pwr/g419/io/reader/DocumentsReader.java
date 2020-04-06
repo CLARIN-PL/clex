@@ -61,7 +61,7 @@ public class DocumentsReader implements HasLogger {
             documents.add(document);
             getLogger().info(String.format("%3d page(s) in %s", document.size(), path.toString()));
           } catch (final Exception ex) {
-            getLogger().error("Failed to read {}", path.toString());
+            getLogger().error("ad {}", path.toString());
           }
         }, pool))
         .toArray(CompletableFuture[]::new)).join();

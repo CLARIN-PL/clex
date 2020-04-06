@@ -12,7 +12,7 @@ import pl.clarin.pwr.g419.utils.BboxUtils;
 
 public class AnnotatorPersonVertical extends Annotator {
 
-  java.util.regex.Pattern personPattern = java.util.regex.Pattern.compile("\\p{Lu}\\p{Ll}+ \\p{Lu}\\p{Ll}+");
+  java.util.regex.Pattern personPattern = java.util.regex.Pattern.compile("\\p{Lu}\\p{Ll}+( \\p{Lu}\\p{Ll}+){1,2}");
 
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
@@ -42,7 +42,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
     for (final Annotation an : blocks) {
       final int begin = page.get(an.getIndexBegin()).getBox().getLeft() - 100;
-      final int end = page.get(an.getIndexEnd() - 1).getBox().getRight() + 100;
+      final int end = page.get(an.getIndexEnd() - 1).getBox().getRight() + 200;
 
       final Optional<Bboxes> lineAbove = findLineAbove(an, lines, page);
       if (lineAbove.isPresent()) {

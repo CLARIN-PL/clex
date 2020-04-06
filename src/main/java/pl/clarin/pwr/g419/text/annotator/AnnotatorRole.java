@@ -8,6 +8,7 @@ import pl.clarin.pwr.g419.text.normalization.NormalizerMap;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
 
 public class AnnotatorRole extends Annotator {
 
@@ -22,8 +23,9 @@ public class AnnotatorRole extends Annotator {
 
     patterns.add(new Pattern().singleLine()
         .next(new MatcherLowerText("v-ce").group(ROLE).optional())
-        .next(new MatcherLowerText(
-            Set.of("prezes", "wiceprezes", "członek", "prokurent", "główny", "główna"))
+        .next(new MatcherRegexText(
+            "(prezes|wiceprezes|członek|prokurent|główny|główna)", 12)
+            .lowerCase()
             .group(ROLE))
         .next(new MatcherLowerText(
             Set.of("zarządu", "zarzadu", "zarządu,", "zarzadu,", "księgowy", "księgowa"))

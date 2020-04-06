@@ -122,6 +122,26 @@ class HocrReaderTest extends Specification {
             "aaa 10 20 30 40" || new Box(10, 20, 30, 40)
     }
 
+    @Unroll
+    def "bbox #no should have text value of #text"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-encoding.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
+
+        expect:
+            document.get(0).get(no).getText() == text
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+
+        where:
+            no  || text
+            7   || "PÓŁROCZE"
+            180 || "Zarządu"
+
+    }
+
     def "getIdFromPath(#path) should return #id"() {
         when:
             def output = HocrReader.getIdFromPath(Paths.get(path))

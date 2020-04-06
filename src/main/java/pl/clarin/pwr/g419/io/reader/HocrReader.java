@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.io.reader;
 
+import com.google.common.collect.Maps;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
@@ -45,8 +47,17 @@ public class HocrReader extends DefaultHandler {
   private boolean lineNew = false;
   private Optional<Bbox> lastBbox = Optional.empty();
 
+  Map<String, String> encodingFix = Maps.newHashMap();
+
   public HocrDocument parse(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
+
+    encodingFix.put("Ã\u0093", "Ó");
+    encodingFix.put("Ä\u0085", "ą");
+    encodingFix.put("Å\u0081", "Ł");
+    encodingFix.put("Å\u0082", "ł");
+    encodingFix.put("Å\u0084", "ń");
+    encodingFix.put("Å\u009A", "Ś");
 
     final String text = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
     final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -107,12 +118,20 @@ public class HocrReader extends DefaultHandler {
         Integer.parseInt(cols[4]));
   }
 
+  public String fixEncoding(final String text) {
+    String textFixed = text;
+    for (final Map.Entry<String, String> entry : this.encodingFix.entrySet()) {
+      textFixed = textFixed.replaceAll(entry.getKey(), entry.getValue());
+    }
+    return textFixed;
+  }
+
   @Override
   public void endElement(final String uri,
                          final String localName,
                          final String elementName) {
     if (elementName.equalsIgnoreCase(TAG_SPAN) && ATTR_CLASS_WORD.equals(lastClass)) {
-      lastBbox = Optional.of(new Bbox(bboxNo++, value.toString(), lastBox));
+      lastBbox = Optional.of(new Bbox(bboxNo++, fixEncoding(value.toString()), lastBox));
       if (lineNew) {
         lastBbox.get().setLineBegin(true);
         lineNew = false;
@@ -130,20 +149,6 @@ public class HocrReader extends DefaultHandler {
   }
 
   private void mergeLines(final HocrPage page) {
-//    Optional<Range> lineRange = Optional.empty();
-//    final List<Pair<Range, Integer>> ranges = Lists.newArrayList();
-//    for (int i = 0; i < page.size(); i++) {
-//      final Bbox bbox = page.get(i);
-//      if (lineRange.isPresent()) {
-//        lineRange.get().merge(bbox.getBox().getTop(), bbox.getBox().getBottom());
-//      } else {
-//        lineRange = Optional.of(new Range(bbox.getBox().getTop(), bbox.getBox().getBottom()));
-//      }
-//      if (bbox.isLineEnd()) {
-//        ranges.add(new ImmutablePair<>(lineRange.get(), i));
-//        lineRange = Optional.empty();
-//      }
-//    }
     final List<Pair<Range, Integer>> ranges = BboxUtils.createLines(page);
     for (int i = 0; i < ranges.size() - 1; i++) {
       final Pair<Range, Integer> range = ranges.get(i);
