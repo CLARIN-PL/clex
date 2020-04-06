@@ -1,4 +1,4 @@
-package pl.clarin.pwr.g419.utils;
+package pl.clarin.pwr.g419.kbase;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

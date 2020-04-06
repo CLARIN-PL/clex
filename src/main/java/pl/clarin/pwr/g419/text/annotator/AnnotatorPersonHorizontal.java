@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import pl.clarin.pwr.g419.kbase.NeLexicon2;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherWordInSet;
-import pl.clarin.pwr.g419.utils.NeLexicon2;
 
 public class AnnotatorPersonHorizontal extends Annotator {
 

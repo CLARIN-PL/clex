@@ -12,13 +12,17 @@ public class TextComparator {
   }
 
   public boolean equals(final String t1, final String t2) {
+    return sim(t1, t2) > threshold;
+  }
+
+  public double sim(final String t1, final String t2) {
     final String t1n = t1.toLowerCase();
     final String t2n = t2.toLowerCase();
     if (t1n.equals(t2n)) {
-      return true;
+      return 1.0d;
     }
     final double dist = distance.apply(t1n, t2n);
     final double sim = (t1n.length() + t2n.length() - dist) / (t1n.length() + t2n.length());
-    return sim > threshold;
+    return sim;
   }
 }

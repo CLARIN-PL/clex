@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.utils
 
+import pl.clarin.pwr.g419.kbase.NeLexicon2
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject

@@ -21,6 +21,7 @@ import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
 import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
+import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.struct.Person;
@@ -39,8 +40,7 @@ public class ActionEval extends Action {
   List<String> incorrect = Lists.newArrayList();
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-  List<String> companySuffixes = List.of("SPÓŁKA AKCYJNA", "SPÓLKA AKCYJNA",
-      "S.A.", "SA", "S.A", "S. A.", "S. A", "S A");
+  CompanyNormalizer normCompany = new CompanyNormalizer();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -130,8 +130,8 @@ public class ActionEval extends Action {
     );
 
     records.add(evalField(document.getId(), "company",
-        normalizeCompany(document.getMetadata().getCompany()),
-        normalizeCompany(metadata.getCompany()),
+        normCompany.normalize(document.getMetadata().getCompany()),
+        normCompany.normalize(metadata.getCompany()),
         metadata.getCompanyContext())
     );
 
@@ -164,23 +164,6 @@ public class ActionEval extends Action {
       return "";
     }
     return format.format(date);
-  }
-
-  private String normalizeCompany(final String value) {
-    if (value == null) {
-      return "";
-    }
-    String text = value.toUpperCase();
-    for (final String suffix : companySuffixes) {
-      if (text.endsWith(" " + suffix)) {
-        text = text.substring(0, text.length() - suffix.length()).trim();
-      }
-    }
-    return text.replaceAll("( )*([-.-])( )*", "$2")
-        .replaceAll("–", "-")
-        .replaceAll("[„”\"]", "")
-        .replaceAll("[.]$", "")
-        .replaceAll("4FUN", "4 FUN");
   }
 
   private String normalizePerson(final String value) {

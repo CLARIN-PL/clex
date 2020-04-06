@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import pl.clarin.pwr.g419.HasLogger;
+import pl.clarin.pwr.g419.kbase.CompanyLexicon;
+import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 
@@ -24,6 +26,9 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorPersonVertical(),
       new AnnotatorDrawingDate()
   );
+
+  CompanyLexicon companyLexicon = new CompanyLexicon();
+  CompanyNormalizer companyNormalizer = new CompanyNormalizer();
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -128,7 +133,15 @@ public class InformationExtractor implements HasLogger {
         .topScore()
         .sortByLoc()
         .getFirstNomContext();
-    vc.setValue(simpyLemmatize(vc.getValue().toUpperCase()));
+    final String nameLem = simpyLemmatize(vc.getValue().toUpperCase());
+    final String nameNorm = companyNormalizer.normalize(nameLem);
+    final String nameApprox = companyLexicon.approximate(nameNorm);
+    if (!nameNorm.equals(nameApprox)) {
+      vc.setValue(nameApprox);
+      vc.setContext(String.format("%s; %s -> %s", vc.getContext(), nameNorm, nameApprox));
+    } else {
+      vc.setValue(nameLem);
+    }
     return vc;
   }
 
