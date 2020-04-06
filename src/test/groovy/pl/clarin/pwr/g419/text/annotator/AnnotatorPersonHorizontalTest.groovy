@@ -6,15 +6,16 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
 
-class AnnotatorPersonTest extends Specification {
+class AnnotatorPersonHorizontalTest extends Specification {
 
     @Subject
-    def annotator = new AnnotatorPerson()
+    def annotator = new AnnotatorPersonHorizontal()
 
     @Unroll
     def "annotate on '#text' should return '#norm"() {
         given:
             def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            new AnnotatorRole().annotate(page)
 
         when:
             annotator.annotate(page)
@@ -24,10 +25,10 @@ class AnnotatorPersonTest extends Specification {
                     .collect { it.getNorm() } as Set == norm as Set
 
         where:
-            text                                           || norm
-            "Prezes – Piotr Bieliński"                     || ["prezes|Piotr Bieliński"]
-            "Julianna Boniuk-Gorzelańczyk Członek Zarządu" || ["członek zarządu|Julianna Boniuk-Gorzelańczyk"]
-            "Rui Manuel Teixeira wiceprezes zarządu"       || ["wiceprezes zarządu|Rui Manuel Teixeira"]
+            text                                        || norm
+            "Prezes – Piotr Bieliński"                  || ["prezes|Piotr Bieliński"]
+            "Anna Boniuk-Gorzelańczyk Członek Zarządu"  || ["członek zarządu|Anna Boniuk-Gorzelańczyk"]
+            "Andrea Manuel Teixeira wiceprezes zarządu" || ["wiceprezes zarządu|Andrea Manuel Teixeira"]
     }
 
 }

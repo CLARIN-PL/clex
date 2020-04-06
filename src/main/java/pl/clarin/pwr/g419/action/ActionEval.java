@@ -187,7 +187,15 @@ public class ActionEval extends Action {
     if (value == null) {
       return "";
     }
-    return value.replaceAll("( )*([-])( )*", "$2");
+    return value
+        .replaceAll("( )*([-])( )*", "$2")
+        .replaceAll("_główna księgowa_", "_główny księgowy_")
+        .replaceAll("zarzadu", "zarządu")
+        .replaceAll("wieceprezes", "wiceprezes")
+        .replaceAll(" (spółki|banku)", "")
+        .replaceAll(" (zarządu)", "")
+        .replaceAll(" ds[.] [^_]+", "_")
+        ;
   }
 
   synchronized private List<String> evalField(final String id,

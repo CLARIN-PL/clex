@@ -2,15 +2,17 @@ package pl.clarin.pwr.g419.text.annotator;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherWordInSet;
 import pl.clarin.pwr.g419.utils.NeLexicon2;
 
-public class AnnotatorPerson extends Annotator {
+public class AnnotatorPersonHorizontal extends Annotator {
 
   public static String PERSON = "person";
   public static String NAME = "name";
@@ -28,19 +30,32 @@ public class AnnotatorPerson extends Annotator {
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(NAME))
     );
 
-    patterns.add(new Pattern()
+    final Map<String, String> roleMap = Map.of(
+        "zarządu,", "zarządu",
+        "zarzadu,", "zarządu");
+
+    patterns.add(new Pattern().singleLine()
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME))
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
         .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
-        .next(new MatcherLowerText(Set.of("prezes", "wiceprezes", "członek")).group(TITLE))
-        .next(new MatcherLowerText("zarządu").group(TITLE))
+        .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
+    );
+
+    patterns.add(new Pattern().singleLine()
+        .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
+        .next(new MatcherLowerText(Set.of("ds.")).optional())
+        .next(new MatcherLowerText(Set.of("finansowych", "marketingu")).optional())
+        .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
+        .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME))
+        .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME).optional())
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
     );
 
     return patterns;
   }
 
-  public AnnotatorPerson() {
+  public AnnotatorPersonHorizontal() {
     super(PERSON, getPatterns());
   }
 

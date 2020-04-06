@@ -19,10 +19,10 @@ class ActionEvalTest extends Specification {
 
         where:
             referenceValues | extractedValues || expected
-            ["a"]           | ["a"]           || [["OK", "id", "field", "a", "a"]]
-            ["b"]           | ["a"]           || [["ERROR", "id", "field", "b", "FalseNegative"], ["ERROR", "id", "field", "FalsePositive", "a"]]
-            ["b"]           | []              || [["ERROR", "id", "field", "b", "FalseNegative"]]
-            []              | ["a"]           || [["ERROR", "id", "field", "FalsePositive", "a"]]
+            ["a"]           | ["a"]           || [["OK", "id", "field", "a", "a", ""]]
+            ["b"]           | ["a"]           || [["ERROR", "id", "field", "b", "FalseNegative", ""], ["ERROR", "id", "field", "FalsePositive", "a", ""]]
+            ["b"]           | []              || [["ERROR", "id", "field", "b", "FalseNegative", ""]]
+            []              | ["a"]           || [["ERROR", "id", "field", "FalsePositive", "a", ""]]
 
             id = "id"
             fieldName = "field"

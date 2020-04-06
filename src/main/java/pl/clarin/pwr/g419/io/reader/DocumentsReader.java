@@ -28,6 +28,9 @@ public class DocumentsReader implements HasLogger {
   }
 
   public List<HocrDocument> parse(final Path metadataCsv, final Path hocrIndex) throws Exception {
+
+    final List<Metadata> metadata = loadMetadata(metadataCsv);
+
     final List<HocrDocument> hocrs;
     if (hocrIndex.toString().endsWith(".hocr")) {
       hocrs = List.of(loadHocrDocument(hocrIndex));
@@ -35,7 +38,6 @@ public class DocumentsReader implements HasLogger {
       hocrs = loadHocr(hocrIndex);
     }
 
-    final List<Metadata> metadata = loadMetadata(metadataCsv);
     final Map<String, Metadata> idToMetadata =
         metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
     hocrs.forEach(d -> d.setMetadata(idToMetadata.get(d.getId())));

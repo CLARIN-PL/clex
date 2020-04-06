@@ -19,7 +19,9 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorCompanyPrefix(),
       new AnnotatorCompanySuffix(),
       new AnnotatorCompany(),
-      new AnnotatorPerson(),
+      new AnnotatorRole(),
+      new AnnotatorPersonHorizontal(),
+      new AnnotatorPersonVertical(),
       new AnnotatorDrawingDate()
   );
 
@@ -84,7 +86,7 @@ public class InformationExtractor implements HasLogger {
 
   private List<Person> getPoeple(final HocrDocument document) {
     return document.getAnnotations()
-        .filterByType(AnnotatorPerson.PERSON)
+        .filterByType(AnnotatorPersonHorizontal.PERSON)
         .removeNested()
         .stream()
         .map(Annotation::getNorm)
