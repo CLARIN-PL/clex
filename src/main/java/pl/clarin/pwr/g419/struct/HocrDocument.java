@@ -10,7 +10,7 @@ public class HocrDocument extends ArrayList<HocrPage> {
 
   String id;
 
-  Metadata metadata;
+  Metadata metadata = new Metadata();
 
   public AnnotationList getAnnotations() {
     return new AnnotationList(this.stream().map(HocrPage::getAnnotations)

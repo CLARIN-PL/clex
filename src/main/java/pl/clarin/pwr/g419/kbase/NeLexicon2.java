@@ -15,6 +15,8 @@ import pl.clarin.pwr.g419.HasLogger;
 
 public class NeLexicon2 implements HasLogger {
 
+  public static String LIV_PERSON_FIRST = "nam_liv_person_first";
+
   static String resourcePath = "/nelexicon2-names.txt.gz";
 
   static Optional<NeLexicon2> neLexicon2 = Optional.empty();

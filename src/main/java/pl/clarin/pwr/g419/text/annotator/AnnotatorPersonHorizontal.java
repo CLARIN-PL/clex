@@ -34,7 +34,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
         "zarządu,", "zarządu",
         "zarzadu,", "zarządu");
 
-    patterns.add(new Pattern().singleLine()
+    patterns.add(new Pattern().name("person-name-role").singleLine()
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME))
         .next(new MatcherWordInSet(neLexicon2.getNames("nam_liv_person_first")).group(NAME).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))

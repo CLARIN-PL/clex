@@ -17,6 +17,7 @@ public class Pattern {
   boolean singleLine = false;
   int score = 100;
   List<Matcher> matchers = Lists.newArrayList();
+  String name = "";
 
   public Pattern() {
   }
@@ -38,6 +39,11 @@ public class Pattern {
 
   public Pattern next(final Matcher matcher) {
     matchers.add(matcher);
+    return this;
+  }
+
+  public Pattern name(final String name) {
+    this.name = name;
     return this;
   }
 

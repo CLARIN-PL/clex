@@ -152,7 +152,7 @@ public class InformationExtractor implements HasLogger {
         .collect(Collectors.joining(" "));
   }
 
-  private Date parseDate(final String str) {
+  synchronized private Date parseDate(final String str) {
     try {
       return format.parse(str);
     } catch (final Exception e) {

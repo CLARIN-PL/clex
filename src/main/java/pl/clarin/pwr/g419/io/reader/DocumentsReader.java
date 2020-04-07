@@ -40,7 +40,7 @@ public class DocumentsReader implements HasLogger {
 
     final Map<String, Metadata> idToMetadata =
         metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
-    hocrs.forEach(d -> d.setMetadata(idToMetadata.get(d.getId())));
+    hocrs.forEach(d -> d.setMetadata(idToMetadata.getOrDefault(d.getId(), new Metadata())));
 
     return hocrs;
   }

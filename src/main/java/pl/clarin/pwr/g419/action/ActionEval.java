@@ -159,7 +159,7 @@ public class ActionEval extends Action {
     );
   }
 
-  private String formatDate(final Date date) {
+  synchronized private String formatDate(final Date date) {
     if (date == null) {
       return "";
     }

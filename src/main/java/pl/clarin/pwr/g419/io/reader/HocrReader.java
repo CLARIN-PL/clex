@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -42,10 +43,10 @@ public class HocrReader extends DefaultHandler {
   private int pageNo = 1;
   private HocrDocument document = null;
   private HocrPage page = null;
-  private String lastClass = "";
   private Box lastBox = null;
   private boolean lineNew = false;
   private Optional<Bbox> lastBbox = Optional.empty();
+  private final Stack<String> spanClassStack = new Stack<>();
 
   Map<String, String> encodingFix = Maps.newHashMap();
 
@@ -100,6 +101,7 @@ public class HocrReader extends DefaultHandler {
         lastBbox.ifPresent(b -> b.setLineEnd(true));
         lineNew = true;
       }
+      spanClassStack.push(attrClass);
     } else if (elementName.equalsIgnoreCase(TAG_DIV)) {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
         this.page = new HocrPage();
@@ -107,7 +109,7 @@ public class HocrReader extends DefaultHandler {
         document.add(page);
       }
     }
-    lastClass = attributes.getValue(ATTR_CLASS);
+    //lastClass = attributes.getValue(ATTR_CLASS);
   }
 
   static private Box titleToBox(final String title) throws NumberFormatException {
@@ -130,14 +132,18 @@ public class HocrReader extends DefaultHandler {
   public void endElement(final String uri,
                          final String localName,
                          final String elementName) {
-    if (elementName.equalsIgnoreCase(TAG_SPAN) && ATTR_CLASS_WORD.equals(lastClass)) {
-      lastBbox = Optional.of(new Bbox(bboxNo++, fixEncoding(value.toString()), lastBox));
-      if (lineNew) {
-        lastBbox.get().setLineBegin(true);
-        lineNew = false;
+    if (elementName.equalsIgnoreCase(TAG_SPAN)) {
+      final String spanClass = spanClassStack.pop();
+      if (ATTR_CLASS_WORD.equals(spanClass)) {
+        lastBbox = Optional.of(new Bbox(bboxNo++, fixEncoding(value.toString()), lastBox));
+        if (lineNew) {
+          lastBbox.get().setLineBegin(true);
+          lineNew = false;
+        }
+        page.add(lastBbox.get());
+      } else if (ATTR_CLASS_LINE.equals(spanClass)) {
+        lastBbox.ifPresent(b -> b.setLineEnd(true));
       }
-      page.add(lastBbox.get());
-      lastClass = null;
     }
   }
 
