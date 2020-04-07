@@ -28,19 +28,5 @@ class ActionEvalTest extends Specification {
             fieldName = "field"
 
     }
-
-    @Unroll
-    def "normalizePerson(#value) should return '#expected'"() {
-        when:
-            def result = action.normalizePerson(value)
-
-        then:
-            result == expected
-
-        where:
-            value   || expected
-            "A - B" || "A-B"
-            "A- B"  || "A-B"
-            "A -B"  || "A-B"
-    }
+    
 }

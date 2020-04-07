@@ -42,7 +42,7 @@ public class AnnotatorCompany extends Annotator {
 
     patterns.add(new Pattern().matchLine()
         .next(new MatcherLowerText("grupa"))
-        .next(new MatcherLowerText("kapitałowa"))
+        .next(new MatcherLowerText("kapitałowa").optional())
         .next(new MatcherAny().group(COMPANY))
     );
 

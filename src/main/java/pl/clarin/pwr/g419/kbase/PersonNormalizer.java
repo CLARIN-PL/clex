@@ -20,7 +20,7 @@ public class PersonNormalizer {
           .replace("czlonek", "członek")
           .replaceAll(" (spółki|banku)", "")
           .replaceAll(" (zarządu)", "")
-          .replaceAll(" ds[.] [^_]+", "_")
+          .replaceAll(" ds[.][^_]+", "_")
       ;
     }
     if (parts.length > 2) {

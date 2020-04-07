@@ -34,6 +34,10 @@ public class AnnotatorRole extends Annotator {
         )
     );
 
+    patterns.add(
+        patternSequence("Dyrektor Wykonawczy ds. Planowania i Sprawozdawczości".toLowerCase())
+    );
+
     return patterns;
   }
 
@@ -41,9 +45,17 @@ public class AnnotatorRole extends Annotator {
     super(ROLE, getPatterns());
   }
 
+  private static Pattern patternSequence(final String sequence) {
+    final Pattern pattern = new Pattern();
+    for (final String word : sequence.split(" ")) {
+      pattern.next(new MatcherLowerText(word));
+    }
+    return pattern;
+  }
+
   @Override
   protected String normalize(final PatternMatch pm) {
-    return pm.getGroupValue(ROLE).orElse("");
+    return pm.getGroupValue(ROLE).orElse(pm.getText());
   }
 
 }
