@@ -22,6 +22,7 @@ import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
 import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
+import pl.clarin.pwr.g419.kbase.PersonNormalizer;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.struct.Person;
@@ -41,6 +42,7 @@ public class ActionEval extends Action {
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
   CompanyNormalizer normCompany = new CompanyNormalizer();
+  PersonNormalizer normPerson = new PersonNormalizer();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -146,7 +148,7 @@ public class ActionEval extends Action {
   private Set<String> peopleToString(final Collection<Person> people) {
     return people.stream()
         .map(this::formatPerson)
-        .map(this::normalizePerson)
+        .map(normPerson::normalize)
         .collect(Collectors.toSet());
   }
 
@@ -164,23 +166,6 @@ public class ActionEval extends Action {
       return "";
     }
     return format.format(date);
-  }
-
-  private String normalizePerson(final String value) {
-    if (value == null) {
-      return "";
-    }
-    return value
-        .replaceAll("( )*([-])( )*", "$2")
-        .replaceAll("_główna księgowa_", "_główny księgowy_")
-        .replaceAll("zarzadu", "zarządu")
-        .replaceAll("wieceprezes", "wiceprezes")
-        .replaceAll("wiceprezez", "wiceprezes")
-        .replace("czlonek", "członek")
-        .replaceAll(" (spółki|banku)", "")
-        .replaceAll(" (zarządu)", "")
-        .replaceAll(" ds[.] [^_]+", "_")
-        ;
   }
 
   synchronized private List<String> evalField(final String id,

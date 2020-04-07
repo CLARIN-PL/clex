@@ -1,5 +1,6 @@
-package pl.clarin.pwr.g419.kbase
+package pl.clarin.pwr.g419.kbase.lexicon
 
+import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
@@ -11,9 +12,9 @@ class CompanyLexiconTest extends Specification {
     @Shared
     def lexicon = new CompanyLexicon()
 
-    def "constructor should create lexicton with valid number or names"() {
+    def "constructor should create non-empty lexicon"() {
         expect:
-            lexicon.size() == 542
+            lexicon.size() > 0
     }
 
     @Unroll

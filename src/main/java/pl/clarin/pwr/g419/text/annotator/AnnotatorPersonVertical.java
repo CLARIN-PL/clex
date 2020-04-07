@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
-import pl.clarin.pwr.g419.kbase.FirstNameLexicon;
 import pl.clarin.pwr.g419.kbase.NeLexicon2;
+import pl.clarin.pwr.g419.kbase.lexicon.FirstNameLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
@@ -53,11 +53,11 @@ public class AnnotatorPersonVertical extends Annotator {
       final Bbox anFirstBox = page.get(an.getIndexBegin());
       Optional<Bboxes> name = Optional.empty();
 
-      final Optional<Bboxes> lineAbove = findLineAbove(an, lines, page);
-      if (lineAbove.isPresent()
-          && Math.abs(anFirstBox.getBox().getTop() - lineAbove.get().getBottom().getAsInt()) < 60
+      final Optional<Bboxes> blockAbove = findBlockAbove(an, begin, end, lines, page);
+      if (blockAbove.isPresent()
+          && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottom().getAsInt()) < 60
       ) {
-        name = extractName(lineAbove.get(), begin, end);
+        name = blockAbove;
       }
 
       if (name.isEmpty()) {
@@ -105,18 +105,18 @@ public class AnnotatorPersonVertical extends Annotator {
     }
   }
 
-  private Optional<Bboxes> findLineAbove(final Annotation an,
-                                         final List<Pair<Range, Bboxes>> lines,
-                                         final HocrPage page) {
+  private Optional<Bboxes> findBlockAbove(final Annotation an,
+                                          final int left, final int right,
+                                          final List<Pair<Range, Bboxes>> lines,
+                                          final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
-    final Range firsRange = new Range(firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
-    for (int i = 1; i < lines.size(); i++) {
-      final Range line = lines.get(i).getKey();
-      if (firsRange.within(line) > 0.9) {
-        return Optional.of(lines.get(i - 1).getValue());
-      }
-    }
-    return Optional.empty();
+    return lines.stream()
+        .filter(line -> line.getLeft().getUpperBound() < firstBbox.getBox().getTop())
+        .map(line -> extractName(line.getRight(), left, right))
+        .filter(b -> b.isPresent() && b.get().size() > 0)
+        .map(Optional::get)
+        .sorted((o1, o2) -> Integer.compare(o2.getBottom().getAsInt(), o1.getBottom().getAsInt()))
+        .findFirst();
   }
 
   private Optional<Bboxes> findLineBelow(final Annotation an,

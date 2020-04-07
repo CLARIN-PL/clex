@@ -7,8 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import pl.clarin.pwr.g419.HasLogger;
-import pl.clarin.pwr.g419.kbase.CompanyLexicon;
 import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
+import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
+import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 
@@ -29,6 +30,7 @@ public class InformationExtractor implements HasLogger {
 
   CompanyLexicon companyLexicon = new CompanyLexicon();
   CompanyNormalizer companyNormalizer = new CompanyNormalizer();
+  PersonNameLexicon personNameLexicon = new PersonNameLexicon();
 
   SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -106,7 +108,7 @@ public class InformationExtractor implements HasLogger {
     final String[] parts = str.split("[|]");
     if (parts.length == 2) {
       person.setRole(parts[0].toLowerCase());
-      person.setName(parts[1]);
+      person.setName(personNameLexicon.approximate(parts[1]));
     }
     return person;
   }
