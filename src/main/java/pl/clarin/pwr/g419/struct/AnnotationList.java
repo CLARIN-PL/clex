@@ -47,7 +47,6 @@ public class AnnotationList extends ArrayList<Annotation> {
         .collect(Collectors.toList()));
   }
 
-
   public AnnotationList removeNested() {
     final Map<HocrPage, Set<Integer>> pageTokens = Maps.newHashMap();
     final List<Annotation> selected = Lists.newArrayList();
@@ -66,16 +65,7 @@ public class AnnotationList extends ArrayList<Annotation> {
 
   public Optional<FieldContext<String>> getFirst() {
     return stream().findFirst()
-        .map(an -> new FieldContext<>(an.getNorm(), an.getText(), an.getSource()));
-  }
-
-  public ValueContext getFirstNomContext() {
-    final ValueContext vc = new ValueContext();
-    stream().findFirst().ifPresent(an -> {
-      vc.setValue(an.getNorm());
-      vc.setContext(an.getText());
-    });
-    return vc;
+        .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource()));
   }
 
   private int compareByLocation(final Annotation a1, final Annotation a2) {

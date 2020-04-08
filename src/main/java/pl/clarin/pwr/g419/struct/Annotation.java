@@ -57,6 +57,10 @@ public class Annotation {
     return page.get(indexBegin);
   }
 
+  public String getContext() {
+    return String.format("[p=%d] %s", this.getPage().getNo(), this.getText());
+  }
+
   @Override
   public String toString() {
     return String.format("[%s] %s", type, getText());

@@ -64,7 +64,7 @@ public class InformationExtractor implements HasLogger {
         .removeNested()
         .sortByLoc()
         .stream()
-        .map(an -> new FieldContext<>(strToPerson(an.getNorm()), an.getText(), an.getSource()))
+        .map(an -> new FieldContext<>(strToPerson(an.getNorm()), an.getContext(), an.getSource()))
         .collect(Collectors.toMap(o -> o.getField().getName(), Function.identity(),
             (p1, p2) -> p2)) // take the last occurance
         .values().stream().collect(Collectors.toList());
