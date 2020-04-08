@@ -4,10 +4,10 @@ import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
 
-class NormalizerNum2DigitTest extends Specification {
+class NormalizerStringNum2DigitTest extends Specification {
 
     @Subject
-    def normalizer = new NormalizerNum2Digit()
+    def normalizer = new NormalizerStringNum2Digit()
 
     @Unroll
     def "normalize(#value) should return #norm"() {

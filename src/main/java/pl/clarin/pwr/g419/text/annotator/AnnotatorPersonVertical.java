@@ -52,12 +52,14 @@ public class AnnotatorPersonVertical extends Annotator {
 
       final Bbox anFirstBox = page.get(an.getIndexBegin());
       Optional<Bboxes> name = Optional.empty();
+      String source = "";
 
       final Optional<Bboxes> blockAbove = findBlockAbove(an, begin, end, lines, page);
       if (blockAbove.isPresent()
           && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottom().getAsInt()) < 60
       ) {
         name = blockAbove;
+        source = "person-ver:name-above";
       }
 
       if (name.isEmpty()) {
@@ -65,13 +67,15 @@ public class AnnotatorPersonVertical extends Annotator {
         if (lineBelow.isPresent()
             && Math.abs(anFirstBox.getBox().getBottom() - lineBelow.get().getTop().getAsInt()) < 30) {
           name = extractName(lineBelow.get(), begin, end);
+          source = "person-ver:name-below";
         }
       }
 
       if (name.isPresent()) {
         final Annotation person = new Annotation(AnnotatorPersonHorizontal.PERSON, page,
-            page.indexOf(name.get().getFirst()), page.indexOf(name.get().getLast()));
-        person.setNorm(Optional.of(String.format("%s|%s", an.getNorm(), name.get().getText())));
+            an.getIndexBegin(), an.getIndexEnd());
+        person.setNorm(Optional.of(String.format("|%s|%s", an.getNorm(), name.get().getText())));
+        person.setSource(source);
         page.getAnnotations().add(person);
       }
     }

@@ -6,8 +6,8 @@ import com.google.common.collect.Sets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import pl.clarin.pwr.g419.text.normalization.NormalizerMap;
-import pl.clarin.pwr.g419.text.normalization.NormalizerNum2Digit;
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringMap;
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringNum2Digit;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
@@ -33,9 +33,9 @@ public class AnnotatorDate extends Annotator {
 
     patterns.add(new Pattern()
         .next(new MatcherLowerText(days).group(DAY)
-            .normalizer(new NormalizerNum2Digit()))
+            .normalizer(new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(months.keySet()).group(MONTH)
-            .normalizer(new NormalizerMap(months)))
+            .normalizer(new NormalizerStringMap(months)))
         .next(new MatcherRegexText("([0-9]{4}).*", 7, Map.of(1, YEAR)))
         .next(new MatcherLowerText(yearSuffix).optional())
     );
@@ -45,14 +45,14 @@ public class AnnotatorDate extends Annotator {
     patterns.add(new Pattern().next(
         new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
             11, groups)
-            .normalizer(DAY, new NormalizerNum2Digit())
-            .normalizer(MONTH, new NormalizerNum2Digit())));
+            .normalizer(DAY, new NormalizerStringNum2Digit())
+            .normalizer(MONTH, new NormalizerStringNum2Digit())));
 
     patterns.add(new Pattern().next(
         new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
             13, groups)
-            .normalizer(DAY, new NormalizerNum2Digit())
-            .normalizer(MONTH, new NormalizerNum2Digit())));
+            .normalizer(DAY, new NormalizerStringNum2Digit())
+            .normalizer(MONTH, new NormalizerStringNum2Digit())));
 
     return patterns;
   }

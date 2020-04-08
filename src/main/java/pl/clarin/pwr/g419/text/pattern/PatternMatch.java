@@ -17,6 +17,7 @@ public class PatternMatch {
   HocrPage page;
   Map<String, String> groups = Maps.newHashMap();
   int score;
+  String source = "";
 
   public PatternMatch(final int begin, final int end,
                       final HocrPage page, final Map<String, String> groups) {
@@ -30,6 +31,12 @@ public class PatternMatch {
     this.score = score;
     return this;
   }
+
+  PatternMatch withSource(final String source) {
+    this.source = source;
+    return this;
+  }
+
 
   public String getText() {
     return IntStream.range(indexBegin, indexEnd)

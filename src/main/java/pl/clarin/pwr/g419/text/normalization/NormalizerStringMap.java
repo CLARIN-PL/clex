@@ -2,11 +2,11 @@ package pl.clarin.pwr.g419.text.normalization;
 
 import java.util.Map;
 
-public class NormalizerMap extends Normalizer {
+public class NormalizerStringMap extends NormalizerString {
 
   Map<String, String> mapValue;
 
-  public NormalizerMap(final Map<String, String> mapValue) {
+  public NormalizerStringMap(final Map<String, String> mapValue) {
     this.mapValue = mapValue;
   }
 

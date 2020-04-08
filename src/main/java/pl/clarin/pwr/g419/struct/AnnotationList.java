@@ -64,6 +64,11 @@ public class AnnotationList extends ArrayList<Annotation> {
     return new AnnotationList(selected);
   }
 
+  public Optional<FieldContext<String>> getFirst() {
+    return stream().findFirst()
+        .map(an -> new FieldContext<>(an.getNorm(), an.getText(), an.getSource()));
+  }
+
   public ValueContext getFirstNomContext() {
     final ValueContext vc = new ValueContext();
     stream().findFirst().ifPresent(an -> {

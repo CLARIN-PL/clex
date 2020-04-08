@@ -15,6 +15,7 @@ public class Annotation {
   int indexEnd;
   Optional<String> norm = Optional.empty();
   int score;
+  String source = "";
 
   public Annotation(final String type, final HocrPage page,
                     final int indexBegin, final int indexEnd) {
@@ -31,6 +32,11 @@ public class Annotation {
 
   public Annotation withScore(final int score) {
     this.score = score;
+    return this;
+  }
+
+  public Annotation withSource(final String source) {
+    this.source = source;
     return this;
   }
 

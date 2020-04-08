@@ -42,7 +42,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
         "zarządu,", "zarządu",
         "zarzadu,", "zarządu");
 
-    patterns.add(new Pattern().name("person-name-role").singleLine()
+    patterns.add(new Pattern("person-hor:name-role").singleLine()
         .next(new MatcherWordInSet(firstNames).group(NAME))
         .next(new MatcherWordInSet(firstNames).group(NAME).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
@@ -50,7 +50,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
         .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
     );
 
-    patterns.add(new Pattern().singleLine()
+    patterns.add(new Pattern("person-hor:role-name").singleLine()
         .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
         .next(new MatcherLowerText(Set.of("ds.")).optional())
         .next(new MatcherLowerText(Set.of("finansowych", "marketingu")).optional())
@@ -69,7 +69,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
 
   @Override
   protected String normalize(final PatternMatch pm) {
-    return String.format("%s|%s",
+    return String.format("|%s|%s",
         pm.getGroupValue(TITLE).orElse(""),
         pm.getGroupValue(NAME).orElse(""));
   }

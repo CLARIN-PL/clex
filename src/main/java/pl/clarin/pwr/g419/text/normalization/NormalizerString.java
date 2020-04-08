@@ -1,9 +1,9 @@
 package pl.clarin.pwr.g419.text.normalization;
 
-public class NormalizerNum2Digit extends Normalizer {
+public class NormalizerString extends Normalizer<String> {
 
   @Override
   public String normalize(final String value) {
-    return String.format("%02d", Integer.parseInt(value));
+    return value;
   }
 }

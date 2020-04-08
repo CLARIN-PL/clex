@@ -31,7 +31,8 @@ public class Annotator implements HasLogger {
         .map(m ->
             new Annotation(type, page, m.getIndexBegin(), m.getIndexEnd())
                 .withNorm(normalize(m))
-                .withScore(m.getScore()))
+                .withScore(m.getScore())
+                .withSource(m.getSource()))
         .forEach(page::addAnnotation);
   }
 

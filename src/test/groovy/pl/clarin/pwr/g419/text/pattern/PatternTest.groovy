@@ -2,7 +2,7 @@ package pl.clarin.pwr.g419.text.pattern
 
 
 import pl.clarin.pwr.g419.struct.HocrPage
-import pl.clarin.pwr.g419.text.normalization.NormalizerMap
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringMap
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText
 import pl.clarin.pwr.g419.utils.TestUtils
@@ -101,7 +101,7 @@ class PatternTest extends Specification {
                     .next(new MatcherLowerText(["1", "2"] as Set).group("day"))
                     .next(new MatcherLowerText(monthsMap.keySet())
                             .group("month")
-                            .normalizer(new NormalizerMap(monthsMap)))
+                            .normalizer(new NormalizerStringMap(monthsMap)))
                     .next(new MatcherLowerText(years).group("year"))
 
         when:

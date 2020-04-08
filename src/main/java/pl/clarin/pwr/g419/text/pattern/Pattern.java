@@ -22,6 +22,10 @@ public class Pattern {
   public Pattern() {
   }
 
+  public Pattern(final String name) {
+    this.name = name;
+  }
+
   public Pattern matchLine() {
     matchLine = true;
     return this;
@@ -71,7 +75,9 @@ public class Pattern {
         return Optional.empty();
       }
     }
-    final PatternMatch pm = new PatternMatch(index, i, page, groups).withScore(score);
+    final PatternMatch pm = new PatternMatch(index, i, page, groups)
+        .withScore(score)
+        .withSource(this.name);
     if (matchLine) {
       if (page.get(i - 1).isLineEnd() == false
           || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 1) {

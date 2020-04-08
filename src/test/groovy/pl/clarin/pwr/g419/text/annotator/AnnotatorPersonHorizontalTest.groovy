@@ -26,9 +26,9 @@ class AnnotatorPersonHorizontalTest extends Specification {
 
         where:
             text                                        || norm
-            "Prezes – Piotr Bieliński"                  || ["prezes|Piotr Bieliński"]
-            "Anna Boniuk-Gorzelańczyk Członek Zarządu"  || ["członek zarządu|Anna Boniuk-Gorzelańczyk"]
-            "Andrea Manuel Teixeira wiceprezes zarządu" || ["wiceprezes zarządu|Andrea Manuel Teixeira"]
+            "Prezes – Piotr Bieliński"                  || ["|prezes|Piotr Bieliński"]
+            "Anna Boniuk-Gorzelańczyk Członek Zarządu"  || ["|członek zarządu|Anna Boniuk-Gorzelańczyk"]
+            "Andrea Manuel Teixeira wiceprezes zarządu" || ["|wiceprezes zarządu|Andrea Manuel Teixeira"]
     }
 
 }

@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Optional;
 import pl.clarin.pwr.g419.struct.HocrPage;
-import pl.clarin.pwr.g419.text.normalization.Normalizer;
+import pl.clarin.pwr.g419.text.normalization.NormalizerString;
 
 public abstract class Matcher {
 
@@ -12,7 +12,7 @@ public abstract class Matcher {
 
   Optional<Integer> repeatMax = Optional.empty();
   Optional<String> groupName = Optional.empty();
-  Map<String, Normalizer> normalizerMap = Maps.newHashMap();
+  Map<String, NormalizerString> normalizerMap = Maps.newHashMap();
 
   public abstract Optional<MatcherResult> matchesAt(HocrPage page, int index);
 
@@ -26,12 +26,12 @@ public abstract class Matcher {
     return this;
   }
 
-  public Matcher normalizer(final Normalizer normalizer) {
+  public Matcher normalizer(final NormalizerString normalizer) {
     normalizerMap.put(groupName.get(), normalizer);
     return this;
   }
 
-  public Matcher normalizer(final String groupName, final Normalizer normalizer) {
+  public Matcher normalizer(final String groupName, final NormalizerString normalizer) {
     normalizerMap.put(groupName, normalizer);
     return this;
   }

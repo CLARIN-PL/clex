@@ -7,8 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.util.*;
-import pl.clarin.pwr.g419.text.normalization.NormalizerMap;
-import pl.clarin.pwr.g419.text.normalization.NormalizerNum2Digit;
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringMap;
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringNum2Digit;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
@@ -44,7 +44,7 @@ public class AnnotatorPeriod extends Annotator {
 
     final Map<String, String> months = AnnotatorDate.getMonths();
 
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p1")
         .next(new MatcherLowerText(Set.of("okres")).optional())
         .next(new MatcherLowerText(Set.of("od")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_BEGIN))
@@ -53,31 +53,31 @@ public class AnnotatorPeriod extends Annotator {
         .next(new MatcherLowerText(Sets.newHashSet("dnia")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_END))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p2")
         .next(new MatcherRegexText("[0-9]{1,2}", 2).group(DAY_BEGIN)
-            .normalizer(new NormalizerNum2Digit()))
+            .normalizer(new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(months.keySet()).group(MONTH_BEGIN)
-            .normalizer(new NormalizerMap(months)))
+            .normalizer(new NormalizerStringMap(months)))
         .next(new MatcherLowerText(Sets.newHashSet("do", "–", "-")))
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_END))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p3")
         .next(new MatcherRegexText(
             "([0-9]{1,2})[.]([0-9]{1,2})(?:-|do)([0-9]{1,2})[.]([0-9]{1,2})[.]([0-9]{4})", 16,
             Map.of(1, DAY_BEGIN, 2, MONTH_BEGIN, 3, DAY_END, 4, MONTH_END, 5, YEAR)))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p4")
         .next(new MatcherRegexText(
             "([0-9]{1,2})[-]([0-9]{1,2})[.]([0-9]{4})", 10,
             Map.of(1, MONTH_BEGIN, 2, MONTH_END, 3, YEAR)))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p5")
         .next(new MatcherLowerText(halfYears.keySet()).group(HALFYEAR)
-            .normalizer(new NormalizerMap(halfYears)))
+            .normalizer(new NormalizerStringMap(halfYears)))
         .next(new MatcherLowerText(Set.of("półrocze", "półroczu")))
         .next(new MatcherRegexText("([0-9]{4}).*", 6, Map.of(1, YEAR)))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p6")
         .next(new MatcherLowerText(Set.of("6", "sześciu")))
         .next(new MatcherLowerText(Set.of("miesięcy")))
         .next(new MatcherLowerText(
@@ -86,7 +86,7 @@ public class AnnotatorPeriod extends Annotator {
         .next(new MatcherLowerText(Set.of("dnia")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_END))
     );
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("p7")
         .next(new MatcherLowerText(Set.of("półrocze")))
         .next(new MatcherLowerText(Set.of("zakończone")))
         .next(new MatcherLowerText(Set.of("dnia")))

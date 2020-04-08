@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import pl.clarin.pwr.g419.text.normalization.NormalizerMap;
+import pl.clarin.pwr.g419.text.normalization.NormalizerStringMap;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
@@ -30,7 +30,7 @@ public class AnnotatorRole extends Annotator {
         .next(new MatcherLowerText(
             Set.of("zarządu", "zarzadu", "zarządu,", "zarzadu,", "księgowy", "księgowa"))
             .group(ROLE)
-            .normalizer(new NormalizerMap(roleMap))
+            .normalizer(new NormalizerStringMap(roleMap))
         )
     );
 

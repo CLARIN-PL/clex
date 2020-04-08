@@ -1,20 +1,26 @@
 package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
-import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
-import pl.clarin.pwr.g419.struct.*;
+import pl.clarin.pwr.g419.struct.FieldContext;
+import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.MetadataWithContext;
+import pl.clarin.pwr.g419.struct.Person;
 import pl.clarin.pwr.g419.text.annotator.*;
+import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
+import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
 public class InformationExtractor implements HasLogger {
-
 
   List<Annotator> annotators = Lists.newArrayList(
       new AnnotatorDate(),
@@ -29,136 +35,111 @@ public class InformationExtractor implements HasLogger {
   );
 
   CompanyLexicon companyLexicon = new CompanyLexicon();
-  CompanyNormalizer companyNormalizer = new CompanyNormalizer();
+  NormalizerCompany companyNormalizer = new NormalizerCompany();
+  CompanyLemmatizer companyLemmatizer = new CompanyLemmatizer();
   PersonNameLexicon personNameLexicon = new PersonNameLexicon();
 
-  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-  Map<String, String> lemmas = Maps.newHashMap();
-
-  Set<String> ignore = Sets.newHashSet();
-
-  public InformationExtractor() {
-    lemmas.put("AGORY", "AGORA");
-    lemmas.put("BANKU", "BANK");
-    lemmas.put("DOMU", "DOM");
-    lemmas.put("FABRYKI", "FABRYKA");
-    lemmas.put("GRUPY", "GRUPA");
-    lemmas.put("HANDLOWEGO", "HANDLOWY");
-    lemmas.put("MAKLERSKIEGO", "MAKLERSKI");
-    lemmas.put("NARODOWEGO", "NARODOWY");
-    lemmas.put("TOWARZYSTWA", "TOWARZYSTWO");
-    lemmas.put("ZACHODNIEGO", "ZACHODNI");
-    lemmas.put("FUNDUSZU", "FUNDUSZ");
-    lemmas.put("PRZEDSIĘBIORSTWA", "PRZEDSIĘBIORSTWO");
-    lemmas.put("PRODUKCYJNO-HANDLOWEGO", "PRODUKCYJNO-HANDLOWE");
-    lemmas.put("INWESTYCYJNEGO", "INWESTYCYJNY");
-    lemmas.put("FABRYK", "FABRYKI");
-    lemmas.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
-
-    ignore.add("PÓŁROCZNY");
-    ignore.add("DOMINUJĄCA");
-    ignore.add("SPÓŁKI");
-    ignore.add("FIRMY");
-    ignore.add("UDZIAŁ");
-    ignore.add("%");
-  }
-
   public MetadataWithContext extract(final HocrDocument document) {
-    document.stream().forEach(page -> annotators.forEach(an -> an.annotate(page)));
+    document.stream()
+        .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
     final MetadataWithContext metadata = new MetadataWithContext();
 
-    final ValueContext vcPeriod = getPeriod(document);
-    final String[] parts = vcPeriod.getValue().split(":");
-    if (parts.length > 1) {
-      metadata.setPeriodFrom(parseDate(parts[0]));
-      metadata.setPeriodFromContext(vcPeriod.getContext());
-      metadata.setPeriodTo(parseDate(parts[1]));
-      metadata.setPeriodToContext(vcPeriod.getContext());
-    }
+    getPeriod(document).ifPresent(p -> {
+      metadata.setPeriodFrom(p.getLeft());
+      metadata.setPeriodTo(p.getRight());
+    });
 
-    final ValueContext vcCompany = getCompany(document);
-    metadata.setCompany(vcCompany.getValue());
-    metadata.setCompanyContext(vcCompany.getContext());
-
-    final ValueContext vcDrawingDate = getDrawingDate(document);
-    metadata.setDrawingDate(parseDate(vcDrawingDate.getValue()));
-    metadata.setDrawingDateContext(vcDrawingDate.getContext());
+    getDrawingDate(document).ifPresent(metadata::setDrawingDate);
+    getCompany(document).ifPresent(metadata::setCompany);
 
     metadata.setPeople(getPoeple(document));
 
     return metadata;
   }
 
-  private List<Person> getPoeple(final HocrDocument document) {
+  private List<FieldContext<Person>> getPoeple(final HocrDocument document) {
     return document.getAnnotations()
         .filterByType(AnnotatorPersonHorizontal.PERSON)
         .removeNested()
+        .sortByLoc()
         .stream()
-        .map(Annotation::getNorm)
-        .collect(Collectors.toSet())
-        .stream()
-        .map(this::strToPerson)
-        .collect(Collectors.toList());
+        .map(an -> new FieldContext<>(strToPerson(an.getNorm()), an.getText(), an.getSource()))
+        .collect(Collectors.toMap(o -> o.getField().getName(), Function.identity(),
+            (p1, p2) -> p2)) // take the last occurance
+        .values().stream().collect(Collectors.toList());
   }
 
   private Person strToPerson(final String str) {
     final Person person = new Person();
     final String[] parts = str.split("[|]");
-    if (parts.length == 2) {
-      person.setRole(parts[0].toLowerCase());
-
-      final String name = parts[1];
+    if (parts.length > 0) {
+      //person.setDate();
+    }
+    if (parts.length > 1) {
+      person.setRole(parts[1].toLowerCase());
+    }
+    if (parts.length > 2) {
+      final String name = parts[2]
+          .replaceAll("[ ]*-[ ]*", "-");
       person.setName(personNameLexicon.approximate(name));
     }
     return person;
   }
 
-  private ValueContext getPeriod(final HocrDocument document) {
-    return document.getAnnotations()
+  private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
+      final HocrDocument document) {
+    final Optional<FieldContext<String>> period = document.getAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore()
-        .sortByLoc()
-        .getFirstNomContext();
+        .topScore().sortByLoc().getFirst();
+
+    if (period.isPresent()) {
+      final String[] parts = period.get().getField().split(":");
+      if (parts.length == 2) {
+        final FieldContext<Date> periodStart = new FieldContext<>(
+            parseDate(parts[0]), period.get().getContext(), period.get().getRule()
+        );
+        final FieldContext<Date> periodEnd = new FieldContext<>(
+            parseDate(parts[1]), period.get().getContext(), period.get().getRule()
+        );
+        return Optional.of(new ImmutablePair<>(periodStart, periodEnd));
+      }
+    }
+    return Optional.empty();
   }
 
-  private ValueContext getDrawingDate(final HocrDocument document) {
-    final AnnotationList annotations = document
+  private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
+    return document
         .getAnnotations()
         .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
-        .sortByPos();
-    return annotations.getFirstNomContext();
+        .sortByPos()
+        .getFirst()
+        .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));
   }
 
-  private ValueContext getCompany(final HocrDocument document) {
-    final ValueContext vc = document.getAnnotations()
+  private Optional<FieldContext<String>> getCompany(final HocrDocument document) {
+    final Optional<FieldContext<String>> value = document.getAnnotations()
         .filterByType(AnnotatorCompany.COMPANY)
         .topScore()
         .sortByLoc()
-        .getFirstNomContext();
-    final String nameLem = simpyLemmatize(vc.getValue().toUpperCase());
-    final String nameNorm = companyNormalizer.normalize(nameLem);
-    final String nameApprox = companyLexicon.approximate(nameNorm);
-    if (!nameNorm.equals(nameApprox)) {
-      vc.setValue(nameApprox);
-      vc.setContext(String.format("%s; %s -> %s", vc.getContext(), nameNorm, nameApprox));
-    } else {
-      vc.setValue(nameLem);
-    }
-    return vc;
+        .getFirst();
+    value.ifPresent(vc -> {
+      final String nameLem = companyLemmatizer.lemmatize(vc.getField().toUpperCase());
+      final String nameNorm = companyNormalizer.normalize(nameLem);
+      final String nameApprox = companyLexicon.approximate(nameNorm);
+      if (!nameNorm.equals(nameApprox)) {
+        vc.setField(nameApprox);
+        vc.setRule(String.format("%s; %s -> %s", vc.getRule(), nameNorm, nameApprox));
+      } else {
+        vc.setField(nameLem);
+      }
+    });
+    return value;
   }
 
-  private String simpyLemmatize(final String text) {
-    return Arrays.stream(text.split(" "))
-        .map(orth -> lemmas.getOrDefault(orth, orth))
-        .filter(orth -> !ignore.contains(orth))
-        .collect(Collectors.joining(" "));
-  }
-
-  synchronized private Date parseDate(final String str) {
+  private Date parseDate(final String str) {
     try {
-      return format.parse(str);
+      return new SimpleDateFormat("yyyy-MM-dd").parse(str);
     } catch (final Exception e) {
       return null;
     }

@@ -1,6 +1,8 @@
-package pl.clarin.pwr.g419.kbase;
+package pl.clarin.pwr.g419.text.normalization;
 
-public class CompanyNormalizer {
+import pl.clarin.pwr.g419.kbase.CompanySuffix;
+
+public class NormalizerCompany extends NormalizerString {
 
   CompanySuffix suffix = new CompanySuffix();
 

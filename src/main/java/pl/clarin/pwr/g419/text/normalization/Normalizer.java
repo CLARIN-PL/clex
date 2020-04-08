@@ -1,7 +1,7 @@
 package pl.clarin.pwr.g419.text.normalization;
 
-public abstract class Normalizer {
+abstract public class Normalizer<T> {
 
-  public abstract String normalize(String value);
+  public abstract String normalize(T value);
 
 }

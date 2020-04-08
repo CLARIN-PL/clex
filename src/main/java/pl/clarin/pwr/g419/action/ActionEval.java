@@ -6,11 +6,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -21,12 +21,15 @@ import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
 import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
-import pl.clarin.pwr.g419.kbase.CompanyNormalizer;
-import pl.clarin.pwr.g419.kbase.PersonNormalizer;
+import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.MetadataWithContext;
-import pl.clarin.pwr.g419.struct.Person;
 import pl.clarin.pwr.g419.text.InformationExtractor;
+import pl.clarin.pwr.g419.text.normalization.Normalizer;
+import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
+import pl.clarin.pwr.g419.text.normalization.NormalizerDate;
+import pl.clarin.pwr.g419.text.normalization.NormalizerPersonRole;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
 @Component
@@ -36,13 +39,6 @@ public class ActionEval extends Action {
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionThreads optionThreads = new ActionOptionThreads();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
-
-  List<String> correct = Lists.newArrayList();
-  List<String> incorrect = Lists.newArrayList();
-
-  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-  CompanyNormalizer normCompany = new CompanyNormalizer();
-  PersonNormalizer normPerson = new PersonNormalizer();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -82,7 +78,7 @@ public class ActionEval extends Action {
          final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
       try {
         csvPrinter.printRecord(record("Eval", "Document", "Field", "Truth",
-            "Extracted", "Context"));
+            "Extracted", "Context", "Rule"));
         csvPrinter.printRecords(records.stream()
             .sorted(Comparator.comparing(o -> o.get(1)))
             .collect(Collectors.toList()));
@@ -110,77 +106,32 @@ public class ActionEval extends Action {
   }
 
   private List<List<String>> processDocument(final HocrDocument document) {
+    final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
-    final List<List<String>> records = Lists.newArrayList();
-
-    records.add(evalField(document.getId(), "drawing_date",
-        formatDate(document.getMetadata().getDrawingDate()),
-        formatDate(metadata.getDrawingDate()),
-        metadata.getDrawingDateContext())
+    final List<List<String>> records = Lists.newArrayList(
+        evalField(document.getId(), "drawing_date", new NormalizerDate(),
+            ref.getDrawingDate(), metadata.getDrawingDate()),
+        evalField(document.getId(), "period_from", new NormalizerDate(),
+            ref.getPeriodFrom(), metadata.getPeriodFrom()),
+        evalField(document.getId(), "period_to", new NormalizerDate(),
+            ref.getPeriodTo(), metadata.getPeriodTo()),
+        evalField(document.getId(), "company", new NormalizerCompany(),
+            ref.getCompany(), metadata.getCompany())
     );
 
-    records.add(evalField(document.getId(), "period_from",
-        formatDate(document.getMetadata().getPeriodFrom()),
-        formatDate(metadata.getPeriodFrom()),
-        metadata.getPeriodFromContext())
-    );
-
-    records.add(evalField(document.getId(), "period_to",
-        formatDate(document.getMetadata().getPeriodTo()),
-        formatDate(metadata.getPeriodTo()),
-        metadata.getPeriodFromContext())
-    );
-
-    records.add(evalField(document.getId(), "company",
-        normCompany.normalize(document.getMetadata().getCompany()),
-        normCompany.normalize(metadata.getCompany()),
-        metadata.getCompanyContext())
-    );
-
-    records.addAll(evalSets(document.getId(),
-        "person",
-        peopleToString(document.getMetadata().getPeople()),
-        peopleToString(metadata.getPeople())));
+    records.addAll(evalSets(document.getId(), "person", new NormalizerPersonRole(),
+        ref.getPeople(), metadata.getPeople()));
 
     return records;
   }
 
-  private Set<String> peopleToString(final Collection<Person> people) {
-    return people.stream()
-        .map(this::formatPerson)
-        .map(normPerson::normalize)
-        .collect(Collectors.toSet());
-  }
-
-  private String formatPerson(final Person person) {
-    return String.format("%s_%s_%s",
-        //formatDate(person.getDate()),
-        "",
-        person.getRole().toLowerCase(),
-        person.getName()
-    );
-  }
-
-  synchronized private String formatDate(final Date date) {
-    if (date == null) {
-      return "";
-    }
-    return format.format(date);
-  }
-
-  synchronized private List<String> evalField(final String id,
-                                              final String fieldName,
-                                              final String referenceValue,
-                                              final String extractedValue) {
-    return evalField(id, fieldName, referenceValue, extractedValue, "");
-  }
-
-
-  synchronized private List<String> evalField(final String id,
-                                              final String fieldName,
-                                              final String referenceValue,
-                                              final String extractedValue,
-                                              final String extractedValueContext) {
+  synchronized private <T> List<String> evalField(final String id,
+                                                  final String fieldName,
+                                                  final Normalizer<T> normalizer,
+                                                  final T reference,
+                                                  final FieldContext<T> extracted) {
+    final String referenceValue = normalizer.normalize(reference);
+    final String extractedValue = normalizer.normalize(extracted.getField());
     if (Objects.equals(referenceValue, extractedValue)) {
       globalCounter.addTrue();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
@@ -188,30 +139,42 @@ public class ActionEval extends Action {
       globalCounter.addFalse();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
     }
-
     final String label = Objects.equals(referenceValue, extractedValue) ? "OK" : "ERROR";
-    return record(label, id, fieldName, referenceValue, extractedValue, extractedValueContext);
+    return record(label, id, fieldName, referenceValue, extractedValue,
+        extracted.getContext(), extracted.getRule());
   }
 
-  synchronized private List<List<String>> evalSets(final String id,
-                                                   final String fieldName,
-                                                   final Set<String> referenceValues,
-                                                   final Set<String> extractedValues) {
+  synchronized private <T> List<List<String>> evalSets(final String id,
+                                                       final String fieldName,
+                                                       final Normalizer<T> normalizer,
+                                                       final Collection<T> references,
+                                                       final Collection<FieldContext<T>> extracts) {
+    final Map<String, T> referenceValues = references.stream()
+        .collect(Collectors.toMap(o -> normalizer.normalize(o), Function.identity()));
+    final Map<String, FieldContext<T>> extractedValues = extracts.stream()
+        .collect(Collectors.toMap(o -> normalizer.normalize(o.getField()), Function.identity()));
+
     final List<List<String>> records = Lists.newArrayList();
-    for (final String reference : referenceValues) {
-      if (extractedValues.contains(reference)) {
-        records.add(record("OK", id, fieldName, reference, reference, ""));
+    for (final String reference : referenceValues.keySet()) {
+      if (extractedValues.containsKey(reference)) {
+        final FieldContext<T> context = extractedValues.get(reference);
+        records.add(record("OK", id, fieldName, reference, reference,
+            context.getContext(), context.getRule()));
         globalCounter.addTrue();
         counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
       } else {
-        records.add(record("ERROR", id, fieldName, reference, "FalseNegative", ""));
+        records.add(record("ERROR", id, fieldName, reference, "FalseNegative",
+            "", ""));
         globalCounter.addFalse();
         counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
       }
     }
-    extractedValues.removeAll(referenceValues);
-    for (final String value : extractedValues) {
-      records.add(record("ERROR", id, fieldName, "FalsePositive", value, ""));
+    referenceValues.keySet().stream().forEach(extractedValues::remove);
+
+    for (final String value : extractedValues.keySet()) {
+      final FieldContext<T> context = extractedValues.get(value);
+      records.add(record("ERROR", id, fieldName, "FalsePositive", value,
+          context.getContext(), context.getRule()));
       globalCounter.addFalse();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
     }
@@ -219,9 +182,9 @@ public class ActionEval extends Action {
   }
 
   private List<String> record(final String label, final String id, final String field,
-                              final String valueReference,
-                              final String valueExtracted, final String valueExtractedContext) {
-    return Lists.newArrayList(label, id, field, valueReference, valueExtracted, valueExtractedContext);
+                              final String valueReference, final String valueExtracted,
+                              final String context, final String rule) {
+    return Lists.newArrayList(label, id, field, valueReference, valueExtracted, context, rule);
   }
 
 }
