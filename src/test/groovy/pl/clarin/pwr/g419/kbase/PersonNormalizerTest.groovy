@@ -18,10 +18,11 @@ class PersonNormalizerTest extends Specification {
             result == expected
 
         where:
-            value     || expected
-            "__A - B" || "__A-B"
-            "__A- B"  || "__A-B"
-            "__A -B"  || "__A-B"
+            value                  || expected
+            "__A - B"              || "__A-B"
+            "__A- B"               || "__A-B"
+            "__A -B"               || "__A-B"
+            "_członek, dyrektor_A" || "_członek_A"
     }
 
 }

@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.kbase;
 
+import org.apache.commons.text.WordUtils;
 import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
 
 public class PersonNormalizer {
@@ -21,11 +22,14 @@ public class PersonNormalizer {
           .replaceAll(" (spółki|banku)", "")
           .replaceAll(" (zarządu)", "")
           .replaceAll(" ds[.][^_]+", "_")
+          .replaceAll(",[^_]+", "")
       ;
     }
     if (parts.length > 2) {
       parts[2] = personNameLexicon.
           getFullName(parts[2].replaceAll("( )*([-])( )*", "$2"));
+
+      parts[2] = WordUtils.capitalizeFully(parts[2], new char[] {' ', '-'});
     }
 
     return String.join("_", parts);

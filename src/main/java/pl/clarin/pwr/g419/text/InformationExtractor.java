@@ -108,7 +108,9 @@ public class InformationExtractor implements HasLogger {
     final String[] parts = str.split("[|]");
     if (parts.length == 2) {
       person.setRole(parts[0].toLowerCase());
-      person.setName(personNameLexicon.approximate(parts[1]));
+
+      final String name = parts[1];
+      person.setName(personNameLexicon.approximate(name));
     }
     return person;
   }
