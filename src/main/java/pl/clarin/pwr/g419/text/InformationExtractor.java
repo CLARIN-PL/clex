@@ -55,7 +55,20 @@ public class InformationExtractor implements HasLogger {
 
     metadata.setPeople(getPoeple(document));
 
+    assignDefaultSignDate(metadata);
+
     return metadata;
+  }
+
+  private void assignDefaultSignDate(final MetadataWithContext metadata) {
+    if (metadata.getDrawingDate() != null) {
+      metadata.getPeople().stream()
+          .filter(f -> f.getField().getDate() == null)
+          .forEach(f -> {
+            f.getField().setDate(metadata.getDrawingDate().getField());
+            f.setRule(f.getRule() + "; date=drawing_date");
+          });
+    }
   }
 
   private List<FieldContext<Person>> getPoeple(final HocrDocument document) {
@@ -74,7 +87,7 @@ public class InformationExtractor implements HasLogger {
     final Person person = new Person();
     final String[] parts = str.split("[|]");
     if (parts.length > 0) {
-      //person.setDate();
+      person.setDate(parseDate(parts[0]));
     }
     if (parts.length > 1) {
       person.setRole(parts[1].toLowerCase());

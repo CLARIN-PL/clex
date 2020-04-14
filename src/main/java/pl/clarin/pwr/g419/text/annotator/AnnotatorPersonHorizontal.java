@@ -19,6 +19,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
   public static String PERSON = "person";
   public static String NAME = "name";
   public static String TITLE = "title";
+  public static String DATE = "date";
 
   public static NeLexicon2 neLexicon2 = NeLexicon2.get();
   public static FirstNameLexicon firstNameLexicon = new FirstNameLexicon();
@@ -43,6 +44,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
         "zarzadu,", "zarządu");
 
     patterns.add(new Pattern("person-hor:name-role").singleLine()
+        .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE).optional())
         .next(new MatcherWordInSet(firstNames).group(NAME))
         .next(new MatcherWordInSet(firstNames).group(NAME).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
@@ -51,6 +53,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
     );
 
     patterns.add(new Pattern("person-hor:role-name").singleLine()
+        .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE).optional())
         .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
         .next(new MatcherLowerText(Set.of("ds.")).optional())
         .next(new MatcherLowerText(Set.of("finansowych", "marketingu")).optional())
@@ -69,7 +72,8 @@ public class AnnotatorPersonHorizontal extends Annotator {
 
   @Override
   protected String normalize(final PatternMatch pm) {
-    return String.format("|%s|%s",
+    return String.format("%s|%s|%s",
+        pm.getGroupValue(DATE).orElse(""),
         pm.getGroupValue(TITLE).orElse(""),
         pm.getGroupValue(NAME).orElse(""));
   }

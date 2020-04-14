@@ -26,10 +26,9 @@ import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.text.InformationExtractor;
+import pl.clarin.pwr.g419.text.normalization.MetadataNormalizer;
 import pl.clarin.pwr.g419.text.normalization.Normalizer;
-import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
-import pl.clarin.pwr.g419.text.normalization.NormalizerDate;
-import pl.clarin.pwr.g419.text.normalization.NormalizerPersonRole;
+import pl.clarin.pwr.g419.text.normalization.NormalizerPersonDateRole;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
 @Component
@@ -45,12 +44,17 @@ public class ActionEval extends Action {
   TrueFalseCounter globalCounter = new TrueFalseCounter();
   Map<String, TrueFalseCounter> counters = Maps.newHashMap();
 
+  MetadataNormalizer normalizer = new MetadataNormalizer();
+
   public ActionEval() {
     super("eval", "evaluate the information extraction module against a dataset");
     this.options.add(optionMetadata);
     this.options.add(optionInput);
     this.options.add(optionOutput);
     this.options.add(optionThreads);
+
+    //normalizer.setPerson(new NormalizerPersonDateRole());
+    normalizer.setPerson(new NormalizerPersonDateRole());
   }
 
   @Override
@@ -109,17 +113,17 @@ public class ActionEval extends Action {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList(
-        evalField(document.getId(), "drawing_date", new NormalizerDate(),
+        evalField(document.getId(), "drawing_date", normalizer.getDate(),
             ref.getDrawingDate(), metadata.getDrawingDate()),
-        evalField(document.getId(), "period_from", new NormalizerDate(),
+        evalField(document.getId(), "period_from", normalizer.getDate(),
             ref.getPeriodFrom(), metadata.getPeriodFrom()),
-        evalField(document.getId(), "period_to", new NormalizerDate(),
+        evalField(document.getId(), "period_to", normalizer.getDate(),
             ref.getPeriodTo(), metadata.getPeriodTo()),
-        evalField(document.getId(), "company", new NormalizerCompany(),
+        evalField(document.getId(), "company", normalizer.getCompany(),
             ref.getCompany(), metadata.getCompany())
     );
 
-    records.addAll(evalSets(document.getId(), "person", new NormalizerPersonRole(),
+    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
         ref.getPeople(), metadata.getPeople()));
 
     return records;
