@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -69,6 +70,7 @@ public class HocrReader extends DefaultHandler {
     parser.parse(is, this);
     this.document.setId(getIdFromPath(path));
     this.document.stream().forEach(this::mergeLines);
+    this.document.stream().forEach(this::splitInterpunction);
     return document;
   }
 
@@ -176,6 +178,28 @@ public class HocrReader extends DefaultHandler {
     if (page.size() > 0) {
       page.get(page.size() - 1).setLineEnd(true);
       page.get(page.size() - 1).setBlockEnd(true);
+    }
+  }
+
+  private void splitInterpunction(final HocrPage page) {
+    final Pattern p = Pattern.compile("^(.+)([.,:-])$");
+    for (int i = page.size() - 1; i >= 0; i--) {
+      final Bbox bbox = page.get(i);
+      final Matcher m = p.matcher(bbox.getText());
+      if (m.matches()) {
+        final String head = m.group(1);
+        final String tail = m.group(2);
+        final int headWidth = bbox.getBox().getWidth() * head.length() / bbox.getText().length();
+        final int tailWidth = bbox.getBox().getWidth() - headWidth;
+
+        bbox.getBox().setRight(bbox.getBox().getLeft() + headWidth);
+        bbox.setText(head);
+
+        final Box tailBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + tailWidth,
+            bbox.getBox().getTop(), bbox.getBox().getBottom());
+        final Bbox tailBbox = new Bbox(bbox.getNo(), tail, tailBox);
+        page.add(i + 1, tailBbox);
+      }
     }
   }
 }

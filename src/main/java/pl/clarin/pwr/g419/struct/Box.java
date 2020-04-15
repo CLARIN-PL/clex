@@ -13,4 +13,8 @@ public class Box {
   private int right;
 
   private int bottom;
+
+  public int getWidth() {
+    return right - left;
+  }
 }

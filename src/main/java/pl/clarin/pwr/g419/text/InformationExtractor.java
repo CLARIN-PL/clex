@@ -125,6 +125,7 @@ public class InformationExtractor implements HasLogger {
     return document
         .getAnnotations()
         .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
+        .topScore()
         .sortByPos()
         .getFirst()
         .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));

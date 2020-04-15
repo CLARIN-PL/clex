@@ -27,7 +27,7 @@ public class AnnotatorDate extends Annotator {
 
     final Set<String> years = IntStream.range(1900, 2030)
         .mapToObj(Objects::toString).collect(Collectors.toSet());
-    final Set<String> yearSuffix = Sets.newHashSet("r", "r.", "roku");
+    final Set<String> yearSuffix = Sets.newHashSet("r", "roku");
     final Set<String> days = IntStream.range(1, 32)
         .mapToObj(Objects::toString).collect(Collectors.toSet());
 
@@ -38,6 +38,7 @@ public class AnnotatorDate extends Annotator {
             .normalizer(new NormalizerStringMap(months)))
         .next(new MatcherRegexText("([0-9]{4}).*", 7, Map.of(1, YEAR)))
         .next(new MatcherLowerText(yearSuffix).optional())
+        .next(new MatcherLowerText(".").optional())
     );
 
     final Map<Integer, String> groups = Map.of(1, DAY, 2, MONTH, 3, YEAR);
@@ -46,13 +47,19 @@ public class AnnotatorDate extends Annotator {
         new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
             11, groups)
             .normalizer(DAY, new NormalizerStringNum2Digit())
-            .normalizer(MONTH, new NormalizerStringNum2Digit())));
+            .normalizer(MONTH, new NormalizerStringNum2Digit()))
+        .next(new MatcherLowerText(yearSuffix).optional())
+        .next(new MatcherLowerText(".").optional())
+    );
 
     patterns.add(new Pattern().next(
         new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
             13, groups)
             .normalizer(DAY, new NormalizerStringNum2Digit())
-            .normalizer(MONTH, new NormalizerStringNum2Digit())));
+            .normalizer(MONTH, new NormalizerStringNum2Digit()))
+        .next(new MatcherLowerText(yearSuffix).optional())
+        .next(new MatcherLowerText(".").optional())
+    );
 
     return patterns;
   }

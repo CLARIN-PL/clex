@@ -39,9 +39,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(NAME))
     );
 
-    final Map<String, String> roleMap = Map.of(
-        "zarządu,", "zarządu",
-        "zarzadu,", "zarządu");
+    final Map<String, String> roleMap = Map.of("zarządu,", "zarządu");
 
     patterns.add(new Pattern("person-hor:name-role").singleLine()
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE).optional())

@@ -8,6 +8,10 @@ public class MatcherNotLowerText extends Matcher {
 
   Set<String> texts;
 
+  public MatcherNotLowerText(final String text) {
+    this.texts = Set.of(text);
+  }
+
   public MatcherNotLowerText(final Set<String> texts) {
     this.texts = texts;
   }

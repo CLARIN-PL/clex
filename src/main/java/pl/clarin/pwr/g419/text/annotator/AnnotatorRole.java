@@ -17,9 +17,7 @@ public class AnnotatorRole extends Annotator {
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
 
-    final Map<String, String> roleMap = Map.of(
-        "zarządu,", "zarządu",
-        "zarzadu,", "zarządu");
+    final Map<String, String> roleMap = Map.of("zarzadu", "zarządu");
 
     patterns.add(new Pattern().singleLine()
         .next(new MatcherLowerText("v-ce").group(ROLE).optional())
