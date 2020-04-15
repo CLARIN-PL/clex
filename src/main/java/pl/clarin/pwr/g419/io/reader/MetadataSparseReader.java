@@ -8,16 +8,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
-import lombok.SneakyThrows;
+import java.util.Optional;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.Person;
 
-public class MetadataReader implements HasLogger {
+public class MetadataSparseReader {
+
+  public static String PERSON_DATE = "person_date";
+  public static String PERSON_NAME = "person_name";
+  public static String PERSON_ROLE = "person_role";
 
   public List<Metadata> parse(final Path filename) throws Exception {
     final CSVParser parser = CSVParser.parse(filename.toFile(),
@@ -26,12 +28,21 @@ public class MetadataReader implements HasLogger {
             .withDelimiter(';')
             .withHeader(Metadata.ID, Metadata.COMPANY, Metadata.DRAWING_DATE,
                 Metadata.PERIOD_FROM, Metadata.PERIOD_TO, Metadata.POSTAL_CODE,
-                Metadata.CITY, Metadata.STREET, Metadata.STREET_NO, Metadata.PEOPLE)
+                Metadata.CITY, Metadata.STREET, Metadata.STREET_NO,
+                PERSON_DATE, PERSON_NAME, PERSON_ROLE)
             .withSkipHeaderRecord());
 
     final List<Metadata> metadata = Lists.newArrayList();
+    Metadata metadataItem = null;
     for (final CSVRecord record : parser) {
-      metadata.add(recordToMetadata(record));
+      if (record.get(Metadata.ID).trim().length() > 0) {
+        metadataItem = recordToMetadata(record);
+        metadata.add(metadataItem);
+      } else if (metadataItem == null) {
+        throw new Exception("Failed to parse the metadata. Row with person data without document metadata.");
+      } else {
+        recordToPerson(record).ifPresent(metadataItem.getPeople()::add);
+      }
     }
     return metadata;
   }
@@ -47,8 +58,23 @@ public class MetadataReader implements HasLogger {
     m.setCity(record.get(Metadata.CITY));
     m.setStreet(record.get(Metadata.STREET));
     m.setStreetNo(record.get(Metadata.STREET_NO));
-    m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
+    recordToPerson(record).ifPresent(m.getPeople()::add);
     return m;
+  }
+
+  private Optional<Person> recordToPerson(final CSVRecord record) throws IOException, ParseException {
+    if (notEmpty(record.get(PERSON_NAME))) {
+      final Person p = new Person();
+      p.setDate(strToDate(record.get(PERSON_DATE)));
+      p.setName(record.get(PERSON_NAME));
+      p.setRole(record.get(PERSON_ROLE));
+      return Optional.of(p);
+    }
+    return Optional.empty();
+  }
+
+  private boolean notEmpty(final String value) {
+    return value != null && value.length() > 0;
   }
 
   private Date strToDate(final String date) throws ParseException {
@@ -56,35 +82,6 @@ public class MetadataReader implements HasLogger {
       return null;
     }
     return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-  }
-
-  @SneakyThrows
-  private List<Person> parsePeople(final String str) throws IOException {
-    final Pattern p = Pattern.compile("[)], [(]");
-    final List<Person> people = Lists.newArrayList();
-    if (str.length() < 3) {
-      return Lists.newArrayList();
-    }
-    final String strNoBrackets = str.substring(2, str.length() - 2).trim();
-    for (final String part : p.split(strNoBrackets)) {
-      final String[] cols = part.substring(1, part.length() - 1).split("['\"], ['\"]");
-      if (cols.length != 3) {
-        System.out.println("ERROR " + part);
-      }
-      final Person person = new Person();
-      person.setDate(strToDate(cols[0]));
-      person.setName(cols[1]);
-      person.setRole(normalizeRole(cols[2]));
-      people.add(person);
-    }
-    return people;
-  }
-
-  private String normalizeRole(final String role) {
-    return role
-        .replaceAll("[\\\\]n", " ")
-        .replaceAll("[ ]+", " ")
-        .toLowerCase();
   }
 
 }

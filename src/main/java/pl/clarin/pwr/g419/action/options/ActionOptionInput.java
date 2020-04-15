@@ -10,4 +10,8 @@ public class ActionOptionInput extends ActionOption {
     setHasArg(true);
   }
 
+  public ActionOptionInput(final String description) {
+    this();
+    setDescription(description);
+  }
 }

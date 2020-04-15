@@ -1,5 +1,7 @@
 package pl.clarin.pwr.g419.action.options;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import lombok.Data;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -60,5 +62,9 @@ public abstract class ActionOption {
   public int getInteger() {
     final String value = getString();
     return Integer.parseInt(value);
+  }
+
+  public Path getPath() {
+    return Paths.get(getString());
   }
 }

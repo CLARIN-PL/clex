@@ -1,0 +1,11 @@
+id;company;drawing_date;period_from;period_to;postal_code;city;street;street_no;person_date;person_name;person_role
+35771;LPP S.A.;2006-08-25;2006-01-01;2006-06-30;80-769;Gdańsk;ul. Łąkowa;39/44;;Marek Piechocki;prezes zarządu
+;;;;;;;;;;Alicja Milińska;wiceprezes zarządu
+;;;;;;;;;;Dariusz Pachla;wiceprezes zarządu
+;;;;;;;;;;Stanisław Dreliszak;wiceprezes zarządu
+;;;;;;;;;;Aleksander Moroz;wiceprezes zarządu
+36004;PAMAPOL S.A.;;2006-01-01;2006-06-30;97-438;Rusiniec;ul. Wieluńska;2;;Paweł Szataniak;prezes zarządu
+;;;;;;;;;;Mariusz Szataniak;wiceprezes zarządu
+;;;;;;;;;;Roman Żuberek;wiceprezes zarządu
+36710;EMC INSTYTUT MEDYCZNY SPÓŁKA AKCYJNA;2006-10-05;2006-01-01;2006-01-01;54-144;Wrocław;ul. Pilczycka;144-148;2006-10-05;Piotr Gerber;prezes zarządu
+;;;;;;;;;2006-10-05;Jarosław Leszczyszyn;wiceprezes zarządu
