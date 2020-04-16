@@ -14,6 +14,7 @@ import pl.clarin.pwr.g419.text.pattern.matcher.MatcherResult;
 public class Pattern {
 
   boolean matchLine = false;
+  boolean matchBlock = false;
   boolean singleLine = false;
   int score = 100;
   List<Matcher> matchers = Lists.newArrayList();
@@ -28,6 +29,11 @@ public class Pattern {
 
   public Pattern matchLine() {
     matchLine = true;
+    return this;
+  }
+
+  public Pattern matchBlock() {
+    matchBlock = true;
     return this;
   }
 
@@ -81,6 +87,12 @@ public class Pattern {
     if (matchLine) {
       if (page.get(i - 1).isLineEnd() == false
           || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isLineEnd).count() > 1) {
+        return Optional.empty();
+      }
+    }
+    if (matchBlock) {
+      if (page.get(i - 1).isBlockEnd() == false
+          || IntStream.range(index, i).mapToObj(page::get).filter(Bbox::isBlockEnd).count() > 1) {
         return Optional.empty();
       }
     }

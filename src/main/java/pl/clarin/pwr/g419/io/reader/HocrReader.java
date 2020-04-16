@@ -60,6 +60,7 @@ public class HocrReader extends DefaultHandler {
     encodingFix.put("Å\u0082", "ł");
     encodingFix.put("Å\u0084", "ń");
     encodingFix.put("Å\u009A", "Ś");
+    encodingFix.put("Ŝ", "ż");
 
     final String text = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
     final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -198,7 +199,12 @@ public class HocrReader extends DefaultHandler {
         final Box tailBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + tailWidth,
             bbox.getBox().getTop(), bbox.getBox().getBottom());
         final Bbox tailBbox = new Bbox(bbox.getNo(), tail, tailBox);
+        tailBbox.setLineEnd(bbox.isLineEnd());
+        tailBbox.setBlockEnd(bbox.isBlockEnd());
         page.add(i + 1, tailBbox);
+
+        bbox.setBlockEnd(false);
+        bbox.setLineEnd(false);
       }
     }
   }

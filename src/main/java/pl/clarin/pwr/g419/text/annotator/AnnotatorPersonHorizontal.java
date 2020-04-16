@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import pl.clarin.pwr.g419.kbase.NeLexicon2;
 import pl.clarin.pwr.g419.kbase.lexicon.FirstNameLexicon;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
@@ -30,7 +31,7 @@ public class AnnotatorPersonHorizontal extends Annotator {
     final Set<String> firstNames =
         Sets.newHashSet(neLexicon2.getNames(NeLexicon2.LIV_PERSON_FIRST));
     firstNames.addAll(firstNameLexicon);
-    //firstNames.addAll(firstNames.stream().map(String::toUpperCase).collect(Collectors.toList()));
+    firstNames.addAll(firstNames.stream().map(String::toUpperCase).collect(Collectors.toList()));
 
     patterns.add(new Pattern().matchLine()
         .next(new MatcherLowerText("prezes").group(TITLE))
@@ -53,7 +54,8 @@ public class AnnotatorPersonHorizontal extends Annotator {
     patterns.add(new Pattern("person-hor:role-name").singleLine()
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE).optional())
         .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
-        .next(new MatcherLowerText(Set.of("ds.")).optional())
+        .next(new MatcherLowerText(Set.of("ds")).optional())
+        .next(new MatcherLowerText(Set.of(".")).optional())
         .next(new MatcherLowerText(Set.of("finansowych", "marketingu")).optional())
         .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
         .next(new MatcherWordInSet(firstNames).group(NAME))

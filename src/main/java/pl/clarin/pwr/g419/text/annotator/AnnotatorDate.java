@@ -24,9 +24,6 @@ public class AnnotatorDate extends Annotator {
     final List<Pattern> patterns = Lists.newArrayList();
 
     final Map<String, String> months = getMonths();
-
-    final Set<String> years = IntStream.range(1900, 2030)
-        .mapToObj(Objects::toString).collect(Collectors.toSet());
     final Set<String> yearSuffix = Sets.newHashSet("r", "roku");
     final Set<String> days = IntStream.range(1, 32)
         .mapToObj(Objects::toString).collect(Collectors.toSet());
@@ -36,7 +33,7 @@ public class AnnotatorDate extends Annotator {
             .normalizer(new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(months.keySet()).group(MONTH)
             .normalizer(new NormalizerStringMap(months)))
-        .next(new MatcherRegexText("([0-9]{4}).*", 7, Map.of(1, YEAR)))
+        .next(new MatcherRegexText("([0-9]{4})(r)?", 5, Map.of(1, YEAR)))
         .next(new MatcherLowerText(yearSuffix).optional())
         .next(new MatcherLowerText(".").optional())
     );

@@ -14,7 +14,7 @@ public class AnnotatorDrawingDate extends Annotator {
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
 
-    patterns.add(new Pattern("dd1").matchLine()
+    patterns.add(new Pattern("dd1").matchBlock()
         .next(new MatcherRegexText("\\p{Lu}\\p{L}{3,20}", 20).join(" ")
             .ignore(Sets.newHashSet("dzień", "dnia",
                 "zakończony", "zakończonego", "zakończonych", "zakończone", "zakooczone", "zakooczony",

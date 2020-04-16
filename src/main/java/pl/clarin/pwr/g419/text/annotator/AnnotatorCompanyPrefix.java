@@ -31,27 +31,30 @@ public class AnnotatorCompanyPrefix extends Annotator {
     );
 
     patterns.add(new Pattern()
-        .next(new MatcherLowerText(Set.of("nazwa")))
-        .next(new MatcherLowerText(Set.of("jednostki:")))
+        .next(new MatcherLowerText("nazwa"))
+        .next(new MatcherLowerText("jednostki"))
+        .next(new MatcherLowerText(":").optional())
     );
 
     patterns.add(new Pattern()
-        .next(new MatcherLowerText(Set.of("grupa")))
-        .next(new MatcherLowerText(Set.of("kapitałowa")))
+        .next(new MatcherLowerText("grupa"))
+        .next(new MatcherLowerText("kapitałowa"))
     );
 
     patterns.add(new Pattern()
-        .next(new MatcherLowerText(Set.of("spółka")))
+        .next(new MatcherLowerText("spółka"))
     );
 
     patterns.add(new Pattern()
-        .next(new MatcherLowerText(Set.of("nazwa:")))
+        .next(new MatcherLowerText("nazwa"))
+        .next(new MatcherLowerText(":").optional())
     );
 
     patterns.add(new Pattern()
         .next(new MatcherLowerText(Set.of("nazwa")))
         .next(new MatcherLowerText(Set.of("i")))
-        .next(new MatcherLowerText(Set.of("siedziba:")))
+        .next(new MatcherLowerText(Set.of("siedziba")))
+        .next(new MatcherLowerText(":").optional())
     );
 
     return patterns;

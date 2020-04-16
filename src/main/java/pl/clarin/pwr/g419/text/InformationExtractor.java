@@ -78,9 +78,18 @@ public class InformationExtractor implements HasLogger {
         .sortByLoc()
         .stream()
         .map(an -> new FieldContext<>(strToPerson(an.getNorm()), an.getContext(), an.getSource()))
-        .collect(Collectors.toMap(o -> o.getField().getName(), Function.identity(),
-            (p1, p2) -> p2)) // take the last occurance
+        .collect(Collectors.toMap(o -> personToFirstLastName(o.getField()), Function.identity(),
+            (p1, p2) -> p1.getField().getName().length() > p2.getField().getName().length() ? p1 : p2))
+        // take the one with longer name or latter occurance
         .values().stream().collect(Collectors.toList());
+  }
+
+  private String personToFirstLastName(final Person p) {
+    final String[] parts = p.getName().toLowerCase().split(" ");
+    if (parts.length == 1) {
+      return parts[0];
+    }
+    return parts[0] + " " + parts[parts.length - 1];
   }
 
   private Person strToPerson(final String str) {
@@ -122,8 +131,7 @@ public class InformationExtractor implements HasLogger {
   }
 
   private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
-    return document
-        .getAnnotations()
+    return document.getAnnotations()
         .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
         .topScore()
         .sortByPos()

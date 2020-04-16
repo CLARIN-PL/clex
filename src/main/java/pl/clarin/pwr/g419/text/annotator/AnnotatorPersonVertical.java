@@ -76,6 +76,7 @@ public class AnnotatorPersonVertical extends Annotator {
             an.getIndexBegin(), an.getIndexEnd());
         person.setNorm(Optional.of(String.format("|%s|%s", an.getNorm(), name.get().getText())));
         person.setSource(source);
+        person.setScore(Score.HIGH);
         page.getAnnotations().add(person);
       }
     }
