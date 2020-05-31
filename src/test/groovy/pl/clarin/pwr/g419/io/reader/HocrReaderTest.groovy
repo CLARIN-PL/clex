@@ -19,7 +19,7 @@ class HocrReaderTest extends Specification {
             document.size() == 2
 
         and:
-            document.get(0).size() == 13
+            document.get(0).size() == 14
 
         and:
             document.get(0).get(0).getText() == "PROSPER"
@@ -40,7 +40,7 @@ class HocrReaderTest extends Specification {
             document.get(0).get(1).getNo() == 2
 
         and:
-            document.get(1).get(0).getNo() == document.get(0).size() + 1
+            document.get(1).get(0).getNo() == document.get(0).size()
 
         cleanup:
             FileUtils.deleteQuietly(hocr)
@@ -63,10 +63,11 @@ class HocrReaderTest extends Specification {
         where:
             no || lineBegin | lineEnd
             0  || true      | false
-            1  || false     | true
-            2  || true      | false
-            3  || false     | false
-            4  || false     | true
+            1  || false     | false
+            2  || false     | true
+            3  || true      | false
+            4  || false     | false
+            5  || false     | true
 
     }
 
@@ -86,10 +87,10 @@ class HocrReaderTest extends Specification {
 
         where:
             no || blockEnd | lineEnd
-            7  || true     | false
-            8  || true     | false
-            10 || true     | true
-            28 || true     | true
+            9  || true     | false
+            10 || true     | false
+            12 || true     | true
+            33 || true     | true
 
     }
 
@@ -123,7 +124,7 @@ class HocrReaderTest extends Specification {
     }
 
     @Unroll
-    def "bbox #no should have text value of #text"() {
+    def "bbox #no should have text value of #text (test encoding fixing)"() {
         given:
             def hocr = File.createTempFile("hocr", ".hocr")
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-encoding.hocr"), hocr)
@@ -138,7 +139,7 @@ class HocrReaderTest extends Specification {
         where:
             no  || text
             7   || "PÓŁROCZE"
-            180 || "Zarządu"
+            190 || "Zarządu"
 
     }
 

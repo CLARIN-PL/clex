@@ -1,10 +1,11 @@
 package pl.clarin.pwr.g419.utils;
 
 import com.google.common.collect.Lists;
-import java.util.List;
-import java.util.Optional;
 import pl.clarin.pwr.g419.struct.Bbox;
 import pl.clarin.pwr.g419.struct.Box;
+
+import java.util.List;
+import java.util.Optional;
 
 public class TestUtils {
 
@@ -20,6 +21,7 @@ public class TestUtils {
     if (bboxes.size() > 0) {
       bboxes.get(0).setLineBegin(true);
       bboxes.get(bboxes.size() - 1).setLineEnd(true);
+      bboxes.get(bboxes.size() - 1).setBlockEnd(true);
     }
     return bboxes;
   }
@@ -29,6 +31,7 @@ public class TestUtils {
     final Box box = new Box(0, 0, 10, 10);
     final Bbox bbox = new Bbox(0, word.replaceAll("[|]", ""), box);
     bbox.setLineEnd(isEnd);
+    bbox.setBlockEnd(isEnd);
     return bbox;
   }
 

@@ -33,7 +33,7 @@ public class AnnotatorCompanyPrefix extends Annotator {
 
     patterns.add(new Pattern()
         .next(new MatcherLowerText("nazwa"))
-        .next(new MatcherLowerText("jednostki"))
+        .next(new MatcherLowerText("jednostki").optional())
         .next(new MatcherLowerText(":").optional())
     );
 
@@ -44,11 +44,6 @@ public class AnnotatorCompanyPrefix extends Annotator {
 
     patterns.add(new Pattern()
         .next(new MatcherLowerText("spółka"))
-    );
-
-    patterns.add(new Pattern()
-        .next(new MatcherLowerText("nazwa"))
-        .next(new MatcherLowerText(":").optional())
     );
 
     patterns.add(new Pattern()

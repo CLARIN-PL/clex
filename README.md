@@ -9,7 +9,7 @@ unzip task4-train.zip
 # Compile
 
 ```bash
-
+./mvnw clean package
 ```
 
 # Evaluation

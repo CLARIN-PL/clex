@@ -26,10 +26,10 @@ class AnnotatorDrawingDateTest extends Specification {
                     .collect { it.getNorm() } as Set == [norm] as Set
 
         where:
-            text                                    || norm
-            "Katowice, dnia 2 września 2005 roku"   || "2005-09-02"
-            "Warszawa 24 sierpnia 2009 roku"        || "2009-08-24"
-            "WYSOGOTOWO, DNIA 7 SIERPNIA 2009 ROKU" || "2009-08-07"
+            text                                      || norm
+            "Katowice , dnia 2 września 2005 roku"    || "2005-09-02"
+            "Warszawa 24 sierpnia 2009 roku"          || "2009-08-24"
+            "WYSOGOTOWOS , DNIA 7 SIERPNIA 2009 ROKU" || "2009-08-07"
 
     }
 }
