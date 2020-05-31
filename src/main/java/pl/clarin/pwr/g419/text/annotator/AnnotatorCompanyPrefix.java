@@ -22,6 +22,7 @@ public class AnnotatorCompanyPrefix extends Annotator {
     );
 
     patterns.add(new Pattern()
+        .next(new MatcherLowerText(Set.of("z")).optional())
         .next(new MatcherLowerText(Set.of("działalności", "raport")))
         .next(new MatcherLowerText(Set.of("gospodarczej")).optional())
         .next(new MatcherLowerText(Set.of("finansowy")).optional())

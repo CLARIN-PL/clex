@@ -71,7 +71,8 @@ public class HocrReader extends DefaultHandler {
     parser.parse(is, this);
     this.document.setId(getIdFromPath(path));
     this.document.stream().forEach(this::mergeLines);
-    this.document.stream().forEach(this::splitInterpunction);
+    this.document.stream().forEach(this::splitInterpunctionEnd);
+    //this.document.stream().forEach(this::splitInterpunctionBegin);
     return document;
   }
 
@@ -182,14 +183,14 @@ public class HocrReader extends DefaultHandler {
     }
   }
 
-  private void splitInterpunction(final HocrPage page) {
-    final Pattern p = Pattern.compile("^(.+)([.,:-])$");
+  private void splitInterpunctionEnd(final HocrPage page) {
+    final Pattern p = Pattern.compile("^(.*(\\p{L}|\\p{N}))([).,:-])$");
     for (int i = page.size() - 1; i >= 0; i--) {
       final Bbox bbox = page.get(i);
       final Matcher m = p.matcher(bbox.getText());
       if (m.matches()) {
         final String head = m.group(1);
-        final String tail = m.group(2);
+        final String tail = m.group(3);
         final int headWidth = bbox.getBox().getWidth() * head.length() / bbox.getText().length();
         final int tailWidth = bbox.getBox().getWidth() - headWidth;
 
@@ -208,4 +209,31 @@ public class HocrReader extends DefaultHandler {
       }
     }
   }
+
+  private void splitInterpunctionBegin(final HocrPage page) {
+    final Pattern p = Pattern.compile("^([(.,:-])(.*(\\p{L}|\\p{N}))$");
+    for (int i = page.size() - 1; i >= 0; i--) {
+      final Bbox bbox = page.get(i);
+      final Matcher m = p.matcher(bbox.getText());
+      if (m.matches()) {
+        final String head = m.group(1);
+        final String tail = m.group(3);
+        final int headWidth = bbox.getBox().getWidth() * head.length() / bbox.getText().length();
+        final int tailWidth = bbox.getBox().getWidth() - headWidth;
+
+        bbox.getBox().setLeft(bbox.getBox().getLeft() + headWidth);
+        bbox.getBox().setRight(bbox.getBox().getLeft() + tailWidth);
+        bbox.setText(tail);
+
+        final Box headBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + headWidth,
+            bbox.getBox().getTop(), bbox.getBox().getBottom());
+        final Bbox headBbox = new Bbox(bbox.getNo(), head, headBox);
+        headBbox.setLineBegin(bbox.isLineBegin());
+        page.add(i, headBbox);
+
+        bbox.setLineBegin(false);
+      }
+    }
+  }
+
 }

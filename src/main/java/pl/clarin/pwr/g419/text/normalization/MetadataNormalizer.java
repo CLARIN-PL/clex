@@ -9,6 +9,6 @@ public class MetadataNormalizer {
 
   Normalizer<Date> date = new NormalizerDate();
   Normalizer<String> company = new NormalizerCompany();
-  Normalizer<Person> person = new NormalizerPerson();
+  Normalizer<Person> person = new NormalizerPersonDateRole();
 
 }

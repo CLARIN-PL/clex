@@ -37,6 +37,12 @@ public class AnnotationList extends ArrayList<Annotation> {
         .collect(Collectors.toList()));
   }
 
+  public AnnotationList filterByPageNo(final int pageNo) {
+    return new AnnotationList(this.stream()
+        .filter(a -> a.getPage().getNo() == pageNo)
+        .collect(Collectors.toList()));
+  }
+
   public AnnotationList topScore() {
     if (size() == 0) {
       return this;

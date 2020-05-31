@@ -12,10 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
-import pl.clarin.pwr.g419.struct.FieldContext;
-import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.struct.MetadataWithContext;
-import pl.clarin.pwr.g419.struct.Person;
+import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
@@ -55,7 +52,7 @@ public class InformationExtractor implements HasLogger {
 
     metadata.setPeople(getPoeple(document));
 
-    assignDefaultSignDate(metadata);
+    //assignDefaultSignDate(metadata);
 
     return metadata;
   }
@@ -131,8 +128,15 @@ public class InformationExtractor implements HasLogger {
   }
 
   private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
-    return document.getAnnotations()
-        .filterByType(AnnotatorDrawingDate.DRAWING_DATE)
+    AnnotationList drawingDateCandidates = document.getAnnotations()
+        .filterByType(AnnotatorDrawingDate.DRAWING_DATE);
+
+    final AnnotationList firstPage = drawingDateCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      drawingDateCandidates = firstPage;
+    }
+
+    return drawingDateCandidates
         .topScore()
         .sortByPos()
         .getFirst()

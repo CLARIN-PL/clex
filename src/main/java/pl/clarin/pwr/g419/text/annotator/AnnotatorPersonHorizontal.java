@@ -41,12 +41,14 @@ public class AnnotatorPersonHorizontal extends Annotator {
     );
 
     final Map<String, String> roleMap = Map.of("zarządu,", "zarządu");
+    final java.util.regex.Pattern patternLastName =
+        java.util.regex.Pattern.compile("\\p{Lu}(\\p{Ll}|\\p{Lu})+(-\\p{Lu}(\\p{Ll}|\\p{Lu})+)?");
 
-    patterns.add(new Pattern("person-hor:name-role").singleLine()
+    patterns.add(new Pattern("person-hor:date-name-role").singleLine()
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE).optional())
         .next(new MatcherWordInSet(firstNames).group(NAME))
         .next(new MatcherWordInSet(firstNames).group(NAME).optional())
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
+        .next(new MatcherRegexText(patternLastName, 40).group(NAME))
         .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
         .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
     );
@@ -60,7 +62,17 @@ public class AnnotatorPersonHorizontal extends Annotator {
         .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
         .next(new MatcherWordInSet(firstNames).group(NAME))
         .next(new MatcherWordInSet(firstNames).group(NAME).optional())
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+(-\\p{Lu}\\p{Ll}+)?", 40).group(NAME))
+        .next(new MatcherRegexText(patternLastName, 40).group(NAME))
+    );
+
+    patterns.add(new Pattern("person-hor:date-sign-name-role")
+        .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE))
+        .next(new MatcherRegexText("[.]+", 40))
+        .next(new MatcherWordInSet(firstNames).group(NAME))
+        .next(new MatcherWordInSet(firstNames).group(NAME).optional())
+        .next(new MatcherRegexText(patternLastName, 40).group(NAME))
+        .next(new MatcherLowerText(Set.of("–", ":", "-")).optional())
+        .next(new MatcherAnnotationType(AnnotatorRole.ROLE).group(TITLE))
     );
 
     return patterns;

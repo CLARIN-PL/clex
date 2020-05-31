@@ -22,11 +22,11 @@ public class AnnotatorRole extends Annotator {
     patterns.add(new Pattern().singleLine()
         .next(new MatcherLowerText("v-ce").group(ROLE).optional())
         .next(new MatcherRegexText(
-            "(prezes|wiceprezes|członek|prokurent|główny|główna)", 12)
+            "(prezes|wiceprezes|członek|prokurent)", 12)
             .lowerCase()
             .group(ROLE))
         .next(new MatcherLowerText(
-            Set.of("zarządu", "zarzadu", "zarządu,", "zarzadu,", "księgowy", "księgowa"))
+            Set.of("zarządu", "zarzadu"))
             .group(ROLE)
             .normalizer(new NormalizerStringMap(roleMap))
         )

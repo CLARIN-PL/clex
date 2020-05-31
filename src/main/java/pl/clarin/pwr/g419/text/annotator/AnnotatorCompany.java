@@ -2,6 +2,7 @@ package pl.clarin.pwr.g419.text.annotator;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
@@ -56,6 +57,11 @@ public class AnnotatorCompany extends Annotator {
         .next(new MatcherRegexText("\\p{Lu}.+", 20).group(COMPANY))
         .next(new MatcherRegexText("\\p{Lu}.+", 20).group(COMPANY).optional())
         .next(new MatcherAnnotationType(AnnotatorCompanySuffix.COMPANY_SUFFIX).group(COMPANY))
+    );
+
+    patterns.add(new Pattern("c7")
+        .next(new MatcherAnnotationType(AnnotatorCompanyPrefix.COMPANY_PREFIX))
+        .next(new MatcherRegexText("„([^”]+)”", 20, Map.of(1, COMPANY)).join(" "))
     );
 
     return patterns;

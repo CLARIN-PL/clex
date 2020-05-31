@@ -28,7 +28,6 @@ import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.text.InformationExtractor;
 import pl.clarin.pwr.g419.text.normalization.MetadataNormalizer;
 import pl.clarin.pwr.g419.text.normalization.Normalizer;
-import pl.clarin.pwr.g419.text.normalization.NormalizerPersonRole;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
 @Component
@@ -53,8 +52,7 @@ public class ActionEval extends Action {
     this.options.add(optionOutput);
     this.options.add(optionThreads);
 
-    //normalizer.setPerson(new NormalizerPersonDateRole());
-    normalizer.setPerson(new NormalizerPersonRole());
+    //normalizer.setPerson(new NormalizerPersonRole());
   }
 
   @Override

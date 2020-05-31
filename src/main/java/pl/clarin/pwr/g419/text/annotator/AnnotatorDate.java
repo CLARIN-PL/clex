@@ -33,16 +33,14 @@ public class AnnotatorDate extends Annotator {
             .normalizer(new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(months.keySet()).group(MONTH)
             .normalizer(new NormalizerStringMap(months)))
-        .next(new MatcherRegexText("([0-9]{4})(r)?", 5, Map.of(1, YEAR)))
+        .next(new MatcherRegexText("([0-9]{4})(r|R)?", 5, Map.of(1, YEAR)))
         .next(new MatcherLowerText(yearSuffix).optional())
         .next(new MatcherLowerText(".").optional())
     );
 
-    final Map<Integer, String> groups = Map.of(1, DAY, 2, MONTH, 3, YEAR);
-
     patterns.add(new Pattern().next(
-        new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
-            11, groups)
+        new MatcherRegexText("([0-9]{1,2})[/.-]([0-9]{1,2})[/.-]([0-9]{4}).*",
+            11, Map.of(1, DAY, 2, MONTH, 3, YEAR))
             .normalizer(DAY, new NormalizerStringNum2Digit())
             .normalizer(MONTH, new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(yearSuffix).optional())
@@ -50,8 +48,17 @@ public class AnnotatorDate extends Annotator {
     );
 
     patterns.add(new Pattern().next(
-        new MatcherRegexText("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4}).*",
-            13, groups)
+        new MatcherRegexText("([0-9]{4})[/.-]([0-9]{1,2})[/.-]([0-9]{1,2})",
+            11, Map.of(1, YEAR, 2, MONTH, 3, DAY))
+            .normalizer(DAY, new NormalizerStringNum2Digit())
+            .normalizer(MONTH, new NormalizerStringNum2Digit()))
+        .next(new MatcherLowerText(yearSuffix).optional())
+        .next(new MatcherLowerText(".").optional())
+    );
+
+    patterns.add(new Pattern().next(
+        new MatcherRegexText("([0-9]{1,2})[/.-]([0-9]{1,2})[/.-]([0-9]{4}).*",
+            13, Map.of(1, DAY, 2, MONTH, 3, YEAR))
             .normalizer(DAY, new NormalizerStringNum2Digit())
             .normalizer(MONTH, new NormalizerStringNum2Digit()))
         .next(new MatcherLowerText(yearSuffix).optional())
