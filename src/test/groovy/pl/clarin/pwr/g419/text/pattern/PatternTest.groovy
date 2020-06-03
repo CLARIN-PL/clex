@@ -94,7 +94,7 @@ class PatternTest extends Specification {
 
     def "find should return matches with valid set of groups and normalized values"() {
         given:
-            def monthsMap = Map.of("stycznia", "01", "lutego", "02")
+            def monthsMap = [ "stycznia": "01" ,  "lutego": "02" ] as Map
             def years = ["2018", "2019", "2020"] as Set
             def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
@@ -126,7 +126,7 @@ class PatternTest extends Specification {
             def page = new HocrPage(TestUtils.getSequenceOfBboxes("01.12.2020 stycznia 2020 2 LUTEGO"))
             def pattern = new Pattern()
                     .next(new MatcherRegexText("([0-9]{1,2})[.]([0-9]{1,2})[.]([0-9]{4})", 10,
-                            Map.of(1, "day", 2, "month", 3, "year")).group("date"));
+                            [1: "day", 2: "month", 3: "year"] as Map).group("date"));
 
         when:
             def result = pattern.find(page)
