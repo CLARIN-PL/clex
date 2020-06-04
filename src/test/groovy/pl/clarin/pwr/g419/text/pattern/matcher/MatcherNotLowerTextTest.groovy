@@ -12,7 +12,7 @@ class MatcherNotLowerTextTest extends Specification {
     def "matchesAt on #text and #pos should return match of length #length"() {
         given:
             def page = new HocrPage(getSequenceOfBboxes("FIRMA S.A.".split(" ") as List))
-            def matcher = new MatcherNotLowerText(Set.of("s.a."))
+            def matcher = new MatcherNotLowerText( ["s.a."] as Set)
 
         when:
             def result = matcher.matchesAt(page, index)

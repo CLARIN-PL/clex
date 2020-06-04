@@ -36,7 +36,7 @@ class MatcherRegexTextTest extends Specification {
             def pattern = Pattern.compile("([0-9]{1,2})[.-]([0-9]{1,2})[.-]([0-9]{4})")
             def page = new HocrPage(TestUtils.getSequenceOfBboxes("1.01.2020 ; 02.02 .2020 2020"))
             def matcher = new MatcherRegexText(pattern, 10,
-                    Map.of(1, "day", 2, "month", 3, "year"))
+                    [1:"day", 2:"month", 3:"year"] as Map)
 
         when:
             def result = matcher.matchesAt(page, index)
@@ -60,7 +60,7 @@ class MatcherRegexTextTest extends Specification {
     def "matchesAt with ignore should return valid results"() {
         given:
             def page = new HocrPage(TestUtils.getSequenceOfBboxes("11 22 33 44"))
-            def matcher = new MatcherRegexText("([0-9]{2})", 2).ignore(Set.of("11", "22"))
+            def matcher = new MatcherRegexText("([0-9]{2})", 2).ignore( ["11", "22"] as Set)
 
         when:
             def result = matcher.matchesAt(page, index)
