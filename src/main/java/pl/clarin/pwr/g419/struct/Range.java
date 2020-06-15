@@ -1,14 +1,21 @@
 package pl.clarin.pwr.g419.struct;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class Range {
 
-  double lowerBound;
-  double upperBound;
+  int lowerBound;
+  int upperBound;
+
+  int firstBoxInRangeIndex;
+  int lastBoxInRangeIndex;
+
+  public Range(final int lBound, final int uBound) {
+    lowerBound = lBound;
+    upperBound = uBound;
+  }
+
 
   public double overlap(final Range range) {
     if (range.upperBound < lowerBound || range.lowerBound > upperBound) {
@@ -31,7 +38,7 @@ public class Range {
     return length / getLength();
   }
 
-  public void merge(final double lower, final double upper) {
+  public void merge(final int lower, final int upper) {
     lowerBound = Math.min(lowerBound, lower);
     upperBound = Math.max(upperBound, upper);
   }
@@ -39,4 +46,19 @@ public class Range {
   public double getLength() {
     return upperBound - lowerBound;
   }
+
+  public String getText(final HocrPage page) {
+    final StringBuilder sb = new StringBuilder();
+    for (int i = getFirstBoxInRangeIndex(); i <= getLastBoxInRangeIndex(); i++) {
+      sb.append(page.get(i).getText()).append(" ");
+    }
+    return sb.toString();
+  }
+
+  public boolean containsBboxWithIndex(final int index) {
+    return (this.getFirstBoxInRangeIndex() <= index
+        &&
+        this.getLastBoxInRangeIndex() >= index);
+  }
+
 }
