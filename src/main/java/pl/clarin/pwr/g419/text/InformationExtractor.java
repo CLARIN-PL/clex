@@ -40,11 +40,6 @@ public class InformationExtractor implements HasLogger {
 
     final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = generateDocumentHistogram(document);
 
-//    // diagnostyka
-//    printHistogramOfLinesHeightsForDoc(documentHistogram);
-//    printLinesWithHeightBiggerThanMostCommon(documentHistogram, document);
-
-
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 

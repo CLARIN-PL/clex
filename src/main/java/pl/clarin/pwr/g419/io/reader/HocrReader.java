@@ -64,8 +64,6 @@ public class HocrReader extends DefaultHandler {
     // na stronie
 
 
-//  this.document.stream().forEach(this::splitInterpunctionBegin);
-//  this.document.stream().forEach(HocrPage::dumpTextLinesFromMergedLines);
     return document;
   }
 
@@ -177,7 +175,6 @@ public class HocrReader extends DefaultHandler {
 
   private void mergeLines(final HocrPage page) {
     final List<Pair<Range, Integer>> ranges = BboxUtils.createLines(page);
-    //log.info(" Page no " + page.getNo() + " has " + ranges.size() + " lines");
     final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
     for (int i = 0; i < ranges.size() - 1; i++) {
       final Pair<Range, Integer> range = ranges.get(i);
@@ -211,17 +208,6 @@ public class HocrReader extends DefaultHandler {
     }
 
     page.setLines(mergedLines);
-
-//    //diagnostyka
-//    final List<String> lines = page.getTextLinesFromBBoxes();
-//    log.info(" After merging page " + page.getNo() + " has " + lines.size() + " lines");
-//    page.verifyLinesStructsAreCorrectlySynchronized();
-//    //diagnostyka
-//    if (page.getNo() == 11) {
-//    page.dumpTextLinesFromBBoxes();
-//    page.dumpTextLinesFromMergedLines();
-//    }
-
 
   }
 
@@ -260,14 +246,6 @@ public class HocrReader extends DefaultHandler {
     if (splitInterpunctionIndexes.size() > 0) {
       correctLinesInPageAfterSplitInterpunction(page, splitInterpunctionIndexes);
     }
-
-//    //diagnostyka
-//    page.verifyLinesStructsAreCorrectlySynchronized();
-//    if (page.getNo() == 1) {
-//      page.dumpTextLinesFromBBoxes();
-//      page.dumpTextLinesFromMergedLines();
-//    }
-
 
   }
 

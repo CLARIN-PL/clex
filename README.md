@@ -17,7 +17,7 @@ unzip task4-train.zip
 ## Base
 
 ```bash
-./clex eval -T 32 -i data/task4-train/index-hocr.list -m data/task4-train/ground_truth-train-v1.csv -o report.tsv
+./clex eval -i data/task4-train/index-hocr.list -m data/task4-train/ground_truth-train-v1.csv -o report.tsv
 
 ```
 
@@ -37,7 +37,7 @@ Expected output:
 ## Verified
 
 ```bash
-./clex eval -T 32 -i data/task4-train/gt2_100_verified_hocr.list -m data/task4-train/gt2_100_verified.csv -o report.tsv
+./clex eval -i data/task4-train/gt2_100_verified_hocr.list -m data/task4-train/gt2_100_verified.csv -o report.tsv
 
 ```
 

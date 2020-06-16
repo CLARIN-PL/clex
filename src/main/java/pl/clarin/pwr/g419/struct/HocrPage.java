@@ -74,14 +74,14 @@ public class HocrPage extends Bboxes {
   public void dumpTextLinesFromBBoxes() {
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     for (int i = 0; i < linesFromBBoxes.size(); i++) {
-      log.info(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
+      log.fine(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
     }
   }
 
   public void dumpTextLinesFromMergedLines() {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     for (int i = 0; i < linesFromMergedLines.size(); i++) {
-      log.info(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
+      log.fine(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
     }
   }
 
@@ -89,20 +89,20 @@ public class HocrPage extends Bboxes {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     if (linesFromBBoxes.size() != linesFromMergedLines.size()) {
-      log.info(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
+      log.fine(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
       return false;
     }
 
     boolean outOfSync = false;
     for (int i = 0; i < getTextLinesFromMergedLines().size(); i++) {
       if (!linesFromBBoxes.get(i).equals(linesFromMergedLines.get(i))) {
-        log.info(" page " + getNo() + " niezgodność w lini nr " + i);
+        log.fine(" page " + getNo() + " niezgodność w lini nr " + i);
         outOfSync = true;
       }
     }
 
     if (!outOfSync) {
-      log.info(" page " + getNo() + " linie zgodnie");
+      log.fine(" page " + getNo() + " linie zgodnie");
       return true;
     }
 
