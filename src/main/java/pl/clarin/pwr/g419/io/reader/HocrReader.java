@@ -212,17 +212,6 @@ public class HocrReader extends DefaultHandler {
 
     page.setLines(mergedLines);
 
-//    //diagnostyka
-//    final List<String> lines = page.getTextLinesFromBBoxes();
-//    log.info(" After merging page " + page.getNo() + " has " + lines.size() + " lines");
-//    page.verifyLinesStructsAreCorrectlySynchronized();
-//    //diagnostyka
-//    if (page.getNo() == 11) {
-//    page.dumpTextLinesFromBBoxes();
-//    page.dumpTextLinesFromMergedLines();
-//    }
-
-
   }
 
 
@@ -260,14 +249,6 @@ public class HocrReader extends DefaultHandler {
     if (splitInterpunctionIndexes.size() > 0) {
       correctLinesInPageAfterSplitInterpunction(page, splitInterpunctionIndexes);
     }
-
-//    //diagnostyka
-//    page.verifyLinesStructsAreCorrectlySynchronized();
-//    if (page.getNo() == 1) {
-//      page.dumpTextLinesFromBBoxes();
-//      page.dumpTextLinesFromMergedLines();
-//    }
-
 
   }
 
