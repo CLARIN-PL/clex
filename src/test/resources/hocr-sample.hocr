@@ -21,8 +21,18 @@ Converting '/tmp/b0018609-c98f-4903-b6fa-6c4c68a5bd4a':
         <span class="ocrx_word" title="bbox 603 853 997 909">sprawozdanie</span>
         <span class="ocrx_word" title="bbox 1023 852 1312 898">finansowe</span>
     </span>
-<span class="ocrx_line" title="bbox 2154 3168 2170 3198"><span class="ocrx_word" title="bbox 2154 3168 2170 3198">1</span></span>
-<span class="ocrx_line" title="bbox 303 920 1572 980"><span class="ocrx_word" title="bbox 303 935 360 969">za</span> <span class="ocrx_word" title="bbox 389 924 544 969">okres</span> <span class="ocrx_word" title="bbox 569 920 905 980">zakończony</span> <span class="ocrx_word" title="bbox 932 925 997 969">30</span> <span class="ocrx_word" title="bbox 1025 935 1251 969">czerwca</span> <span class="ocrx_word" title="bbox 1282 925 1421 969">2005</span> <span class="ocrx_word" title="bbox 1450 924 1572 969">roku</span></span>
+    <span class="ocrx_line" title="bbox 2154 3168 2170 3198">
+        <span class="ocrx_word" title="bbox 2154 3168 2170 3198">1</span>
+    </span>
+    <span class="ocrx_line" title="bbox 303 920 1572 980">
+        <span class="ocrx_word" title="bbox 303 935 360 969">za</span>
+        <span class="ocrx_word" title="bbox 389 924 544 969">okres</span>
+        <span class="ocrx_word" title="bbox 569 920 905 980">zakończony</span>
+        <span class="ocrx_word" title="bbox 932 925 997 969">30</span>
+        <span class="ocrx_word" title="bbox 1025 935 1251 969">czerwca</span>
+        <span class="ocrx_word" title="bbox 1282 925 1421 969">2005</span>
+        <span class="ocrx_word" title="bbox 1450 924 1572 969">roku</span>
+</span>
 </div>
 <div class="ocr_page" title="bbox 0 0 2479 3508"><span class="ocrx_line" title="bbox 303 413 655 464"><span class="ocrx_word" title="bbox 303 426 433 464">SPIS</span> <span class="ocrx_word" title="bbox 452 413 655 464">TREŚCI</span></span>
 <span class="ocrx_line" title="bbox 305 525 2127 576"><span class="ocrx_word" title="bbox 305 538 611 576">RACHUNEK</span> <span class="ocrx_word" title="bbox 630 525 871 576">ZYSKÓW</span> <span class="ocrx_word" title="bbox 893 539 914 575">I</span> <span class="ocrx_word" title="bbox 937 538 1114 576">STRAT</span> <span class="ocrx_word" title="bbox 1135 539 1205 575">ZA</span> <span class="ocrx_word" title="bbox 1226 538 1412 576">OKRES</span> <span class="ocrx_word" title="bbox 1433 538 1512 576">OD</span> <span class="ocrx_word" title="bbox 1538 539 1562 575">1</span> <span class="ocrx_word" title="bbox 1587 538 1869 576">STYCZNIA</span> <span class="ocrx_word" title="bbox 1891 538 2025 576">2005</span> <span class="ocrx_word" title="bbox 2051 538 2127 576">DO</span></span>
