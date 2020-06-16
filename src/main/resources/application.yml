@@ -8,4 +8,4 @@ spring:
     banner-mode: "off"
 
 logging.level:
-  root: ERROR
+  root: INFO

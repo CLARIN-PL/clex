@@ -45,7 +45,7 @@ public class DocumentsReader implements HasLogger {
     return hocrs;
   }
 
-  private List<Metadata> loadMetadata(final Path metadataCsv) throws Exception {
+  public List<Metadata> loadMetadata(final Path metadataCsv) throws Exception {
     return new MetadataReader().parse(metadataCsv);
   }
 
@@ -71,14 +71,14 @@ public class DocumentsReader implements HasLogger {
     return documents;
   }
 
-  private List<Path> loadPaths(final Path path) throws IOException {
+  public List<Path> loadPaths(final Path path) throws IOException {
     return FileUtils.readLines(path.toFile(), Charsets.UTF_8).stream()
         .map(Paths::get)
         .map(path.getParent()::resolve)
         .collect(Collectors.toList());
   }
 
-  private HocrDocument loadHocrDocument(final Path path)
+  public HocrDocument loadHocrDocument(final Path path)
       throws SAXException, IOException, ParserConfigurationException {
     return new HocrReader().parse(path);
   }

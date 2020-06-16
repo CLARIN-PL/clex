@@ -8,15 +8,13 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -25,6 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.utils.BboxUtils;
 
+@Log
 public class HocrReader extends DefaultHandler {
 
   private StringBuilder value = new StringBuilder();
@@ -54,6 +53,27 @@ public class HocrReader extends DefaultHandler {
   public HocrDocument parse(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
 
+    readDocument(path);
+
+    this.document.setId(getIdFromPath(path));
+    this.document.stream().forEach(this::mergeLines);
+    this.document.stream().forEach(this::splitInterpunctionEnd);
+    this.document.stream().forEach(HocrPage::sortLinesByTop);
+
+    // i teraz w polu lines w każdej stronie mamy linie tekstu wg. kolejności występowania
+    // na stronie
+
+
+//  this.document.stream().forEach(this::splitInterpunctionBegin);
+//  this.document.stream().forEach(HocrPage::dumpTextLinesFromMergedLines);
+    return document;
+  }
+
+  public void readDocument(final Path path)
+      throws IOException, SAXException, ParserConfigurationException {
+
+    log.info(" Reading :" + path.toString());
+
     encodingFix.put("Ã\u0093", "Ó");
     encodingFix.put("Ä\u0085", "ą");
     encodingFix.put("Å\u0081", "Ł");
@@ -67,14 +87,11 @@ public class HocrReader extends DefaultHandler {
     final SAXParser parser = factory.newSAXParser();
     final String textWithoutMarkers = cleanHocr(text);
     final InputStream is = new ByteArrayInputStream(textWithoutMarkers.getBytes());
-    this.document = new HocrDocument();
+    document = new HocrDocument();
     parser.parse(is, this);
-    this.document.setId(getIdFromPath(path));
-    this.document.stream().forEach(this::mergeLines);
-    this.document.stream().forEach(this::splitInterpunctionEnd);
-    //this.document.stream().forEach(this::splitInterpunctionBegin);
-    return document;
+
   }
+
 
   private static String getIdFromPath(final Path path) {
     return path.getParent().toFile().getName();
@@ -160,6 +177,8 @@ public class HocrReader extends DefaultHandler {
 
   private void mergeLines(final HocrPage page) {
     final List<Pair<Range, Integer>> ranges = BboxUtils.createLines(page);
+    //log.info(" Page no " + page.getNo() + " has " + ranges.size() + " lines");
+    final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
     for (int i = 0; i < ranges.size() - 1; i++) {
       final Pair<Range, Integer> range = ranges.get(i);
       final Pair<Range, Integer> nextRange = ranges.get(i + 1);
@@ -172,6 +191,8 @@ public class HocrReader extends DefaultHandler {
         bbox.setLineEnd(false);
         bbox.setBlockEnd(true);
         nextBbox.setLineBegin(false);
+        r2.setFirstBoxInRangeIndex(r1.getFirstBoxInRangeIndex());
+        mergedRangesIndexesToSkipInResult.add(i);
       } else {
         // End of line also indicates end of block
         bbox.setBlockEnd(true);
@@ -181,34 +202,112 @@ public class HocrReader extends DefaultHandler {
       page.get(page.size() - 1).setLineEnd(true);
       page.get(page.size() - 1).setBlockEnd(true);
     }
+
+    final List<Range> mergedLines = new LinkedList<>();
+    for (int i = 0; i < ranges.size(); i++) {
+      if (!mergedRangesIndexesToSkipInResult.contains(i)) {
+        mergedLines.add(ranges.get(i).getLeft());
+      }
+    }
+
+    page.setLines(mergedLines);
+
+//    //diagnostyka
+//    final List<String> lines = page.getTextLinesFromBBoxes();
+//    log.info(" After merging page " + page.getNo() + " has " + lines.size() + " lines");
+//    page.verifyLinesStructsAreCorrectlySynchronized();
+//    //diagnostyka
+//    if (page.getNo() == 11) {
+//    page.dumpTextLinesFromBBoxes();
+//    page.dumpTextLinesFromMergedLines();
+//    }
+
+
   }
+
 
   private void splitInterpunctionEnd(final HocrPage page) {
     final Pattern p = Pattern.compile("^(.*(\\p{L}|\\p{N}))([).,:-])$");
+    // tutaj trzymane są indeksy BBoxów które zostały rozdzielone.Te indeksy są wg numeracji *przed* rodzieleniem
+    final List<Integer> splitInterpunctionIndexes = new ArrayList<>();
     for (int i = page.size() - 1; i >= 0; i--) {
       final Bbox bbox = page.get(i);
       final Matcher m = p.matcher(bbox.getText());
       if (m.matches()) {
-        final String head = m.group(1);
-        final String tail = m.group(3);
-        final int headWidth = bbox.getBox().getWidth() * head.length() / bbox.getText().length();
+        final String headText = m.group(1);
+        final String tailText = m.group(3);
+        final int headWidth = bbox.getBox().getWidth() * headText.length() / bbox.getText().length();
         final int tailWidth = bbox.getBox().getWidth() - headWidth;
 
         bbox.getBox().setRight(bbox.getBox().getLeft() + headWidth);
-        bbox.setText(head);
+        bbox.setText(headText);
 
         final Box tailBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + tailWidth,
             bbox.getBox().getTop(), bbox.getBox().getBottom());
-        final Bbox tailBbox = new Bbox(bbox.getNo(), tail, tailBox);
+        final Bbox tailBbox = new Bbox(bbox.getNo(), tailText, tailBox);
         tailBbox.setLineEnd(bbox.isLineEnd());
         tailBbox.setBlockEnd(bbox.isBlockEnd());
         page.add(i + 1, tailBbox);
+        splitInterpunctionIndexes.add(i);
 
         bbox.setBlockEnd(false);
         bbox.setLineEnd(false);
       }
     }
+
+    // jeśli było coś rozdzielane to trzeba skorygować w każdej dotkniętą zmianą linii
+    // wskażniki do startującego ją i kończącego ją BBoxa
+    if (splitInterpunctionIndexes.size() > 0) {
+      correctLinesInPageAfterSplitInterpunction(page, splitInterpunctionIndexes);
+    }
+
+//    //diagnostyka
+//    page.verifyLinesStructsAreCorrectlySynchronized();
+//    if (page.getNo() == 1) {
+//      page.dumpTextLinesFromBBoxes();
+//      page.dumpTextLinesFromMergedLines();
+//    }
+
+
   }
+
+  private void correctLinesInPageAfterSplitInterpunction(final HocrPage page, final List<Integer> splitInterpunctionIndexes) {
+
+    if (splitInterpunctionIndexes.size() == 0) {
+      return;
+    }
+
+    Collections.reverse(splitInterpunctionIndexes);
+
+    int offset = 0;
+    int splitIndexNr = 0;
+    int currentSpliInterpunctionIndex = splitInterpunctionIndexes.get(splitIndexNr);
+    boolean allSplitInterpunctionIndexesUsed = false;
+
+    for (int lineNr = 0; lineNr < page.getLines().size(); lineNr++) {
+      final Range line = page.getLines().get(lineNr);
+      if (offset != 0) {
+        line.setFirstBoxInRangeIndex(line.getFirstBoxInRangeIndex() + offset);
+        line.setLastBoxInRangeIndex(line.getLastBoxInRangeIndex() + offset);
+      }
+
+      while ((!allSplitInterpunctionIndexesUsed)
+          && (line.containsBboxWithIndex(currentSpliInterpunctionIndex))) {
+
+        offset++;
+
+        if (splitIndexNr < splitInterpunctionIndexes.size() - 1) {
+          splitIndexNr++;
+          currentSpliInterpunctionIndex = splitInterpunctionIndexes.get(splitIndexNr) + offset;
+        } else {
+          allSplitInterpunctionIndexesUsed = true;
+        }
+        line.setLastBoxInRangeIndex(line.getLastBoxInRangeIndex() + 1);
+      }
+    }
+
+  }
+
 
   private void splitInterpunctionBegin(final HocrPage page) {
     final Pattern p = Pattern.compile("^([(.,:-])(.*(\\p{L}|\\p{N}))$");

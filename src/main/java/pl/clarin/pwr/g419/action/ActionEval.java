@@ -4,12 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
@@ -58,24 +57,53 @@ public class ActionEval extends Action {
   @Override
   public void run() throws Exception {
     final DocumentsReader reader = new DocumentsReader(optionThreads.getInteger());
-    final List<HocrDocument> documents =
-        reader.parse(Paths.get(optionMetadata.getString()), Paths.get(optionInput.getString()));
 
-    final ExecutorService service = Executors.newFixedThreadPool(optionThreads.getInteger());
-    final List<Future<List<List<String>>>> futures = documents.stream()
-        .map(document -> service.submit(() -> processDocument(document)))
-        .collect(Collectors.toList());
+    // do pamięci zaczytujemy wszystkie metadane ...
+    final Path metadataCsv = Paths.get(optionMetadata.getString());
+    final List<Metadata> metadata = reader.loadMetadata(metadataCsv);
+    final Map<String, Metadata> idToMetadata =
+        metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
 
-    final List<List<String>> records = Lists.newArrayList();
-    futures.stream().forEach(future -> {
+    // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
+    final Path hocrIndex = Paths.get(optionInput.getString());
+    final List<Path> paths;
+    if (hocrIndex.toString().endsWith(".hocr")) {
+      paths = List.of(hocrIndex);
+    } else {
+      paths = reader.loadPaths(hocrIndex);
+    }
+
+    // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
+    // jego przetwarzania
+    final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
+    //paths.parallelStream().forEach(path -> {
+    paths.stream().forEach(path -> {
       try {
-        records.addAll(future.get());
+        evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
         getLogger().error("Failed evaluate the document", ex);
       }
     });
-    service.shutdown();
 
+    printRecords(records);
+
+    printSummary();
+
+  }
+
+  // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
+  private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final Map<String, Metadata> idToMetadata, final List<List<String>> records)
+      throws Exception {
+    getLogger().info(String.format("Starting processing document %s", path.toString()));
+    final HocrDocument document = reader.loadHocrDocument(path);
+    getLogger().info(String.format("%3d page(s) in %s", document.size(), path.toString()));
+    document.setMetadata(idToMetadata.getOrDefault(document.getId(), new Metadata()));
+    final List<List<String>> result = processDocument(document);
+    records.addAll(result);
+  }
+
+
+  private void printRecords(final List<List<String>> records) throws IOException {
     try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
          final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
       try {
@@ -88,8 +116,6 @@ public class ActionEval extends Action {
         getLogger().error("Failed to write to CSV", ex);
       }
     }
-
-    printSummary();
   }
 
   private void printSummary() {

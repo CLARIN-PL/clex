@@ -2,11 +2,10 @@ package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
@@ -17,6 +16,7 @@ import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
+@Log
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
@@ -37,6 +37,14 @@ public class InformationExtractor implements HasLogger {
   PersonNameLexicon personNameLexicon = new PersonNameLexicon();
 
   public MetadataWithContext extract(final HocrDocument document) {
+
+    final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = generateDocumentHistogram(document);
+
+//    // diagnostyka
+//    printHistogramOfLinesHeightsForDoc(documentHistogram);
+//    printLinesWithHeightBiggerThanMostCommon(documentHistogram, document);
+
+
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
@@ -170,5 +178,67 @@ public class InformationExtractor implements HasLogger {
       return null;
     }
   }
+
+  private Map<Integer, Set<Pair<Integer, Integer>>> generateDocumentHistogram(final HocrDocument document) {
+
+    final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = new HashMap<>();
+
+    document.stream()
+        .forEach(page ->
+        {
+          final Map<Integer, Set<Pair<Integer, Integer>>> pageHistogram = page.buildHistogramOfLinesHeightsForPage();
+          //log.info("Strona no " + page.getNo() + " linii: " + page.getLines().size() + " wielkość histogramu: " + pageHistogram.size());
+          pageHistogram.forEach((k, v) -> documentHistogram.merge(k, v, (v1, v2) -> {
+            v2.addAll(v1);
+            return v2;
+          }));
+        });
+
+    return documentHistogram;
+  }
+
+  public int findMostCommonHeightOfLine(final Map<Integer, Set<Pair<Integer, Integer>>> histogram) {
+    return histogram.entrySet().stream().max((entry1, entry2) -> entry1.getValue().size() > entry2.getValue().size() ? 1 : -1).get().getKey();
+  }
+
+  //------------------ diagnostyka -----------------------------------
+
+
+  public void printHistogramOfLinesHeightsForDoc(final Map<Integer, Set<Pair<Integer, Integer>>> histogram) {
+    final List<Integer> keys = new LinkedList<>(histogram.keySet());
+    keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
+    log.info(" ---------- Lines Heights histogram for document ");
+
+    keys.stream().forEach(key ->
+        log.info(" Key : " + key + "  counter: " + histogram.get(key).size() + " [" + histogram.get(key).stream().limit(5).map(v -> v.toString()).collect(Collectors.joining()) + " ]")
+    );
+  }
+
+  public void printLinesWithGivenHeigth(final int height, final Set<Pair<Integer, Integer>> lines, final HocrDocument document) {
+    lines.stream().forEach(pair ->
+        {
+          final HocrPage page = document.get(pair.getLeft() - 1);
+
+          final List<Range> linesOfPage = page.getLines();
+          final int pageNumber = pair.getRight();
+          final Range line = linesOfPage.get(pageNumber);
+          final String text = line.getText(page);
+
+          log.info("Wysokość: " + height + " Strona: " + page.getNo() + " linia: " + (pair.getRight() + 1) + " : " + text);
+        }
+    );
+  }
+
+  public void printLinesWithHeightBiggerThanMostCommon(final Map<Integer, Set<Pair<Integer, Integer>>> histogram,
+                                                       final HocrDocument document) {
+    log.info(" --- Document: " + document.getId());
+    final int mostCommonHeightOfLine = findMostCommonHeightOfLine(histogram);
+
+    final List<Integer> keys = new LinkedList<>(histogram.keySet());
+    keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
+    keys.stream().filter(n -> n > mostCommonHeightOfLine).forEach(key -> printLinesWithGivenHeigth(key, histogram.get(key), document));
+
+  }
+
 
 }
