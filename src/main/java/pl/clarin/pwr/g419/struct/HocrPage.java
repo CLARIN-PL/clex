@@ -53,7 +53,6 @@ public class HocrPage extends Bboxes {
   }
 
   public Map<Integer, Set<Pair<Integer, Integer>>> buildHistogramOfLinesHeightsForPage() {
-    //log.info("Building histogram for page no: " + this.getNo());
     final HashMap<Integer, Set<Pair<Integer, Integer>>> histogram = new HashMap<>();
     for (int lineNr = 0; lineNr < lines.size(); lineNr++) {
       final Range line = lines.get(lineNr);
@@ -109,14 +108,13 @@ public class HocrPage extends Bboxes {
     return false;
   }
 
-
   public void printHistogramOfLinesHeightsForPage() {
     final Map<Integer, Set<Pair<Integer, Integer>>> histogram = buildHistogramOfLinesHeightsForPage();
 
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
-    log.info(" ---------- Lines Heights histogram for page " + getNo());
-    keys.stream().forEach(key -> log.info(" Key : " + key + "  counter: " + histogram.get(key).size()));
+    log.fine(" ---------- Lines Heights histogram for page " + getNo());
+    keys.stream().forEach(key -> log.fine(" Key : " + key + "  counter: " + histogram.get(key).size()));
   }
 
 

@@ -40,6 +40,9 @@ public class InformationExtractor implements HasLogger {
 
     final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = generateDocumentHistogram(document);
 
+    // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
+    final int mostCommonHeightOfLineInDocument = findMostCommonHeightOfLine(documentHistogram);
+
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
@@ -182,7 +185,6 @@ public class InformationExtractor implements HasLogger {
         .forEach(page ->
         {
           final Map<Integer, Set<Pair<Integer, Integer>>> pageHistogram = page.buildHistogramOfLinesHeightsForPage();
-          //log.info("Strona no " + page.getNo() + " linii: " + page.getLines().size() + " wielkość histogramu: " + pageHistogram.size());
           pageHistogram.forEach((k, v) -> documentHistogram.merge(k, v, (v1, v2) -> {
             v2.addAll(v1);
             return v2;
@@ -202,31 +204,29 @@ public class InformationExtractor implements HasLogger {
   public void printHistogramOfLinesHeightsForDoc(final Map<Integer, Set<Pair<Integer, Integer>>> histogram) {
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
-    log.info(" ---------- Lines Heights histogram for document ");
+    log.fine(" ---------- Lines Heights histogram for document ");
 
     keys.stream().forEach(key ->
-        log.info(" Key : " + key + "  counter: " + histogram.get(key).size() + " [" + histogram.get(key).stream().limit(5).map(v -> v.toString()).collect(Collectors.joining()) + " ]")
+        log.fine(" Key : " + key + "  counter: " + histogram.get(key).size() + " [" + histogram.get(key).stream().limit(5).map(v -> v.toString()).collect(Collectors.joining()) + " ]")
     );
   }
 
   public void printLinesWithGivenHeigth(final int height, final Set<Pair<Integer, Integer>> lines, final HocrDocument document) {
     lines.stream().forEach(pair ->
         {
-          final HocrPage page = document.get(pair.getLeft() - 1);
-
+          final HocrPage page = document.get(pair.getLeft() - 1); // !! W pair jest numer strony a nie indeks tablicy
           final List<Range> linesOfPage = page.getLines();
           final int pageNumber = pair.getRight();
-          final Range line = linesOfPage.get(pageNumber);
-          final String text = line.getText(page);
+          final String text = linesOfPage.get(pageNumber).getText(page);
 
-          log.info("Wysokość: " + height + " Strona: " + page.getNo() + " linia: " + (pair.getRight() + 1) + " : " + text);
+          log.fine("Wysokość: " + height + " Strona: " + page.getNo() + " linia: " + (pair.getRight() + 1) + " : " + text);
         }
     );
   }
 
   public void printLinesWithHeightBiggerThanMostCommon(final Map<Integer, Set<Pair<Integer, Integer>>> histogram,
                                                        final HocrDocument document) {
-    log.info(" --- Document: " + document.getId());
+    log.fine(" --- Document: " + document.getId());
     final int mostCommonHeightOfLine = findMostCommonHeightOfLine(histogram);
 
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
