@@ -23,6 +23,11 @@ public class DocumentsReader implements HasLogger {
 
   private final int threads;
 
+  public DocumentsReader() {
+    this.threads = 1;
+  }
+
+
   public DocumentsReader(final int threads) {
     this.threads = threads;
   }

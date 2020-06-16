@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.ActionOptionInput;
 import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
-import pl.clarin.pwr.g419.action.options.ActionOptionThreads;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
@@ -34,7 +33,6 @@ public class ActionEval extends Action {
 
   ActionOptionMetadata optionMetadata = new ActionOptionMetadata();
   ActionOptionInput optionInput = new ActionOptionInput();
-  ActionOptionThreads optionThreads = new ActionOptionThreads();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
 
   InformationExtractor extractor = new InformationExtractor();
@@ -49,14 +47,13 @@ public class ActionEval extends Action {
     this.options.add(optionMetadata);
     this.options.add(optionInput);
     this.options.add(optionOutput);
-    this.options.add(optionThreads);
 
     //normalizer.setPerson(new NormalizerPersonRole());
   }
 
   @Override
   public void run() throws Exception {
-    final DocumentsReader reader = new DocumentsReader(optionThreads.getInteger());
+    final DocumentsReader reader = new DocumentsReader();
 
     // do pamięci zaczytujemy wszystkie metadane ...
     final Path metadataCsv = Paths.get(optionMetadata.getString());
