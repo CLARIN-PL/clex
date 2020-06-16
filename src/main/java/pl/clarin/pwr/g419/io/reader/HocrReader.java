@@ -64,8 +64,6 @@ public class HocrReader extends DefaultHandler {
     // na stronie
 
 
-//  this.document.stream().forEach(this::splitInterpunctionBegin);
-//  this.document.stream().forEach(HocrPage::dumpTextLinesFromMergedLines);
     return document;
   }
 
@@ -177,7 +175,6 @@ public class HocrReader extends DefaultHandler {
 
   private void mergeLines(final HocrPage page) {
     final List<Pair<Range, Integer>> ranges = BboxUtils.createLines(page);
-    //log.info(" Page no " + page.getNo() + " has " + ranges.size() + " lines");
     final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
     for (int i = 0; i < ranges.size() - 1; i++) {
       final Pair<Range, Integer> range = ranges.get(i);
