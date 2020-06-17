@@ -21,7 +21,7 @@ public class BboxUtils {
         lineRange.get().merge(bbox.getBox().getTop(), bbox.getBox().getBottom());
         lineRange.get().setLastBoxInRangeIndex(i);
       } else {
-        final Range range = new Range(bbox.getBox().getTop(), bbox.getBox().getBottom());
+        final Range range = new Range(page, bbox.getBox().getTop(), bbox.getBox().getBottom());
         range.setFirstBoxInRangeIndex(i);
         lineRange = Optional.of(range);
       }
@@ -44,7 +44,7 @@ public class BboxUtils {
       if (lineRange.isPresent()) {
         lineRange.get().merge(bbox.getBox().getTop(), bbox.getBox().getBottom());
       } else {
-        lineRange = Optional.of(new Range(bbox.getBox().getTop(), bbox.getBox().getBottom()));
+        lineRange = Optional.of(new Range(page, bbox.getBox().getTop(), bbox.getBox().getBottom()));
       }
       bboxes.add(bbox);
       if (bbox.isLineEnd()) {

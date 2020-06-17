@@ -45,7 +45,7 @@ public class HocrPage extends Bboxes {
   }
 
   public List<String> getTextLinesFromMergedLines() {
-    return lines.stream().map(line -> line.getText(this)).collect(Collectors.toList());
+    return lines.stream().map(line -> line.getText()).collect(Collectors.toList());
   }
 
   public void sortLinesByTop() {

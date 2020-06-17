@@ -201,7 +201,7 @@ public class InformationExtractor implements HasLogger {
           final HocrPage page = document.get(pair.getLeft() - 1); // !! W pair jest numer strony a nie indeks tablicy
           final List<Range> linesOfPage = page.getLines();
           final int pageNumber = pair.getRight();
-          final String text = linesOfPage.get(pageNumber).getText(page);
+          final String text = linesOfPage.get(pageNumber).getText();
 
           log.fine("Wysokość: " + height + " Strona: " + page.getNo() + " linia: " + (pair.getRight() + 1) + " : " + text);
         }

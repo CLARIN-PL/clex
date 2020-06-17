@@ -29,10 +29,10 @@ class HocrReaderTest extends Specification {
             document.get(0).getLines().size() == 4
 
         and:
-            document.get(0).getLines().get(0).getText(document.get(0)) == "PROSPER S.A . "
-            document.get(0).getLines().get(1).getText(document.get(0)) == "Półroczne sprawozdanie finansowe "
-            document.get(0).getLines().get(2).getText(document.get(0)) == "za okres zakończony 30 czerwca 2005 roku "
-            document.get(0).getLines().get(3).getText(document.get(0)) == "1 "
+            document.get(0).getLines().get(0).getText() == "PROSPER S.A . "
+            document.get(0).getLines().get(1).getText() == "Półroczne sprawozdanie finansowe "
+            document.get(0).getLines().get(2).getText() == "za okres zakończony 30 czerwca 2005 roku "
+            document.get(0).getLines().get(3).getText() == "1 "
 
         and:
             document.get(0).buildHistogramOfLinesHeightsForPage().size() == 3

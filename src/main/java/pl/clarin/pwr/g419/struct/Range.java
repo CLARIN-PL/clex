@@ -1,9 +1,13 @@
 package pl.clarin.pwr.g419.struct;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(exclude = "page")
 public class Range {
+
+  HocrPage page;
 
   int lowerBound;
   int upperBound;
@@ -11,7 +15,8 @@ public class Range {
   int firstBoxInRangeIndex;
   int lastBoxInRangeIndex;
 
-  public Range(final int lBound, final int uBound) {
+  public Range(final HocrPage p, final int lBound, final int uBound) {
+    page = p;
     lowerBound = lBound;
     upperBound = uBound;
   }
@@ -47,7 +52,7 @@ public class Range {
     return upperBound - lowerBound;
   }
 
-  public String getText(final HocrPage page) {
+  public String getText() {
     final StringBuilder sb = new StringBuilder();
     for (int i = getFirstBoxInRangeIndex(); i <= getLastBoxInRangeIndex(); i++) {
       sb.append(page.get(i).getText()).append(" ");
@@ -60,5 +65,6 @@ public class Range {
         &&
         this.getLastBoxInRangeIndex() >= index);
   }
+
 
 }
