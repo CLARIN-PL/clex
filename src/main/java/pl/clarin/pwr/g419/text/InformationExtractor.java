@@ -38,7 +38,7 @@ public class InformationExtractor implements HasLogger {
 
   public MetadataWithContext extract(final HocrDocument document) {
 
-    final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = generateDocumentHistogram(document);
+    final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = document.buildHistogramOfLinesHeightsForDocument();
 
     // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
     final int mostCommonHeightOfLineInDocument = findMostCommonHeightOfLine(documentHistogram);
@@ -177,22 +177,6 @@ public class InformationExtractor implements HasLogger {
     }
   }
 
-  private Map<Integer, Set<Pair<Integer, Integer>>> generateDocumentHistogram(final HocrDocument document) {
-
-    final Map<Integer, Set<Pair<Integer, Integer>>> documentHistogram = new HashMap<>();
-
-    document.stream()
-        .forEach(page ->
-        {
-          final Map<Integer, Set<Pair<Integer, Integer>>> pageHistogram = page.buildHistogramOfLinesHeightsForPage();
-          pageHistogram.forEach((k, v) -> documentHistogram.merge(k, v, (v1, v2) -> {
-            v2.addAll(v1);
-            return v2;
-          }));
-        });
-
-    return documentHistogram;
-  }
 
   public int findMostCommonHeightOfLine(final Map<Integer, Set<Pair<Integer, Integer>>> histogram) {
     return histogram.entrySet().stream().max((entry1, entry2) -> entry1.getValue().size() > entry2.getValue().size() ? 1 : -1).get().getKey();

@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 class HocrReaderTest extends Specification {
 
-    def "Hocr parser should read a valid list of bounding boxes and construct lines "() {
+    def "Hocr parser should read a valid list of bounding boxes and construct lines and histogram"() {
         given:
             def hocr = File.createTempFile("hocr", ".hocr")
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
@@ -33,6 +33,20 @@ class HocrReaderTest extends Specification {
             document.get(0).getLines().get(1).getText(document.get(0)) == "Półroczne sprawozdanie finansowe "
             document.get(0).getLines().get(2).getText(document.get(0)) == "za okres zakończony 30 czerwca 2005 roku "
             document.get(0).getLines().get(3).getText(document.get(0)) == "1 "
+
+        and:
+            document.get(0).buildHistogramOfLinesHeightsForPage().size() == 3
+
+        and:
+            document.buildHistogramOfLinesHeightsForDocument().size() == 10
+
+        and:
+            document.get(0).buildHistogramOfLinesHeightsForPage().get(30).size() == 1
+            document.get(0).buildHistogramOfLinesHeightsForPage().get(44).size() == 1
+            document.get(0).buildHistogramOfLinesHeightsForPage().get(60).size() == 2
+
+        and:
+            document.buildHistogramOfLinesHeightsForDocument().get(60).size() == 6
 
         cleanup:
             FileUtils.deleteQuietly(hocr)
