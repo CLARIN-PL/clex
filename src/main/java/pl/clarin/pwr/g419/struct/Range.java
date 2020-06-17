@@ -15,6 +15,12 @@ public class Range {
   int firstBoxInRangeIndex;
   int lastBoxInRangeIndex;
 
+  public Range(final int lBound, final int uBound) {
+    lowerBound = lBound;
+    upperBound = uBound;
+  }
+
+
   public Range(final HocrPage p, final int lBound, final int uBound) {
     page = p;
     lowerBound = lBound;
