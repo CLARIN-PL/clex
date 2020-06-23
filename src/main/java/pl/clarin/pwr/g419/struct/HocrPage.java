@@ -3,23 +3,26 @@ package pl.clarin.pwr.g419.struct;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Data;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Data
-@Log
+@Slf4j
 public class HocrPage extends Bboxes {
 
   int no;
   Annotations annotations = new Annotations();
   List<Range> lines;
+  HocrDocument document;
+  Map<Integer, Set<Pair<Integer, Integer>>> histogram;
 
-  public HocrPage() {
+  public HocrPage(final HocrDocument doc) {
+    this.document = doc;
   }
 
-  public HocrPage(final List<Bbox> bboxes) {
-    this.addAll(bboxes);
-  }
+//  public HocrPage(final List<Bbox> bboxes) {
+//    this.addAll(bboxes);
+//  }
 
   public void addAnnotation(final Annotation annotation) {
     this.annotations.add(annotation);
@@ -53,7 +56,7 @@ public class HocrPage extends Bboxes {
   }
 
   public Map<Integer, Set<Pair<Integer, Integer>>> buildHistogramOfLinesHeightsForPage() {
-    final HashMap<Integer, Set<Pair<Integer, Integer>>> histogram = new HashMap<>();
+    final Map<Integer, Set<Pair<Integer, Integer>>> histogram = new HashMap<>();
     for (int lineNr = 0; lineNr < lines.size(); lineNr++) {
       final Range line = lines.get(lineNr);
       Set<Pair<Integer, Integer>> lineNrs = histogram.get(line.getLength());
@@ -73,14 +76,14 @@ public class HocrPage extends Bboxes {
   public void dumpTextLinesFromBBoxes() {
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     for (int i = 0; i < linesFromBBoxes.size(); i++) {
-      log.fine(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
+      log.debug(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
     }
   }
 
   public void dumpTextLinesFromMergedLines() {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     for (int i = 0; i < linesFromMergedLines.size(); i++) {
-      log.fine(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
+      log.debug(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
     }
   }
 
@@ -88,20 +91,20 @@ public class HocrPage extends Bboxes {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     if (linesFromBBoxes.size() != linesFromMergedLines.size()) {
-      log.fine(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
+      log.debug(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
       return false;
     }
 
     boolean outOfSync = false;
     for (int i = 0; i < getTextLinesFromMergedLines().size(); i++) {
       if (!linesFromBBoxes.get(i).equals(linesFromMergedLines.get(i))) {
-        log.fine(" page " + getNo() + " niezgodność w lini nr " + i);
+        log.debug(" page " + getNo() + " niezgodność w lini nr " + i);
         outOfSync = true;
       }
     }
 
     if (!outOfSync) {
-      log.fine(" page " + getNo() + " linie zgodnie");
+      log.debug(" page " + getNo() + " linie zgodnie");
       return true;
     }
 
@@ -113,8 +116,8 @@ public class HocrPage extends Bboxes {
 
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
-    log.fine(" ---------- Lines Heights histogram for page " + getNo());
-    keys.stream().forEach(key -> log.fine(" Key : " + key + "  counter: " + histogram.get(key).size()));
+    log.debug(" ---------- Lines Heights histogram for page " + getNo());
+    keys.stream().forEach(key -> log.debug(" Key : " + key + "  counter: " + histogram.get(key).size()));
   }
 
 

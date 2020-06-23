@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -23,7 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.utils.BboxUtils;
 
-@Log
+@Slf4j
 public class HocrReader extends DefaultHandler {
 
   private StringBuilder value = new StringBuilder();
@@ -70,7 +70,7 @@ public class HocrReader extends DefaultHandler {
   public void readDocument(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
 
-    log.info(" Reading :" + path.toString());
+    //log.info(" Reading :" + path.toString());
 
     encodingFix.put("Ã\u0093", "Ó");
     encodingFix.put("Ä\u0085", "ą");
@@ -123,7 +123,7 @@ public class HocrReader extends DefaultHandler {
       spanClassStack.push(attrClass);
     } else if (elementName.equalsIgnoreCase(TAG_DIV)) {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
-        this.page = new HocrPage();
+        this.page = new HocrPage(document);
         this.page.setNo(pageNo++);
         document.add(page);
       }

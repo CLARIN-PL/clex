@@ -18,5 +18,6 @@ public class MetadataWithContext {
   FieldContext<String> street = new FieldContext<>();
   FieldContext<String> streetNo = new FieldContext<>();
   List<FieldContext<Person>> people = Lists.newArrayList();
+  FieldContext<String> signsPage;
 
 }

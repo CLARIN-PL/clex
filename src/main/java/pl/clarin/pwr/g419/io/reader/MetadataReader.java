@@ -26,7 +26,7 @@ public class MetadataReader implements HasLogger {
             .withDelimiter(';')
             .withHeader(Metadata.ID, Metadata.COMPANY, Metadata.DRAWING_DATE,
                 Metadata.PERIOD_FROM, Metadata.PERIOD_TO, Metadata.POSTAL_CODE,
-                Metadata.CITY, Metadata.STREET, Metadata.STREET_NO, Metadata.PEOPLE)
+                Metadata.CITY, Metadata.STREET, Metadata.STREET_NO, Metadata.PEOPLE, Metadata.SIGN_PAGE)
             .withSkipHeaderRecord());
 
     final List<Metadata> metadata = Lists.newArrayList();
@@ -48,6 +48,7 @@ public class MetadataReader implements HasLogger {
     m.setStreet(record.get(Metadata.STREET));
     m.setStreetNo(record.get(Metadata.STREET_NO));
     m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
+    m.setSignsPage(record.get(Metadata.SIGN_PAGE));
     return m;
   }
 

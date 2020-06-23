@@ -18,6 +18,7 @@ public class Metadata {
   public static String STREET = "street";
   public static String STREET_NO = "street_no";
   public static String PEOPLE = "people";
+  public static String SIGN_PAGE = "sign|_page";
 
   String id;
   String company;
@@ -29,4 +30,5 @@ public class Metadata {
   String street;
   String streetNo;
   List<Person> people = Lists.newArrayList();
+  String signsPage;
 }
