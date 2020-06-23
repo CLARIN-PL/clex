@@ -2,10 +2,7 @@ package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -201,6 +198,7 @@ public class InformationExtractor implements HasLogger {
 
     final String line = document.getLineInPage(lineWithSigns.getRight(), lineWithSigns.getLeft() - 1);
 
+
     if (isThisLineWithSignsActually(line)) {
       pageNrWithSigns = lineWithSigns.getLeft();
     }
@@ -213,7 +211,42 @@ public class InformationExtractor implements HasLogger {
   }
 
   private boolean isThisLineWithSignsActually(final String line) {
-    // na razie zakładamy, że znalezina linia to rzeczywiśćie linia z podpisami.
+    final String[] strWords = line.trim().toLowerCase().split("[ :.,']");
+    final Set<String> words = new HashSet();
+    for (final String s : strWords) {
+      if (s.length() > 0) {
+        words.add(s);
+      }
+    }
+
+    final Set<String> highlightWords = Set.of("podpisy", "wszystkich", "członków", "zarządu",
+        "osób", "odpowiedzialnych", "reprezentujących");
+    final Set<String> skipWords = Set.of("s", "a", "grupy", "kapitałowej", "data", "wchodzących", "skład");
+
+    final Set<String> rest = new HashSet<>();
+
+    int hitsCounter = 0;
+    for (final String w : words) {
+      if (highlightWords.contains(w)) {
+        hitsCounter++;
+      } else {
+        if (!skipWords.contains(w)) {
+          if (w.length() > 1) {
+            // jeszcze może odfiltrowywać słowa będące mieszanką cyfr o liter
+            rest.add(w);
+          }
+        }
+      }
+    }
+
+    if (hitsCounter >= rest.size()) {
+      return true;
+    }
+
+    if ((hitsCounter == 1) && (rest.size() > 5)) {
+      return false;
+    }
+
     return true;
   }
 
