@@ -2,11 +2,13 @@ package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
@@ -17,6 +19,7 @@ import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
+@Slf4j
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
@@ -40,7 +43,12 @@ public class InformationExtractor implements HasLogger {
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
+
     final MetadataWithContext metadata = new MetadataWithContext();
+
+    final FieldContext<String> signsPageNr = getSignsPage(document);
+
+    metadata.setSignsPage(signsPageNr);
 
     getPeriod(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
@@ -69,7 +77,19 @@ public class InformationExtractor implements HasLogger {
   }
 
   private List<FieldContext<Person>> getPoeple(final HocrDocument document) {
-    return document.getAnnotations()
+    // jeśli mamy stronę z podpisami to sprawdźmy czy tylko z niej można coś sensowego wyciągnąć ...
+    if (document.getPageNrWithSigns() != 0) {
+      final var resultForSignsPage = getPeopleForAnnotations(document.getAnnotationsForSignsPage());
+      if (resultForSignsPage.size() > 0) {
+        return resultForSignsPage;
+      }
+    }
+    // .. jeśli nie można to prcoesujemy standardowo
+    return getPeopleForAnnotations(document.getAnnotations());
+  }
+
+  private List<FieldContext<Person>> getPeopleForAnnotations(final AnnotationList annotations) {
+    return annotations
         .filterByType(AnnotatorPersonHorizontal.PERSON)
         .removeNested()
         .sortByLoc()
@@ -163,12 +183,62 @@ public class InformationExtractor implements HasLogger {
     return value;
   }
 
+  private FieldContext<String> getSignsPage(final HocrDocument document) {
+    final List<Pair<Integer, Integer>> linesWithPodpisy = findLinesWithSigns(document);
+    int pageNrWithSigns = 0;
+    final Pair<Integer, Integer> lineWithSigns;
+
+    if ((linesWithPodpisy == null) || (linesWithPodpisy.size() == 0)) {
+      return new FieldContext<String>("0", "", null);
+
+    } else if (linesWithPodpisy.size() == 1) {
+
+      lineWithSigns = linesWithPodpisy.get(0);
+    } else {
+      lineWithSigns = linesWithPodpisy.stream()
+          .max((p1, p2) -> p1.getLeft() < p2.getLeft() ? -1 : 1).get();
+    }
+
+    final String line = document.getLineInPage(lineWithSigns.getRight(), lineWithSigns.getLeft() - 1);
+
+    if (isThisLineWithSignsActually(line)) {
+      pageNrWithSigns = lineWithSigns.getLeft();
+    }
+
+    document.setPageNrWithSigns(pageNrWithSigns);
+
+
+    return new FieldContext<String>("" + pageNrWithSigns, "", null);
+
+  }
+
+  private boolean isThisLineWithSignsActually(final String line) {
+    // na razie zakładamy, że znalezina linia to rzeczywiśćie linia z podpisami.
+    return true;
+  }
+
+
   private Date parseDate(final String str) {
     try {
       return new SimpleDateFormat("yyyy-MM-dd").parse(str);
     } catch (final Exception e) {
       return null;
     }
+  }
+
+  public List<Pair<Integer, Integer>> findLinesWithSigns(final HocrDocument document) {
+    final List<Pair<Integer, Integer>> result = new ArrayList<>();
+
+    for (int pageIndex = 0; pageIndex < document.size(); pageIndex++) {
+      final HocrPage page = document.get(pageIndex);
+      for (int lineIndex = 0; lineIndex < page.getLines().size(); lineIndex++) {
+        final String line = page.getLines().get(lineIndex).getText();
+        if (line.matches("(?i).*\\bPodpisy\\b.*")) {
+          result.add(Pair.of(pageIndex + 1, lineIndex));
+        }
+      }
+    }
+    return result;
   }
 
 }

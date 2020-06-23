@@ -16,7 +16,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set))
                     .next(new MatcherLowerText(months))
@@ -43,7 +43,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set))
                     .next(new MatcherLowerText(months))
@@ -69,7 +69,7 @@ class PatternTest extends Specification {
         given:
             def months = ["stycznia", "lutego"] as Set
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set).group("day"))
                     .next(new MatcherLowerText(months).group("month"))
@@ -94,9 +94,9 @@ class PatternTest extends Specification {
 
     def "find should return matches with valid set of groups and normalized values"() {
         given:
-            def monthsMap = [ "stycznia": "01" ,  "lutego": "02" ] as Map
+            def monthsMap = ["stycznia": "01", "lutego": "02"] as Map
             def years = ["2018", "2019", "2020"] as Set
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("1 stycznia 2020 2 LUTEGO 2019 marzec 2018"))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(["1", "2"] as Set).group("day"))
                     .next(new MatcherLowerText(monthsMap.keySet())
@@ -123,7 +123,7 @@ class PatternTest extends Specification {
 
     def "find for a pattern with regex should return matches with valid set of groups"() {
         given:
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes("01.12.2020 stycznia 2020 2 LUTEGO"))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("01.12.2020 stycznia 2020 2 LUTEGO"))
             def pattern = new Pattern()
                     .next(new MatcherRegexText("([0-9]{1,2})[.]([0-9]{1,2})[.]([0-9]{4})", 10,
                             [1: "day", 2: "month", 3: "year"] as Map).group("date"));
@@ -144,7 +144,7 @@ class PatternTest extends Specification {
     @Unroll
     def "find for pattern with matchLine should return valid result for '#text'"() {
         given:
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
             def pattern = new Pattern().matchLine()
                     .next(new MatcherLowerText("grupa"))
                     .next(new MatcherLowerText("abc"))

@@ -12,7 +12,7 @@ class AnnotatorTest extends Specification {
     def "annotate should add valid set of annotations to the page"() {
         given:
             def months = ["stycznia", "lutego"] as Set
-            def page = new HocrPage(
+            def page = new HocrPage(null,
                     getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
             def pattern = new Pattern()
                     .next(new MatcherLowerText(months))

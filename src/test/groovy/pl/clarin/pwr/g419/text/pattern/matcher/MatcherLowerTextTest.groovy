@@ -12,7 +12,7 @@ class MatcherLowerTextTest extends Specification {
     def "matchesAt for index #index should return #length"() {
         given:
             def texts = ["stycznia", "lutego"] as Set
-            def page = new HocrPage(
+            def page = new HocrPage(null,
                     getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
             def matcher = new MatcherLowerText(texts)
 
@@ -38,7 +38,7 @@ class MatcherLowerTextTest extends Specification {
     def "matchesAt for index #index should return MatchResult with group named 'month' and value '#group'"() {
         given:
             def texts = ["stycznia", "lutego"] as Set
-            def page = new HocrPage(
+            def page = new HocrPage(null,
                     getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
             def matcher = new MatcherLowerText(texts).group("month")
 

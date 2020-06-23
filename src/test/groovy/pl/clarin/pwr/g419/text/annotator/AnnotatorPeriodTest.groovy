@@ -10,7 +10,7 @@ class AnnotatorPeriodTest extends Specification {
     @Unroll
     def "annotate on '#text' should return '#norm"() {
         given:
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
             def annotatorDate = new AnnotatorDate()
             def annotatorPeriod = new AnnotatorPeriod()
             annotatorDate.annotate(page)

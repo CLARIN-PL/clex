@@ -7,5 +7,12 @@ spring:
     web-environment: false
     banner-mode: "off"
 
+logging.file: application-debug.log
 logging.level:
-  root: ERROR
+  root: INFO
+logging:
+  file:
+    max-size: 20 MB
+
+
+
