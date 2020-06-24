@@ -13,6 +13,7 @@ import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
+import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
@@ -36,6 +37,8 @@ public class InformationExtractor implements HasLogger {
   CompanyLemmatizer companyLemmatizer = new CompanyLemmatizer();
   PersonNameLexicon personNameLexicon = new PersonNameLexicon();
 
+  ExtractorPeople extractorPeople = new ExtractorPeople();
+
   public MetadataWithContext extract(final HocrDocument document) {
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
@@ -55,6 +58,7 @@ public class InformationExtractor implements HasLogger {
     getDrawingDate(document).ifPresent(metadata::setDrawingDate);
     getCompany(document).ifPresent(metadata::setCompany);
 
+    extractorPeople.extract(document).ifPresent(metadata::setPeople);
     metadata.setPeople(getPoeple(document));
 
     //assignDefaultSignDate(metadata);
