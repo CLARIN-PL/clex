@@ -243,7 +243,7 @@ public class InformationExtractor implements HasLogger {
       return true;
     }
 
-    if ((hitsCounter == 1) && (rest.size() > 5)) {
+    if ((hitsCounter <= 1) && (rest.size() > 5)) {
       return false;
     }
 
