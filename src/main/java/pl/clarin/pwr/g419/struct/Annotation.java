@@ -49,6 +49,21 @@ public class Annotation {
         collect(Collectors.joining(" "));
   }
 
+  public String getWholeLineText() {
+    int startLineIndex = indexBegin;
+    while (!page.get(startLineIndex).isLineBegin()) {
+      startLineIndex--;
+    }
+
+    int endLineIndex = indexBegin;
+    while (!page.get(endLineIndex).isLineEnd()) {
+      endLineIndex++;
+    }
+
+    return IntStream.range(startLineIndex, endLineIndex).mapToObj(page::get).map(Bbox::getText).
+        collect(Collectors.joining(" "));
+  }
+
   public String getNorm() {
     return norm.orElse(getText());
   }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,13 @@ public class AnnotationList extends ArrayList<Annotation> {
         .collect(Collectors.toList()));
   }
 
+  public AnnotationList sortByLocDesc() {
+    return new AnnotationList(this.stream()
+        .sorted((a1, a2) -> compareByLocation(a2, a1))
+        .collect(Collectors.toList()));
+  }
+
+
   public AnnotationList filterByType(final String type) {
     return new AnnotationList(this.stream()
         .filter(a -> a.getType().equals(type))
@@ -44,6 +52,13 @@ public class AnnotationList extends ArrayList<Annotation> {
         .filter(a -> a.getPage().getNo() == pageNo)
         .collect(Collectors.toList()));
   }
+
+  public AnnotationList filter(final Predicate<? super Annotation> pred) {
+    return new AnnotationList(this.stream()
+        .filter(pred)
+        .collect(Collectors.toList()));
+  }
+
 
   public AnnotationList topScore() {
     if (size() == 0) {
@@ -73,8 +88,14 @@ public class AnnotationList extends ArrayList<Annotation> {
 
   public Optional<FieldContext<String>> getFirst() {
     return stream().findFirst()
-        .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource()));
+        .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource(), an.getPage().getNo()));
   }
+
+  public Optional<FieldContext<String>> getLast() {
+    return stream().findFirst()
+        .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource(), an.getPage().getNo()));
+  }
+
 
   private int compareByLocation(final Annotation a1, final Annotation a2) {
     final int page = Integer.compare(a1.getPage().getNo(), a2.getPage().getNo());

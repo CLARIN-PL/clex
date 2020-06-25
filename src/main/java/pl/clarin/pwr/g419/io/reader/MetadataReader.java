@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -17,6 +18,7 @@ import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.Person;
 
+@Slf4j
 public class MetadataReader implements HasLogger {
 
   public List<Metadata> parse(final Path filename) throws Exception {
@@ -48,6 +50,7 @@ public class MetadataReader implements HasLogger {
     m.setStreet(record.get(Metadata.STREET));
     m.setStreetNo(record.get(Metadata.STREET_NO));
     m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
+    log.info("rs = " + record.size());
     if (record.size() > 10) {
       m.setSignsPage(record.get(Metadata.SIGN_PAGE));
     }

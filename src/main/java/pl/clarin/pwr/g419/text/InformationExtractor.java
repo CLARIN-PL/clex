@@ -19,15 +19,16 @@ import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
-      new AnnotatorDate(),
-      new AnnotatorPeriod(),
-      new AnnotatorCompanyPrefix(),
-      new AnnotatorCompanySuffix(),
-      new AnnotatorCompany(),
-      new AnnotatorRole(),
-      new AnnotatorPersonHorizontal(),
-      new AnnotatorPersonVertical(),
-      new AnnotatorDrawingDate()
+//      new AnnotatorDate(),
+//      new AnnotatorPeriod(),
+//      new AnnotatorCompanyPrefix(),
+//      new AnnotatorCompanySuffix(),
+//      new AnnotatorCompany(),
+//      new AnnotatorRole(),
+//      new AnnotatorPersonHorizontal(),
+//      new AnnotatorPersonVertical(),
+//      new AnnotatorDrawingDate(),
+      new AnnotatorSignsPage()
   );
 
   CompanyLexicon companyLexicon = new CompanyLexicon();
@@ -43,10 +44,11 @@ public class InformationExtractor implements HasLogger {
 
 
     final MetadataWithContext metadata = new MetadataWithContext();
+    getSignsPageWithAnnotator(document).ifPresent(metadata::setSignsPage);
+    log.info(" FOR DOC: " + document.getId() + " rec signsPAge = " + metadata.getSignsPage());
 
-    final FieldContext<String> signsPageNr = getSignsPage(document);
-
-    metadata.setSignsPage(signsPageNr);
+    //final FieldContext<String> signsPageNr = getSignsPage(document);
+    //metadata.setSignsPage(signsPageNr);
 
     getPeriod(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
@@ -132,6 +134,24 @@ public class InformationExtractor implements HasLogger {
     return value;
   }
 
+  private Optional<FieldContext<String>> getSignsPageWithAnnotator(final HocrDocument document) {
+    final Optional<FieldContext<String>> value = document.getAnnotations()
+        .filterByType(AnnotatorSignsPage.SIGNS_PAGE)
+        .topScore()
+        .sortByLocDesc()
+        .filter(ann -> isThisAnnotationWithSignsActually(ann))
+        .getFirst();
+
+    value.ifPresent(vc -> {
+      vc.setField(String.valueOf(vc.getPage()));
+      document.setPageNrWithSigns(vc.getPage());
+    });
+
+    return value;
+
+  }
+
+
   private FieldContext<String> getSignsPage(final HocrDocument document) {
     final List<Pair<Integer, Integer>> linesWithPodpisy = findLinesWithSigns(document);
     final Pair<Integer, Integer> lineWithSigns;
@@ -154,7 +174,14 @@ public class InformationExtractor implements HasLogger {
     return new FieldContext<String>("" + pageNrWithSigns, "", null);
   }
 
+  private boolean isThisAnnotationWithSignsActually(final Annotation ann) {
+    return isThisLineWithSignsActually(ann.getWholeLineText());
+  }
+
   private boolean isThisLineWithSignsActually(final String line) {
+
+    log.info(" LINIA :" + line);
+
     final String[] strWords = line.trim().toLowerCase().split("[ :.,']");
     final Set<String> words = new HashSet();
     for (final String s : strWords) {
@@ -182,15 +209,18 @@ public class InformationExtractor implements HasLogger {
       }
     }
 
+    boolean result = true;
     if (hitsCounter >= rest.size()) {
-      return true;
+      result = true;
     }
 
     if ((hitsCounter <= 1) && (rest.size() > 5)) {
-      return false;
+      result = false;
     }
 
-    return true;
+    log.info("result " + result);
+
+    return result;
   }
 
 
@@ -208,5 +238,21 @@ public class InformationExtractor implements HasLogger {
     }
     return result;
   }
+
+  public List<Pair<Integer, Integer>> findLinesWithSignsUsingAnnotations(final HocrDocument document) {
+    final List<Pair<Integer, Integer>> result = new ArrayList<>();
+
+    for (int pageIndex = 0; pageIndex < document.size(); pageIndex++) {
+      final HocrPage page = document.get(pageIndex);
+      for (int lineIndex = 0; lineIndex < page.getLines().size(); lineIndex++) {
+        final String line = page.getLines().get(lineIndex).getText();
+        if (line.matches("(?i).*\\bPodpisy\\b.*")) {
+          result.add(Pair.of(pageIndex + 1, lineIndex));
+        }
+      }
+    }
+    return result;
+  }
+
 
 }
