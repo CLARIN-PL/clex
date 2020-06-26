@@ -14,7 +14,7 @@ class AnnotatorPersonHorizontalTest extends Specification {
     @Unroll
     def "annotate on '#text' should return '#norm"() {
         given:
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
             new AnnotatorRole().annotate(page)
 
         when:

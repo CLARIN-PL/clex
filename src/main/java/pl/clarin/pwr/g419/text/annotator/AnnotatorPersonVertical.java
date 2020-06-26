@@ -128,7 +128,7 @@ public class AnnotatorPersonVertical extends Annotator {
                                          final List<Pair<Range, Bboxes>> lines,
                                          final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
-    final Range firsRange = new Range(firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
+    final Range firsRange = new Range(page, firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
     for (int i = 0; i < lines.size() - 1; i++) {
       final Range line = lines.get(i).getKey();
       if (firsRange.within(line) > 0.9) {

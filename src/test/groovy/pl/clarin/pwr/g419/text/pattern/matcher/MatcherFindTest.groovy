@@ -14,7 +14,7 @@ class MatcherFindTest extends Specification {
             def p = new Pattern().next(new MatcherLowerText("zaakceptowny"))
             def matcher = new MatcherFind(p, maxDistance)
             def text = "w dniu skondolifowany raport został zaakceptowny"
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
 
         when:
             def result = matcher.matchesAt(page, pos)
@@ -36,7 +36,7 @@ class MatcherFindTest extends Specification {
             def p = new Pattern().next(new MatcherLowerText("zaakceptowny").group(groupName))
             def matcher = new MatcherFind(p, 6)
             def text = "w dniu skondolifowany raport został zaakceptowny"
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
 
         when:
             def result = matcher.matchesAt(page, 0)

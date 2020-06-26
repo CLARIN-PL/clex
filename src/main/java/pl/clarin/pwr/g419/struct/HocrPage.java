@@ -5,20 +5,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
-import lombok.extern.java.Log;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
-@Log
+@Slf4j
+@EqualsAndHashCode(exclude = "document")
+@ToString(exclude = "document")
 public class HocrPage extends Bboxes {
 
   int no;
   Annotations annotations = new Annotations();
   List<Range> lines;
+  HocrDocument document;
 
-  public HocrPage() {
+
+  public HocrPage(final HocrDocument doc) {
+    this.document = doc;
   }
 
-  public HocrPage(final List<Bbox> bboxes) {
+  public HocrPage(final HocrDocument doc, final List<Bbox> bboxes) {
+    this(doc);
     this.addAll(bboxes);
   }
 
@@ -46,7 +54,7 @@ public class HocrPage extends Bboxes {
   }
 
   public List<String> getTextLinesFromMergedLines() {
-    return lines.stream().map(line -> line.getText(this)).collect(Collectors.toList());
+    return lines.stream().map(line -> line.getText()).collect(Collectors.toList());
   }
 
   public void sortLinesByTop() {
@@ -59,14 +67,14 @@ public class HocrPage extends Bboxes {
   public void dumpTextLinesFromBBoxes() {
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     for (int i = 0; i < linesFromBBoxes.size(); i++) {
-      log.fine(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
+      log.debug(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
     }
   }
 
   public void dumpTextLinesFromMergedLines() {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     for (int i = 0; i < linesFromMergedLines.size(); i++) {
-      log.fine(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
+      log.debug(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
     }
   }
 
@@ -74,20 +82,20 @@ public class HocrPage extends Bboxes {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     if (linesFromBBoxes.size() != linesFromMergedLines.size()) {
-      log.fine(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
+      log.debug(" page " + getNo() + " lines structures have different size: " + linesFromBBoxes.size() + " vs " + linesFromMergedLines.size());
       return false;
     }
 
     boolean outOfSync = false;
     for (int i = 0; i < getTextLinesFromMergedLines().size(); i++) {
       if (!linesFromBBoxes.get(i).equals(linesFromMergedLines.get(i))) {
-        log.fine(" page " + getNo() + " niezgodność w lini nr " + i);
+        log.debug(" page " + getNo() + " niezgodność w lini nr " + i);
         outOfSync = true;
       }
     }
 
     if (!outOfSync) {
-      log.fine(" page " + getNo() + " linie zgodnie");
+      log.debug(" page " + getNo() + " linie zgodnie");
       return true;
     }
 

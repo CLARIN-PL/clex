@@ -6,7 +6,9 @@ import com.google.common.collect.Sets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AnnotationList extends ArrayList<Annotation> {
 
   public AnnotationList(final Collection<Annotation> annotations) {

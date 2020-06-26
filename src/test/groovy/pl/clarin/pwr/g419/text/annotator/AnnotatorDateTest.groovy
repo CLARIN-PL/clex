@@ -11,7 +11,7 @@ class AnnotatorDateTest extends Specification {
     @Unroll
     def "annotate on '#text' should return #date"() {
         given:
-            def page = new HocrPage(getSequenceOfBboxes(text.split(" ") as List))
+            def page = new HocrPage(null, getSequenceOfBboxes(text.split(" ") as List))
             def annotator = new AnnotatorDate()
 
         when:
@@ -31,7 +31,7 @@ class AnnotatorDateTest extends Specification {
     @Unroll
     def "annotate on '#text' should return #norm"() {
         given:
-            def page = new HocrPage(getSequenceOfBboxes(text.split(" ") as List))
+            def page = new HocrPage(null, getSequenceOfBboxes(text.split(" ") as List))
             def annotator = new AnnotatorDate()
 
         when:

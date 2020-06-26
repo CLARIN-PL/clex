@@ -1,22 +1,27 @@
 package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
-import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
-import pl.clarin.pwr.g419.struct.*;
+import pl.clarin.pwr.g419.struct.AnnotationList;
+import pl.clarin.pwr.g419.struct.FieldContext;
+import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.text.annotator.*;
+import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
+import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
+import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
+
+@Slf4j
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
@@ -34,13 +39,19 @@ public class InformationExtractor implements HasLogger {
   CompanyLexicon companyLexicon = new CompanyLexicon();
   NormalizerCompany companyNormalizer = new NormalizerCompany();
   CompanyLemmatizer companyLemmatizer = new CompanyLemmatizer();
-  PersonNameLexicon personNameLexicon = new PersonNameLexicon();
+
+
+  ExtractorPeople extractorPeople = new ExtractorPeople();
+  ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
 
   public MetadataWithContext extract(final HocrDocument document) {
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
+
     final MetadataWithContext metadata = new MetadataWithContext();
+
+    extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
 
     getPeriod(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
@@ -50,7 +61,7 @@ public class InformationExtractor implements HasLogger {
     getDrawingDate(document).ifPresent(metadata::setDrawingDate);
     getCompany(document).ifPresent(metadata::setCompany);
 
-    metadata.setPeople(getPoeple(document));
+    extractorPeople.extract(document).ifPresent(metadata::setPeople);
 
     //assignDefaultSignDate(metadata);
 
@@ -68,43 +79,6 @@ public class InformationExtractor implements HasLogger {
     }
   }
 
-  private List<FieldContext<Person>> getPoeple(final HocrDocument document) {
-    return document.getAnnotations()
-        .filterByType(AnnotatorPersonHorizontal.PERSON)
-        .removeNested()
-        .sortByLoc()
-        .stream()
-        .map(an -> new FieldContext<>(strToPerson(an.getNorm()), an.getContext(), an.getSource()))
-        .collect(Collectors.toMap(o -> personToFirstLastName(o.getField()), Function.identity(),
-            (p1, p2) -> p1.getField().getName().length() > p2.getField().getName().length() ? p1 : p2))
-        // take the one with longer name or latter occurance
-        .values().stream().collect(Collectors.toList());
-  }
-
-  private String personToFirstLastName(final Person p) {
-    final String[] parts = p.getName().toLowerCase().split(" ");
-    if (parts.length == 1) {
-      return parts[0];
-    }
-    return parts[0] + " " + parts[parts.length - 1];
-  }
-
-  private Person strToPerson(final String str) {
-    final Person person = new Person();
-    final String[] parts = str.split("[|]");
-    if (parts.length > 0) {
-      person.setDate(parseDate(parts[0]));
-    }
-    if (parts.length > 1) {
-      person.setRole(parts[1].toLowerCase());
-    }
-    if (parts.length > 2) {
-      final String name = parts[2]
-          .replaceAll("[ ]*-[ ]*", "-");
-      person.setName(personNameLexicon.approximate(name));
-    }
-    return person;
-  }
 
   private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
       final HocrDocument document) {
@@ -163,12 +137,5 @@ public class InformationExtractor implements HasLogger {
     return value;
   }
 
-  private Date parseDate(final String str) {
-    try {
-      return new SimpleDateFormat("yyyy-MM-dd").parse(str);
-    } catch (final Exception e) {
-      return null;
-    }
-  }
 
 }
