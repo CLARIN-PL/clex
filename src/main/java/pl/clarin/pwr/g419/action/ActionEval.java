@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import pl.clarin.pwr.g419.text.normalization.Normalizer;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
 @Component
+@Slf4j
 public class ActionEval extends Action {
 
   ActionOptionMetadata optionMetadata = new ActionOptionMetadata();
