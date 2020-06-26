@@ -1,15 +1,21 @@
 package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
-import pl.clarin.pwr.g419.struct.*;
+import pl.clarin.pwr.g419.struct.AnnotationList;
+import pl.clarin.pwr.g419.struct.FieldContext;
+import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
+import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
@@ -36,6 +42,7 @@ public class InformationExtractor implements HasLogger {
 
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
+  ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
 
   public MetadataWithContext extract(final HocrDocument document) {
     document.stream()
@@ -43,7 +50,8 @@ public class InformationExtractor implements HasLogger {
 
 
     final MetadataWithContext metadata = new MetadataWithContext();
-    getSignsPageWithAnnotator(document).ifPresent(metadata::setSignsPage);
+
+    extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
 
     getPeriod(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
@@ -127,111 +135,6 @@ public class InformationExtractor implements HasLogger {
       }
     });
     return value;
-  }
-
-  private Optional<FieldContext<String>> getSignsPageWithAnnotator(final HocrDocument document) {
-    final Optional<FieldContext<String>> value = document.getAnnotations()
-        .filterByType(AnnotatorSignsPage.SIGNS_PAGE)
-        .topScore()
-        .sortByLocDesc()
-        .filter(ann -> isThisAnnotationWithSignsActually(ann))
-        .getFirst();
-
-    value.ifPresent(vc -> {
-      vc.setField(String.valueOf(vc.getPage()));
-      document.setPageNrWithSigns(vc.getPage());
-    });
-
-    return value;
-
-  }
-
-
-  private FieldContext<String> getSignsPage(final HocrDocument document) {
-    final List<Pair<Integer, Integer>> linesWithPodpisy = findLinesWithSigns(document);
-    final Pair<Integer, Integer> lineWithSigns;
-
-    if ((linesWithPodpisy == null) || (linesWithPodpisy.size() == 0)) {
-      return new FieldContext<String>("0", "", null);
-    } else if (linesWithPodpisy.size() == 1) {
-      lineWithSigns = linesWithPodpisy.get(0);
-    } else {
-      lineWithSigns = linesWithPodpisy.stream()
-          .max((p1, p2) -> p1.getLeft() < p2.getLeft() ? -1 : 1).get();
-    }
-
-    final String line = document.getLineInPage(lineWithSigns.getRight(), lineWithSigns.getLeft() - 1);
-    int pageNrWithSigns = 0;
-    if (isThisLineWithSignsActually(line)) {
-      pageNrWithSigns = lineWithSigns.getLeft();
-    }
-    document.setPageNrWithSigns(pageNrWithSigns);
-    return new FieldContext<String>("" + pageNrWithSigns, "", null);
-  }
-
-  private boolean isThisAnnotationWithSignsActually(final Annotation ann) {
-    return isThisLineWithSignsActually(ann.getWholeLineText());
-  }
-
-  private boolean isThisLineWithSignsActually(final String line) {
-
-    log.info(" LINIA :" + line);
-
-    final String[] strWords = line.trim().toLowerCase().split("[ :.,']");
-    final Set<String> words = new HashSet();
-    for (final String s : strWords) {
-      if (s.length() > 0) {
-        words.add(s);
-      }
-    }
-
-    final Set<String> highlightWords = Set.of("podpisy", "wszystkich", "członków", "zarządu",
-        "osób", "odpowiedzialnych", "reprezentujących");
-    final Set<String> skipWords = Set.of("s", "a", "grupy", "kapitałowej", "data", "wchodzących", "skład");
-
-    final Set<String> rest = new HashSet<>();
-    int hitsCounter = 0;
-    for (final String w : words) {
-      if (highlightWords.contains(w)) {
-        hitsCounter++;
-      } else {
-        if (!skipWords.contains(w)) {
-          if (w.length() > 1) {
-            // jeszcze może odfiltrowywać słowa będące mieszanką cyfr o liter
-            rest.add(w);
-          }
-        }
-      }
-    }
-
-    boolean result = true;
-    if (hitsCounter >= rest.size()) {
-      result = true;
-    }
-
-    if ((hitsCounter <= 1) && (rest.size() > 5)) {
-      result = false;
-    }
-
-    log.info("result " + result);
-
-    return result;
-  }
-
-
-  public List<Pair<Integer, Integer>> findLinesWithSigns(final HocrDocument document) {
-    final List<Pair<Integer, Integer>> result = new ArrayList<>();
-
-    for (int pageIndex = 0; pageIndex < document.size(); pageIndex++) {
-      final HocrPage page = document.get(pageIndex);
-      for (int lineIndex = 0; lineIndex < page.getLines().size(); lineIndex++) {
-        final String line = page.getLines().get(lineIndex).getText();
-        if (line.matches("(?i).*\\bPodpisy\\b.*")) {
-          result.add(Pair.of(pageIndex + 1, lineIndex));
-        }
-      }
-    }
-    return result;
   }
 
 
