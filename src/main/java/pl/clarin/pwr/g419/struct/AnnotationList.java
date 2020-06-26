@@ -91,12 +91,6 @@ public class AnnotationList extends ArrayList<Annotation> {
         .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource(), an.getPage().getNo()));
   }
 
-  public Optional<FieldContext<String>> getLast() {
-    return stream().findFirst()
-        .map(an -> new FieldContext<>(an.getNorm(), an.getContext(), an.getSource(), an.getPage().getNo()));
-  }
-
-
   private int compareByLocation(final Annotation a1, final Annotation a2) {
     final int page = Integer.compare(a1.getPage().getNo(), a2.getPage().getNo());
     if (page != 0) {

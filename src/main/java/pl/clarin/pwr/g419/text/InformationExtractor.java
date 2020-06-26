@@ -19,16 +19,15 @@ import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
-//      new AnnotatorDate(),
-//      new AnnotatorPeriod(),
-//      new AnnotatorCompanyPrefix(),
-//      new AnnotatorCompanySuffix(),
-//      new AnnotatorCompany(),
-//      new AnnotatorRole(),
-//      new AnnotatorPersonHorizontal(),
-//      new AnnotatorPersonVertical(),
-//      new AnnotatorDrawingDate(),
-      new AnnotatorSignsPage()
+      new AnnotatorDate(),
+      new AnnotatorPeriod(),
+      new AnnotatorCompanyPrefix(),
+      new AnnotatorCompanySuffix(),
+      new AnnotatorCompany(),
+      new AnnotatorRole(),
+      new AnnotatorPersonHorizontal(),
+      new AnnotatorPersonVertical(),
+      new AnnotatorDrawingDate()
   );
 
   CompanyLexicon companyLexicon = new CompanyLexicon();
@@ -45,10 +44,6 @@ public class InformationExtractor implements HasLogger {
 
     final MetadataWithContext metadata = new MetadataWithContext();
     getSignsPageWithAnnotator(document).ifPresent(metadata::setSignsPage);
-    log.info(" FOR DOC: " + document.getId() + " rec signsPAge = " + metadata.getSignsPage());
-
-    //final FieldContext<String> signsPageNr = getSignsPage(document);
-    //metadata.setSignsPage(signsPageNr);
 
     getPeriod(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
@@ -225,21 +220,6 @@ public class InformationExtractor implements HasLogger {
 
 
   public List<Pair<Integer, Integer>> findLinesWithSigns(final HocrDocument document) {
-    final List<Pair<Integer, Integer>> result = new ArrayList<>();
-
-    for (int pageIndex = 0; pageIndex < document.size(); pageIndex++) {
-      final HocrPage page = document.get(pageIndex);
-      for (int lineIndex = 0; lineIndex < page.getLines().size(); lineIndex++) {
-        final String line = page.getLines().get(lineIndex).getText();
-        if (line.matches("(?i).*\\bPodpisy\\b.*")) {
-          result.add(Pair.of(pageIndex + 1, lineIndex));
-        }
-      }
-    }
-    return result;
-  }
-
-  public List<Pair<Integer, Integer>> findLinesWithSignsUsingAnnotations(final HocrDocument document) {
     final List<Pair<Integer, Integer>> result = new ArrayList<>();
 
     for (int pageIndex = 0; pageIndex < document.size(); pageIndex++) {

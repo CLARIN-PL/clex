@@ -135,20 +135,20 @@ public class ActionEval extends Action {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList(
-        List.of(evalField(document.getId(), "sign_page", normalizer.getSignPage(),
-            ref.getSignsPage(), metadata.getSignsPage()))
-//        evalField(document.getId(), "drawing_date", normalizer.getDate(),
-//            ref.getDrawingDate(), metadata.getDrawingDate()),
-//        evalField(document.getId(), "period_from", normalizer.getDate(),
-//            ref.getPeriodFrom(), metadata.getPeriodFrom()),
-//        evalField(document.getId(), "period_to", normalizer.getDate(),
-//            ref.getPeriodTo(), metadata.getPeriodTo()),
-//        evalField(document.getId(), "company", normalizer.getCompany(),
-//            ref.getCompany(), metadata.getCompany())
+//        evalField(document.getId(), "sign_page", normalizer.getSignPage(),
+//            ref.getSignsPage(), metadata.getSignsPage()),
+        evalField(document.getId(), "drawing_date", normalizer.getDate(),
+            ref.getDrawingDate(), metadata.getDrawingDate()),
+        evalField(document.getId(), "period_from", normalizer.getDate(),
+            ref.getPeriodFrom(), metadata.getPeriodFrom()),
+        evalField(document.getId(), "period_to", normalizer.getDate(),
+            ref.getPeriodTo(), metadata.getPeriodTo()),
+        evalField(document.getId(), "company", normalizer.getCompany(),
+            ref.getCompany(), metadata.getCompany())
     );
 
-//    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-//        ref.getPeople(), metadata.getPeople()));
+    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
+        ref.getPeople(), metadata.getPeople()));
 
     return records;
   }
@@ -159,9 +159,7 @@ public class ActionEval extends Action {
                                                   final T reference,
                                                   final FieldContext<T> extracted) {
     final String referenceValue = normalizer.normalize(reference);
-    log.info("reference value = " + referenceValue);
     final String extractedValue = normalizer.normalize(extracted.getField());
-    log.info("extracted value = " + extractedValue);
     if (Objects.equals(referenceValue, extractedValue)) {
       globalCounter.addTrue();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
