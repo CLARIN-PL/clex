@@ -14,7 +14,7 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
 
   @Override
   public Optional<FieldContext<String>> extract(final HocrDocument document) {
-    return getSignsPage(document);
+    return getSignsPageWithAnnotator(document);
   }
 
   private Optional<FieldContext<String>> getSignsPageWithAnnotator(final HocrDocument document) {
