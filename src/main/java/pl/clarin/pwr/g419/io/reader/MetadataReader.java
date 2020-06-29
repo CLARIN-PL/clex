@@ -48,7 +48,10 @@ public class MetadataReader implements HasLogger {
     m.setStreet(record.get(Metadata.STREET));
     m.setStreetNo(record.get(Metadata.STREET_NO));
     m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
-    m.setSignsPage(record.get(Metadata.SIGN_PAGE));
+    if (record.size() > 10) {
+      m.setSignsPage(record.get(Metadata.SIGN_PAGE));
+    }
+
     return m;
   }
 

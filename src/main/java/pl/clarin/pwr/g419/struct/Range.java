@@ -2,9 +2,11 @@ package pl.clarin.pwr.g419.struct;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(exclude = "page")
+@ToString(exclude = "page")
 public class Range {
 
   HocrPage page;

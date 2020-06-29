@@ -11,7 +11,7 @@ class AnnotatorCompanyTest extends Specification {
     @Unroll
     def "annotate on '#text' should return '#norm"() {
         given:
-            def page = new HocrPage(TestUtils.getSequenceOfBboxes(text))
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
             def annotatorPeriod = new AnnotatorPeriod()
             def annotatorCompanyPrefix = new AnnotatorCompanyPrefix()
             def annotatorCompanySuffix = new AnnotatorCompanySuffix()
@@ -30,8 +30,8 @@ class AnnotatorCompanyTest extends Specification {
         where:
             text                                                                        || norm
             "sprawozdanie finansowe oktan sa"                                           || ["OKTAN SA"]
-            "nazwa jednostki : oktan sa"                                                 || ["OKTAN SA"]
-            "nazwa jednostki : oktan s.a."                                                || ["OKTAN S.A."]
+            "nazwa jednostki : oktan sa"                                                || ["OKTAN SA"]
+            "nazwa jednostki : oktan s.a."                                              || ["OKTAN S.A."]
             "działalności grupy kapitałowej energamontaż-północ w I-szym półroczu 2009" || ["ENERGAMONTAŻ-PÓŁNOC"]
             "Raport Grupy Kapitałowej Banku Milennium S.A."                             || ["BANKU MILENNIUM S.A."]
             "Grupy Kapitałowej ELEKTROTIM"                                              || ["ELEKTROTIM"]

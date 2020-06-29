@@ -10,7 +10,7 @@ class MatcherAnnotationTypeTest extends Specification {
 
     def "matchesAt for index #index should return #length"() {
         given:
-            def page = new HocrPage(
+            def page = new HocrPage(null,
                     getSequenceOfBboxes(["1", "stycznia", "2020", "2", "LUTEGO", "2019", "marzec", "2018"] as List))
             def matcher = new MatcherAnnotationType(type1)
             page.getAnnotations().add(new Annotation(type1, page, 0, 3))

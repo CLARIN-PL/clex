@@ -1,28 +1,36 @@
 package pl.clarin.pwr.g419.struct;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Data
 @Slf4j
+@EqualsAndHashCode(exclude = "document")
+@ToString(exclude = "document")
 public class HocrPage extends Bboxes {
 
   int no;
   Annotations annotations = new Annotations();
   List<Range> lines;
   HocrDocument document;
-  Map<Integer, Set<Pair<Integer, Integer>>> histogram;
+
+  LineHeightHistogram histogram;
+
 
   public HocrPage(final HocrDocument doc) {
     this.document = doc;
   }
 
-//  public HocrPage(final List<Bbox> bboxes) {
-//    this.addAll(bboxes);
-//  }
+  public HocrPage(final HocrDocument doc, final List<Bbox> bboxes) {
+    this(doc);
+    this.addAll(bboxes);
+  }
 
   public void addAnnotation(final Annotation annotation) {
     this.annotations.add(annotation);
@@ -53,21 +61,6 @@ public class HocrPage extends Bboxes {
 
   public void sortLinesByTop() {
     Collections.sort(lines, (o1, o2) -> (o1.getUpperBound() == o2.getUpperBound() ? 0 : (o1.getUpperBound() < o2.getUpperBound() ? -1 : 1)));
-  }
-
-  public Map<Integer, Set<Pair<Integer, Integer>>> buildHistogramOfLinesHeightsForPage() {
-    final Map<Integer, Set<Pair<Integer, Integer>>> histogram = new HashMap<>();
-    for (int lineNr = 0; lineNr < lines.size(); lineNr++) {
-      final Range line = lines.get(lineNr);
-      Set<Pair<Integer, Integer>> lineNrs = histogram.get(line.getLength());
-      if (lineNrs == null) {
-        lineNrs = new HashSet<>();
-        histogram.put(line.getLength(), lineNrs);
-      }
-      lineNrs.add(Pair.of(getNo(), lineNr));
-    }
-    ;
-    return histogram;
   }
 
 
@@ -109,15 +102,6 @@ public class HocrPage extends Bboxes {
     }
 
     return false;
-  }
-
-  public void printHistogramOfLinesHeightsForPage() {
-    final Map<Integer, Set<Pair<Integer, Integer>>> histogram = buildHistogramOfLinesHeightsForPage();
-
-    final List<Integer> keys = new LinkedList<>(histogram.keySet());
-    keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
-    log.debug(" ---------- Lines Heights histogram for page " + getNo());
-    keys.stream().forEach(key -> log.debug(" Key : " + key + "  counter: " + histogram.get(key).size()));
   }
 
 

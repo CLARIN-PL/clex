@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import pl.clarin.pwr.g419.text.normalization.Normalizer;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
 
 @Component
+@Slf4j
 public class ActionEval extends Action {
 
   ActionOptionMetadata optionMetadata = new ActionOptionMetadata();
@@ -73,8 +75,7 @@ public class ActionEval extends Action {
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
     // jego przetwarzania
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
-    //paths.parallelstream().forEach(path -> {
-    paths.stream().forEach(path -> {
+    paths.parallelStream().forEach(path -> {
       try {
         evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
@@ -133,43 +134,21 @@ public class ActionEval extends Action {
   private List<List<String>> processDocument(final HocrDocument document) {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
-
-    final List<String> evalSignPage = evalField(document.getId(), "sign_page", normalizer.getSignPage(),
-        ref.getSignsPage(), metadata.getSignsPage());
-
     final List<List<String>> records = Lists.newArrayList(
-        List.of(evalSignPage)
+        evalField(document.getId(), "sign_page", normalizer.getSignPage(),
+            ref.getSignsPage(), metadata.getSignsPage()),
+        evalField(document.getId(), "drawing_date", normalizer.getDate(),
+            ref.getDrawingDate(), metadata.getDrawingDate()),
+        evalField(document.getId(), "period_from", normalizer.getDate(),
+            ref.getPeriodFrom(), metadata.getPeriodFrom()),
+        evalField(document.getId(), "period_to", normalizer.getDate(),
+            ref.getPeriodTo(), metadata.getPeriodTo()),
+        evalField(document.getId(), "company", normalizer.getCompany(),
+            ref.getCompany(), metadata.getCompany())
     );
 
-
-    if (document.getPageNrWithSigns() == 0) {
-      return records;
-    }
-
-    if (evalSignPage.get(0).equals("OK")) {
-      getLogger().info(" PAge OK for doc :" + document.getId());
-      records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-          ref.getPeople(), metadata.getPeople()));
-    }
-
-
-//    final List<List<String>> records = Lists.newArrayList(
-//
-////        evalField(document.getId(), "drawing_date", normalizer.getDate(),
-////            ref.getDrawingDate(), metadata.getDrawingDate()),
-////        evalField(document.getId(), "period_from", normalizer.getDate(),
-////            ref.getPeriodFrom(), metadata.getPeriodFrom()),
-////        evalField(document.getId(), "period_to", normalizer.getDate(),
-////            ref.getPeriodTo(), metadata.getPeriodTo()),
-////        evalField(document.getId(), "company", normalizer.getCompany(),
-////            ref.getCompany(), metadata.getCompany()),
-//
-//        List.of(evalField(document.getId(), "sign_page", normalizer.getSignPage(),
-//            ref.getSignsPage(), metadata.getSignsPage()))
-//    );
-
-//    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-//        ref.getPeople(), metadata.getPeople()));
+    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
+        ref.getPeople(), metadata.getPeople()));
 
     return records;
   }

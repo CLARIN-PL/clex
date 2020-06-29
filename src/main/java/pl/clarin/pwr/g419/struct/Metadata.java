@@ -18,7 +18,7 @@ public class Metadata {
   public static String STREET = "street";
   public static String STREET_NO = "street_no";
   public static String PEOPLE = "people";
-  public static String SIGN_PAGE = "sign|_page";
+  public static String SIGN_PAGE = "sign_page";
 
   String id;
   String company;
