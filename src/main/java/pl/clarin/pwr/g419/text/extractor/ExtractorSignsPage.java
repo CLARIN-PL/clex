@@ -34,7 +34,7 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
 
   }
 
-
+  // metoda używana w przypadku wykorzystywania "lines" a nie klasy Annotator
   private Optional<FieldContext<String>> getSignsPage(final HocrDocument document) {
     final List<Pair<Integer, Integer>> linesWithPodpisy = findLinesWithSigns(document);
     final Pair<Integer, Integer> lineWithSigns;
