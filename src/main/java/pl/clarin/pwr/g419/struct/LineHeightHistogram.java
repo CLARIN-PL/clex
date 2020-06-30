@@ -10,15 +10,6 @@ public class LineHeightHistogram {
 
   private final Map<Integer, Set<Pair<Integer, Integer>>> data = new HashMap<>();
 
-  public Set<Pair<Integer, Integer>> get(final Integer key) {
-    return data.get(key);
-  }
-
-  public Set<Pair<Integer, Integer>> put(final Integer key, final Set<Pair<Integer, Integer>> value) {
-    return data.put(key, value);
-  }
-
-
   public LineHeightHistogram(final HocrPage page) {
     this.buildHistogramOfLinesHeightsForPage(page);
   }
@@ -42,9 +33,7 @@ public class LineHeightHistogram {
       lineNrs.add(Pair.of(page.getNo(), lineNr));
     }
     ;
-
   }
-
 
   private void buildHistogramOfLinesHeightsForDocument(final HocrDocument document) {
     document.stream()
@@ -110,7 +99,7 @@ public class LineHeightHistogram {
     final List<Integer> keys = new LinkedList<>(histogram.data.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
     log.debug(" ---------- Lines Heights histogram for page " + page.getNo());
-    keys.stream().forEach(key -> log.debug(" Key : " + key + "  counter: " + histogram.get(key).size()));
+    keys.stream().forEach(key -> log.debug(" Key : " + key + "  counter: " + histogram.data.get(key).size()));
   }
 
 

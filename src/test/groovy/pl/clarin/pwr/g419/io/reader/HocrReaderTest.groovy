@@ -2,7 +2,6 @@ package pl.clarin.pwr.g419.io.reader
 
 import org.apache.commons.io.FileUtils
 import pl.clarin.pwr.g419.struct.Box
-import pl.clarin.pwr.g419.struct.LineHeightHistogram
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,172 +9,158 @@ import java.nio.file.Paths
 
 class HocrReaderTest extends Specification {
 
-    def "Hocr parser should read a valid list of bounding boxes and construct lines and histogram"() {
+    def "Hocr parser should read a valid list of bounding boxes and construct lines"() {
         given:
-        def hocr = File.createTempFile("hocr", ".hocr")
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
-        def document = new HocrReader().parse(hocr.toPath())
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
 
         expect:
-        document.size() == 2
+            document.size() == 2
 
         and:
-        document.get(0).size() == 14
+            document.get(0).size() == 14
 
         and:
-        document.get(0).get(0).getText() == "PROSPER"
-        document.get(0).get(0).getBox() == new Box(305, 571, 607, 615)
+            document.get(0).get(0).getText() == "PROSPER"
+            document.get(0).get(0).getBox() == new Box(305, 571, 607, 615)
 
         and:
-        document.get(0).getLines().size() == 4
+            document.get(0).getLines().size() == 4
 
         and:
-        document.get(0).getLines().get(0).getText() == "PROSPER S.A . "
-        document.get(0).getLines().get(1).getText() == "Półroczne sprawozdanie finansowe "
-        document.get(0).getLines().get(2).getText() == "za okres zakończony 30 czerwca 2005 roku "
-        document.get(0).getLines().get(3).getText() == "1 "
-
-        and:
-        new LineHeightHistogram(document.get(0)).data.size() == 3
-
-        and:
-        new LineHeightHistogram(document).data.size() == 10
-
-        and:
-        new LineHeightHistogram(document.get(0)).get(30).size() == 1
-        new LineHeightHistogram(document.get(0)).get(44).size() == 1
-        new LineHeightHistogram(document.get(0)).get(60).size() == 2
-
-        and:
-        new LineHeightHistogram(document).data.get(60).size() == 6
+            document.get(0).getLines().get(0).getText() == "PROSPER S.A . "
+            document.get(0).getLines().get(1).getText() == "Półroczne sprawozdanie finansowe "
+            document.get(0).getLines().get(2).getText() == "za okres zakończony 30 czerwca 2005 roku "
+            document.get(0).getLines().get(3).getText() == "1 "
 
         cleanup:
-        FileUtils.deleteQuietly(hocr)
+            FileUtils.deleteQuietly(hocr)
     }
 
     def "Hocr parser should read a valid list of bounding boxes with valid no"() {
         given:
-        def hocr = File.createTempFile("hocr", ".hocr")
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
-        def document = new HocrReader().parse(hocr.toPath())
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
 
         expect:
-        document.get(0).get(0).getNo() == 1
-        document.get(0).get(1).getNo() == 2
+            document.get(0).get(0).getNo() == 1
+            document.get(0).get(1).getNo() == 2
 
         and:
-        document.get(1).get(0).getNo() == document.get(0).size()
+            document.get(1).get(0).getNo() == document.get(0).size()
 
         cleanup:
-        FileUtils.deleteQuietly(hocr)
+            FileUtils.deleteQuietly(hocr)
     }
 
     @Unroll
     def "bbox no #no should have lineBegin #lineBegin and lineEnd #lineEnd"() {
         given:
-        def hocr = File.createTempFile("hocr", ".hocr")
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
-        def document = new HocrReader().parse(hocr.toPath())
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
 
         expect:
-        document.get(0).get(no).isLineBegin() == lineBegin
-        document.get(0).get(no).isLineEnd() == lineEnd
+            document.get(0).get(no).isLineBegin() == lineBegin
+            document.get(0).get(no).isLineEnd() == lineEnd
 
         cleanup:
-        FileUtils.deleteQuietly(hocr)
+            FileUtils.deleteQuietly(hocr)
 
         where:
-        no || lineBegin | lineEnd
-        0  || true      | false
-        1  || false     | false
-        2  || false     | true
-        3  || true      | false
-        4  || false     | false
-        5  || false     | true
+            no || lineBegin | lineEnd
+            0  || true      | false
+            1  || false     | false
+            2  || false     | true
+            3  || true      | false
+            4  || false     | false
+            5  || false     | true
 
     }
 
     @Unroll
     def "bbox no #no should have lineEnd #lineEnd and blockEnd #blockEnd"() {
         given:
-        def hocr = File.createTempFile("hocr", ".hocr")
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-blocks.hocr"), hocr)
-        def document = new HocrReader().parse(hocr.toPath())
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-blocks.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
 
         expect:
-        document.get(0).get(no).isBlockEnd() == blockEnd
-        document.get(0).get(no).isLineEnd() == lineEnd
+            document.get(0).get(no).isBlockEnd() == blockEnd
+            document.get(0).get(no).isLineEnd() == lineEnd
 
         cleanup:
-        FileUtils.deleteQuietly(hocr)
+            FileUtils.deleteQuietly(hocr)
 
         where:
-        no || blockEnd | lineEnd
-        9  || true     | false
-        10 || true     | false
-        12 || true     | true
-        33 || true     | true
+            no || blockEnd | lineEnd
+            9  || true     | false
+            10 || true     | false
+            12 || true     | true
+            33 || true     | true
 
     }
 
     @Unroll
     def "cleanHocr(#input) should return '#expected'"() {
         when:
-        def output = HocrReader.cleanHocr(input)
+            def output = HocrReader.cleanHocr(input)
 
         then:
-        output == expected
+            output == expected
 
         where:
-        input                                                          || expected
-        "aaa- Page #12\nbbb"                                           || "aaabbb"
-        "aaa\nbbb"                                                     || "aaa\nbbb"
-        "Converting '/tmp/b0018609-c98f-4903-b6fa-6c4c68a5bd4a':\naaa" || "aaa"
+            input                                                          || expected
+            "aaa- Page #12\nbbb"                                           || "aaabbb"
+            "aaa\nbbb"                                                     || "aaa\nbbb"
+            "Converting '/tmp/b0018609-c98f-4903-b6fa-6c4c68a5bd4a':\naaa" || "aaa"
 
     }
 
     @Unroll
     def "titleToBox(#title) should return #box"() {
         when:
-        def output = HocrReader.titleToBox(title)
+            def output = HocrReader.titleToBox(title)
 
         then:
-        output == box
+            output == box
 
         where:
-        title             || box
-        "aaa 10 20 30 40" || new Box(10, 20, 30, 40)
+            title             || box
+            "aaa 10 20 30 40" || new Box(10, 20, 30, 40)
     }
 
     @Unroll
     def "bbox #no should have text value of #text (test encoding fixing)"() {
         given:
-        def hocr = File.createTempFile("hocr", ".hocr")
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-encoding.hocr"), hocr)
-        def document = new HocrReader().parse(hocr.toPath())
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-encoding.hocr"), hocr)
+            def document = new HocrReader().parse(hocr.toPath())
 
         expect:
-        document.get(0).get(no).getText() == text
+            document.get(0).get(no).getText() == text
 
         cleanup:
-        FileUtils.deleteQuietly(hocr)
+            FileUtils.deleteQuietly(hocr)
 
         where:
-        no  || text
-        7   || "PÓŁROCZE"
-        190 || "Zarządu"
+            no  || text
+            7   || "PÓŁROCZE"
+            190 || "Zarządu"
 
     }
 
     def "getIdFromPath(#path) should return #id"() {
         when:
-        def output = HocrReader.getIdFromPath(Paths.get(path))
+            def output = HocrReader.getIdFromPath(Paths.get(path))
 
         then:
-        output == id
+            output == id
 
         where:
-        path                                                                         || id
-        "../task4-train/reports/105194/Grupa_AMBRA_raport_polroczny_31.12.2008.hocr" || "105194"
+            path                                                                         || id
+            "../task4-train/reports/105194/Grupa_AMBRA_raport_polroczny_31.12.2008.hocr" || "105194"
     }
 }
