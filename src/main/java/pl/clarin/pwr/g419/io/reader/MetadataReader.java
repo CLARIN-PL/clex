@@ -85,9 +85,11 @@ public class MetadataReader implements HasLogger {
   }
 
   private String normalizeRole(final String role) {
-    return role
+    return  role
         .replaceAll("[\\\\]n", " ")
         .replaceAll("[ ]+", " ")
+        .replaceFirst("^[^a-zA-Z]+", "")
+        .replaceAll("[^a-zA-Z]+$", "")
         .toLowerCase();
   }
 
