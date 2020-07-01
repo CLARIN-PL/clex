@@ -9,10 +9,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
-import pl.clarin.pwr.g419.struct.AnnotationList;
-import pl.clarin.pwr.g419.struct.FieldContext;
-import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.struct.MetadataWithContext;
+import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
 import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
@@ -46,11 +43,21 @@ public class InformationExtractor implements HasLogger {
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
 
   public MetadataWithContext extract(final HocrDocument document) {
+
+    final LineHeightHistogram documentHistogram = new LineHeightHistogram(document);
+    document.setHistogram(documentHistogram);
+
+    // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
+    final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
+    document.setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
+
+
     document.stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
 
     final MetadataWithContext metadata = new MetadataWithContext();
+
 
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
 

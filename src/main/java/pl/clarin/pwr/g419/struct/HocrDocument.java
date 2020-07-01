@@ -11,6 +11,8 @@ public class HocrDocument extends ArrayList<HocrPage> {
   String id;
 
   Metadata metadata = new Metadata();
+  LineHeightHistogram histogram;
+  int mostCommonHeightOfLine;
   int pageNrWithSigns = 0;
 
 
@@ -18,6 +20,7 @@ public class HocrDocument extends ArrayList<HocrPage> {
     return new AnnotationList(this.stream().map(HocrPage::getAnnotations)
         .flatMap(Collection::stream).collect(Collectors.toList()));
   }
+
 
   public AnnotationList getAnnotationsForSignsPage() {
     if (pageNrWithSigns == 0) {
@@ -29,6 +32,20 @@ public class HocrDocument extends ArrayList<HocrPage> {
         .map(HocrPage::getAnnotations)
         .flatMap(Collection::stream).collect(Collectors.toList()));
   }
+
+  public AnnotationList getAnnotationsForPeople() {
+    if (pageNrWithSigns == 0) {
+      return new AnnotationList(this.stream()
+          .map(HocrPage::getAnnotations)
+          .flatMap(Collection::stream).collect(Collectors.toList()));
+    } else {
+      return new AnnotationList(this.stream()
+          .filter(page -> page.getNo() == pageNrWithSigns)
+          .map(HocrPage::getAnnotations)
+          .flatMap(Collection::stream).collect(Collectors.toList()));
+    }
+  }
+
 
   public String getLineInPage(final int line, final int page) {
     return this.get(page).getLines().get(line).getText();

@@ -20,6 +20,8 @@ public class HocrPage extends Bboxes {
   List<Range> lines;
   HocrDocument document;
 
+  LineHeightHistogram histogram;
+
 
   public HocrPage(final HocrDocument doc) {
     this.document = doc;

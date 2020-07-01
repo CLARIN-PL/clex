@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 class HocrReaderTest extends Specification {
 
-    def "Hocr parser should read a valid list of bounding boxes and construct lines "() {
+    def "Hocr parser should read a valid list of bounding boxes and construct lines"() {
         given:
             def hocr = File.createTempFile("hocr", ".hocr")
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
