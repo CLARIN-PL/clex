@@ -33,7 +33,8 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorRole(),
       new AnnotatorPersonHorizontal(),
       new AnnotatorPersonVertical(),
-      new AnnotatorDrawingDate()
+      new AnnotatorDrawingDate(),
+      new AnnotatorSignsPage()
   );
 
   CompanyLexicon companyLexicon = new CompanyLexicon();

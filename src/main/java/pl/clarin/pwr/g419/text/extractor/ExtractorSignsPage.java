@@ -1,18 +1,40 @@
 package pl.clarin.pwr.g419.text.extractor;
 
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import pl.clarin.pwr.g419.struct.Annotation;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.HocrPage;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorSignsPage;
 
+@Slf4j
 public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
 
   @Override
   public Optional<FieldContext<String>> extract(final HocrDocument document) {
-    return getSignsPage(document);
+    return getSignsPageWithAnnotator(document);
   }
 
+  private Optional<FieldContext<String>> getSignsPageWithAnnotator(final HocrDocument document) {
+    final Optional<FieldContext<String>> value = document.getAnnotations()
+        .filterByType(AnnotatorSignsPage.SIGNS_PAGE)
+        .topScore()
+        .sortByLocDesc()
+        .filter(ann -> isThisAnnotationWithSignsActually(ann))
+        .getFirst();
+
+    value.ifPresent(vc -> {
+      vc.setField(String.valueOf(vc.getPage()));
+      document.setPageNrWithSigns(vc.getPage());
+    });
+
+    return value;
+
+  }
+
+  // metoda używana w przypadku wykorzystywania "lines" a nie klasy Annotator
   private Optional<FieldContext<String>> getSignsPage(final HocrDocument document) {
     final List<Pair<Integer, Integer>> linesWithPodpisy = findLinesWithSigns(document);
     final Pair<Integer, Integer> lineWithSigns;
@@ -34,6 +56,12 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
     document.setPageNrWithSigns(pageNrWithSigns);
     return Optional.of(new FieldContext<String>("" + pageNrWithSigns, "", null));
   }
+
+
+  private boolean isThisAnnotationWithSignsActually(final Annotation ann) {
+    return isThisLineWithSignsActually(ann.getWholeLineText());
+  }
+
 
   private boolean isThisLineWithSignsActually(final String line) {
     final String[] strWords = line.trim().toLowerCase().split("[ :.,']");
@@ -63,15 +91,16 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
       }
     }
 
+    boolean result = true;
     if (hitsCounter >= rest.size()) {
-      return true;
+      result = true;
     }
 
     if ((hitsCounter <= 1) && (rest.size() > 5)) {
-      return false;
+      result = false;
     }
 
-    return true;
+    return result;
   }
 
 

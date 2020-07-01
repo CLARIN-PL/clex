@@ -9,8 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FieldContext<T> {
 
+  public FieldContext(final T f, final String c, final String r) {
+    this.field = f;
+    this.context = c;
+    this.rule = r;
+  }
+
   T field;
   String context = "";
   String rule = "";
+  int page = 0;
 
 }
