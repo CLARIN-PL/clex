@@ -25,7 +25,7 @@ public class NormalizerPersonDateRole extends Normalizer<Person> {
         .replace("czlonek", "członek")
         .replaceAll(" (spółki|banku)", "")
         .replaceAll(" (zarządu)", "")
-        .replaceAll(" ds[.]", "")
+        .replaceAll(" ds[.][^_]+", "")
         .replaceAll(",[^_]+", "");
   }
 
