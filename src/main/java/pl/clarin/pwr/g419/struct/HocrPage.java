@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Slf4j
-@EqualsAndHashCode(exclude = "document")
+@EqualsAndHashCode(exclude = {"document", "annotations"})
 @ToString(exclude = "document")
 public class HocrPage extends Bboxes {
 
@@ -63,20 +63,24 @@ public class HocrPage extends Bboxes {
     Collections.sort(lines, (o1, o2) -> (o1.getUpperBound() == o2.getUpperBound() ? 0 : (o1.getUpperBound() < o2.getUpperBound() ? -1 : 1)));
   }
 
+  public Bboxes generateBboxesFromSortedLines() {
+    List<Bbox> result = lines.stream().flatMap(line -> line.getBboxes().stream()).collect(Collectors.toList());
+    return new Bboxes(result);
+  }
 
   // ----------------------------------- diagnostyka ------------------------------
 
   public void dumpTextLinesFromBBoxes() {
     final List<String> linesFromBBoxes = getTextLinesFromBBoxes();
     for (int i = 0; i < linesFromBBoxes.size(); i++) {
-      log.debug(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "'");
+      log.debug(" Line(BBox) nr " + i + " is: '" + linesFromBBoxes.get(i) + "' > " + lines.get(i).toCoords());
     }
   }
 
   public void dumpTextLinesFromMergedLines() {
     final List<String> linesFromMergedLines = getTextLinesFromMergedLines();
     for (int i = 0; i < linesFromMergedLines.size(); i++) {
-      log.debug(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "'");
+      log.debug(" Line(mergedLine) nr " + i + " is: '" + linesFromMergedLines.get(i) + "' > " + lines.get(i).toCoords());
     }
   }
 
