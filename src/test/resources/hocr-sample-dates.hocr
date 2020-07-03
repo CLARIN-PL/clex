@@ -1,0 +1,22 @@
+Converting '/tmp/b0018609-c98f-4903-b6fa-6c4c68a5bd4a':
+- Page #1
+- Page #2
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="ocr-system" content="djvu2hocr 0.10.2" />
+  <meta name="ocr-capabilities" content="ocr_carea ocr_page ocr_par ocrx_block ocrx_line ocrx_word" />
+  <title>DjVu hidden text layer</title>
+</head>
+<body>
+<div class="ocr_page" title="bbox 0 0 2479 3508">
+    <span class="ocrx_line" title="bbox 305 571 751 615">
+        <span class="ocrx_word" title="bbox 305 571 607 615">30.08.2011</span>
+        <span class="ocrx_word" title="bbox 630 571 751 615">od 01.04.2008 do 30.09.2008</span>
+    </span>
+</div>
+
+</body>
+</html>
