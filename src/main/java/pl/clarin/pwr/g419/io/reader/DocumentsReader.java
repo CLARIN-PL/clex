@@ -85,6 +85,6 @@ public class DocumentsReader implements HasLogger {
 
   public HocrDocument loadHocrDocument(final Path path)
       throws SAXException, IOException, ParserConfigurationException {
-    return new HocrReader().parse(path);
+    return new HocrReader().parseAndSortBboxes(path);
   }
 }

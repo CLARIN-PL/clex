@@ -50,6 +50,17 @@ public class HocrReader extends DefaultHandler {
 
   Map<String, String> encodingFix = Maps.newHashMap();
 
+  public HocrDocument parseAndSortBboxes(final Path path)
+      throws IOException, SAXException, ParserConfigurationException {
+
+    parse(path);
+
+    this.document = sortBboxesInDocument(this.document);
+    // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
+
+    return document;
+  }
+
   public HocrDocument parse(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
 
@@ -62,10 +73,6 @@ public class HocrReader extends DefaultHandler {
 
     // i teraz w polu lines w każdej stronie mamy linie tekstu wg. kolejności występowania
     // na stronie
-
-    this.document = sortBboxesInDocument(this.document);
-    // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
-
 
     return document;
   }
