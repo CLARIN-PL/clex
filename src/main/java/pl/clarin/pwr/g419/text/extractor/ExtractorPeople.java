@@ -27,7 +27,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
 
   private Optional<List<FieldContext<Person>>> getPeople(final HocrDocument document) {
     // jeśli mamy stronę z podpisami to sprawdźmy czy tylko z niej można coś sensowego wyciągnąć ...
-    if (document.getPageNrWithSigns() != 0) {
+    if (document.getDocContextInfo().getPageNrWithSigns() != 0) {
       final var resultForSignsPage = getPeopleForAnnotations(document.getAnnotationsForSignsPage());
       if (resultForSignsPage.size() > 0) {
         return Optional.of(resultForSignsPage);

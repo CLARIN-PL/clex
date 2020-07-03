@@ -11,46 +11,46 @@ import spock.lang.Subject;
 
 class ExtractorSignsPageTest extends Specification {
 
-  @Subject
-  ExtractorSignsPage extractor = new ExtractorSignsPage();
+    @Subject
+    ExtractorSignsPage extractor = new ExtractorSignsPage();
 
 
-  def "extractor should correctly find page with signs "()
+    def "extractor should correctly find page with signs "()
 
-  {
-    given:
-    def hocr = File.createTempFile("hocr", ".hocr")
-    FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-page-2.hocr"), hocr)
-    final def document = new HocrReader().parse(hocr.toPath())
-    final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
+    {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-page-2.hocr"), hocr)
+            final def document = new HocrReader().parse(hocr.toPath())
+            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
 
-    expect:
-    document.pageNrWithSigns == 2
-    and:
-    signsPageNr.get().field == "2"
+        expect:
+            document.docContextInfo.pageNrWithSigns == 2
+        and:
+            signsPageNr.get().field == "2"
 
-    cleanup:
-    FileUtils.deleteQuietly(hocr)
-  }
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
 
-  def "extractor should correctly not find page with signs in document where page is not present"()
+    def "extractor should correctly not find page with signs in document where page is not present"()
 
-  {
-    given:
-    def hocr = File.createTempFile("hocr", ".hocr")
-    FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-no-signs.hocr"), hocr)
-    final def document = new HocrReader().parse(hocr.toPath())
-    final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
+    {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-no-signs.hocr"), hocr)
+            final def document = new HocrReader().parse(hocr.toPath())
+            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
 
-    expect:
-    document.pageNrWithSigns == 0
+        expect:
+            document.docContextInfo.pageNrWithSigns == 0
 
-    and:
-    signsPageNr.get().field == "0"
+        and:
+            signsPageNr.get().field == "0"
 
-    cleanup:
-    FileUtils.deleteQuietly(hocr)
-  }
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
 
 
 }

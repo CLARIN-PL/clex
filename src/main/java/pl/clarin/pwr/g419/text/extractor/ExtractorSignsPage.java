@@ -27,7 +27,7 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
 
     value.ifPresent(vc -> {
       vc.setField(String.valueOf(vc.getPage()));
-      document.setPageNrWithSigns(vc.getPage());
+      document.getDocContextInfo().setPageNrWithSigns(vc.getPage());
     });
 
     return value;
@@ -53,7 +53,7 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
     if (isThisLineWithSignsActually(line)) {
       pageNrWithSigns = lineWithSigns.getLeft();
     }
-    document.setPageNrWithSigns(pageNrWithSigns);
+    document.getDocContextInfo().setPageNrWithSigns(pageNrWithSigns);
     return Optional.of(new FieldContext<String>("" + pageNrWithSigns, "", null));
   }
 
