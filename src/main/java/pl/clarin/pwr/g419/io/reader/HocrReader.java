@@ -74,6 +74,7 @@ public class HocrReader extends DefaultHandler {
     // i teraz w polu lines w każdej stronie mamy linie tekstu wg. kolejności występowania
     // na stronie
 
+
     return document;
   }
 

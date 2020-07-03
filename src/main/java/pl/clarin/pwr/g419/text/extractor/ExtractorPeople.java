@@ -32,7 +32,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
       if (resultForSignsPage.size() > 0) {
         return Optional.of(resultForSignsPage);
       } else {
-        log.info("DOC ID :" + document.getId() + " Znaleziono stronę z podpisamie ale nie znaleziono na niej adnotacji");
+        log.info("DOC ID :" + document.getId() + " Znaleziono stronę z podpisami ale nie znaleziono na niej adnotacji");
       }
     }
     // .. jeśli nie można to procesujemy standardowo
