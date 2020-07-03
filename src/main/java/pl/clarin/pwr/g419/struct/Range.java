@@ -3,6 +3,7 @@ package pl.clarin.pwr.g419.struct;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(exclude = "page")
@@ -74,5 +75,21 @@ public class Range {
         this.getLastBoxInRangeIndex() >= index);
   }
 
+  public List<Bbox> getBboxes() {
+    return page.subList(firstBoxInRangeIndex, lastBoxInRangeIndex + 1);
+  }
+
+  public String toCoords() {
+    return " [t:" + lowerBound + ",b:" + upperBound + "] " +
+        "[l:" + getFirstBBox().getBox().getLeft() + ",r:" + getLastBBox().getBox().getRight() + "]";
+  }
+
+  public Bbox getFirstBBox() {
+    return this.getPage().get(firstBoxInRangeIndex);
+  }
+
+  public Bbox getLastBBox() {
+    return this.getPage().get(lastBoxInRangeIndex);
+  }
 
 }

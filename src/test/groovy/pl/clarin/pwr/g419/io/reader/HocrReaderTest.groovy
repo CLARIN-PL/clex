@@ -163,4 +163,20 @@ class HocrReaderTest extends Specification {
             path                                                                         || id
             "../task4-train/reports/105194/Grupa_AMBRA_raport_polroczny_31.12.2008.hocr" || "105194"
     }
+
+
+    def "Hocr parser and sorting BBoxes should give a correct order of bounding boxes"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample.hocr"), hocr)
+            def document = new HocrReader().parseAndSortBboxes(hocr.toPath())
+
+        expect:
+            document.get(0).get(document.get(0).size() - 1).getText() == "1"
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
+
+
 }

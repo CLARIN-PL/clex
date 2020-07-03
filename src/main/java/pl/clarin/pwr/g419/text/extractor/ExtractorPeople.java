@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.kbase.lexicon.PersonNameLexicon;
 import pl.clarin.pwr.g419.struct.AnnotationList;
 import pl.clarin.pwr.g419.struct.FieldContext;
@@ -13,6 +14,7 @@ import pl.clarin.pwr.g419.text.annotator.AnnotatorPersonHorizontal;
 
 import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
+@Slf4j
 public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
 
   PersonNameLexicon personNameLexicon = new PersonNameLexicon();
@@ -29,6 +31,8 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
       final var resultForSignsPage = getPeopleForAnnotations(document.getAnnotationsForSignsPage());
       if (resultForSignsPage.size() > 0) {
         return Optional.of(resultForSignsPage);
+      } else {
+        log.info("DOC ID :" + document.getId() + " Znaleziono stronę z podpisami ale nie znaleziono na niej adnotacji");
       }
     }
     // .. jeśli nie można to procesujemy standardowo

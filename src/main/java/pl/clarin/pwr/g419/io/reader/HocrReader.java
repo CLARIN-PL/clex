@@ -50,6 +50,17 @@ public class HocrReader extends DefaultHandler {
 
   Map<String, String> encodingFix = Maps.newHashMap();
 
+  public HocrDocument parseAndSortBboxes(final Path path)
+      throws IOException, SAXException, ParserConfigurationException {
+
+    parse(path);
+
+    this.document = sortBboxesInDocument(this.document);
+    // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
+
+    return document;
+  }
+
   public HocrDocument parse(final Path path)
       throws IOException, SAXException, ParserConfigurationException {
 
@@ -284,6 +295,28 @@ public class HocrReader extends DefaultHandler {
       }
     }
 
+  }
+
+
+  private HocrDocument sortBboxesInDocument(HocrDocument doc) {
+    HocrDocument resultDoc = new HocrDocument();
+    resultDoc.setId(doc.getId());
+
+    List<HocrPage> pages = new ArrayList<>();
+    for (int i = 0; i < document.size(); i++) {
+      HocrPage page = document.get(i);
+      HocrPage newPage = new HocrPage(resultDoc, page.generateBboxesFromSortedLines());
+      newPage.setNo(page.getNo());
+      pages.add(newPage);
+      // histogram i annotacje jeszcze nie wygenerowane
+    }
+    resultDoc.addAll(pages);
+
+    resultDoc.stream().forEach(this::mergeLines);
+//    doc.stream().forEach(this::splitInterpunctionEnd);
+//    doc.stream().forEach(HocrPage::sortLinesByTop);
+
+    return resultDoc;
   }
 
 
