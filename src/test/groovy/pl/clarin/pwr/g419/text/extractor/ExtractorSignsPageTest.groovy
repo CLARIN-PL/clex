@@ -20,7 +20,7 @@ class ExtractorSignsPageTest extends Specification {
             final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
 
         expect:
-            document.pageNrWithSigns == 2
+            document.docContextInfo.pageNrWithSigns == 2
         and:
             signsPageNr.get().field == "2"
 
@@ -36,7 +36,7 @@ class ExtractorSignsPageTest extends Specification {
             final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
 
         expect:
-            document.pageNrWithSigns == 0
+            document.docContextInfo.pageNrWithSigns == 0
 
         and:
             signsPageNr.get().field == "0"

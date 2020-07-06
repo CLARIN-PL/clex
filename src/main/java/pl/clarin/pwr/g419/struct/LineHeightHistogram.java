@@ -84,7 +84,7 @@ public class LineHeightHistogram {
       final Map<Integer, Set<Pair<Integer, Integer>>> histogram,
       final HocrDocument document) {
     log.debug(" --- Document: " + document.getId());
-    final int mostCommonHeightOfLine = document.getHistogram().findMostCommonHeightOfLine();
+    final int mostCommonHeightOfLine = document.getDocContextInfo().getHistogram().findMostCommonHeightOfLine();
 
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);

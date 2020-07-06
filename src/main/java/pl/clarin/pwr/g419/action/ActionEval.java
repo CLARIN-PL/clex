@@ -75,7 +75,8 @@ public class ActionEval extends Action {
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
     // jego przetwarzania
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
-    paths.parallelStream().forEach(path -> {
+    //paths.parallelStream().forEach(path -> {
+    paths.stream().forEach(path -> {
       try {
         evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
