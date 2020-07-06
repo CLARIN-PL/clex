@@ -44,12 +44,12 @@ public class InformationExtractor implements HasLogger {
 
   public MetadataWithContext extract(final HocrDocument document) {
 
-    final LineHeightHistogram documentHistogram = new LineHeightHistogram(document);
-    document.setHistogram(documentHistogram);
-
-    // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
-    final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
-    document.setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
+//    final LineHeightHistogram documentHistogram = new LineHeightHistogram(document);
+//    document.setHistogram(documentHistogram);
+//
+//    // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
+//    final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
+//    document.setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
 
     document.stream()

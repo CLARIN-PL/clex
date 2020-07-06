@@ -9,7 +9,7 @@ spring:
 
 logging.file: application-debug.log
 logging.level:
-  root: ERROR
+  root: DEBUG
 logging:
   file:
     max-size: 20 MB
