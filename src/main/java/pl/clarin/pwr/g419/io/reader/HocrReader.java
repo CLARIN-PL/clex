@@ -239,8 +239,10 @@ public class HocrReader extends DefaultHandler {
         bbox.getBox().setRight(bbox.getBox().getLeft() + headWidth);
         bbox.setText(headText);
 
-        final Box tailBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + tailWidth,
-            bbox.getBox().getTop(), bbox.getBox().getBottom());
+        final Box tailBox = new Box(bbox.getBox().getRight(),
+            bbox.getBox().getTop(),
+            bbox.getBox().getRight() + tailWidth,
+            bbox.getBox().getBottom());
         final Bbox tailBbox = new Bbox(bbox.getNo(), tailText, tailBox);
         tailBbox.setLineEnd(bbox.isLineEnd());
         tailBbox.setBlockEnd(bbox.isBlockEnd());
