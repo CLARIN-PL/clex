@@ -68,6 +68,35 @@ public class HocrPage extends Bboxes {
     return new Bboxes(result);
   }
 
+  public List<Integer> findBBoxesAboveBBox(int bboxNr, int howMany) {
+    Bbox referencedBbox = this.get(bboxNr);
+    List<Integer> bboxesAbove = new LinkedList<>();
+    int counter = 0;
+
+    for (int i = bboxNr - 1; i >= 0 && counter < howMany; i--) {
+      if (this.get(i).overlapX(referencedBbox) > 0) {
+        bboxesAbove.add(i);
+        counter++;
+      }
+    }
+    return bboxesAbove;
+  }
+
+  public List<Integer> findBBoxesBelowBBox(int bboxNr, int howMany) {
+    Bbox referencedBbox = this.get(bboxNr);
+    List<Integer> bboxesBelow = new LinkedList<>();
+    int counter = 0;
+
+    for (int i = bboxNr + 1; i < this.size() && counter < howMany; i++) {
+      if (this.get(i).overlapX(referencedBbox) > 0) {
+        bboxesBelow.add(i);
+        counter++;
+      }
+    }
+    return bboxesBelow;
+  }
+
+
   // ----------------------------------- diagnostyka ------------------------------
 
   public void dumpTextLinesFromBBoxes() {

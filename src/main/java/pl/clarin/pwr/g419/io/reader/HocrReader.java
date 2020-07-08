@@ -58,6 +58,10 @@ public class HocrReader extends DefaultHandler {
     this.document = sortBboxesInDocument(this.document);
     // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
 
+//    document.get(44).dumpTextLinesFromBBoxes();
+////    document.get(44).dumpTextLinesFromGeneratedBBoxes();
+//    document.get(44).dumpTextLinesFromMergedLines();
+
     return document;
   }
 

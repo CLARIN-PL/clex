@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.struct.Bbox;
 import pl.clarin.pwr.g419.struct.HocrPage;
 import pl.clarin.pwr.g419.text.pattern.matcher.Matcher;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherResult;
 
+@Slf4j
 public class Pattern {
 
   boolean matchLine = false;
@@ -58,6 +60,7 @@ public class Pattern {
   }
 
   public Optional<PatternMatch> matchesAt(final HocrPage page, final int index) {
+    log.info("index = " + index + "| page.size = " + page.size());
     int i = index;
     final Map<String, String> groups = Maps.newHashMap();
     if (index >= page.size()) {
