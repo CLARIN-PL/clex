@@ -22,15 +22,15 @@ class ExtractorPeopleTest extends Specification {
             result.matches() == condition
 
         where:
-            lastname           || condition
-            "Lutośławski"      || true
-            "s.a ."            || false
-            "s . a ."          || false
-            "Spółka Akcyjna"   || false
-            "spółka akcyjna"   || false
-            "Schrędder-Grab"   || true
-            "Schrödter"        || true
-            " Rybak-Schrödter" || true
+            lastname          || condition
+            "Lutośławski"     || true
+            "s.a ."           || false
+            "s . a ."         || false
+            "Spółka Akcyjna"  || false
+            "spółka akcyjna"  || false
+            "Schrędder-Grab"  || true
+            "Schrödter"       || true
+            "Rybak-Schrödter" || true
 
     }
 

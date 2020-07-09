@@ -178,5 +178,41 @@ class HocrReaderTest extends Specification {
             FileUtils.deleteQuietly(hocr)
     }
 
+    def "Hocr parser and eliminating and sorting BBoxes should give a correct order of not-redundant bounding boxes"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-redundant-bboxes.hocr"), hocr)
+            def documentOnlyParse = new HocrReader().parse(hocr.toPath())
+            def documentParseAndEliminateAndSort = new HocrReader().parseAndSortBboxes(hocr.toPath())
+            documentOnlyParse.get(0).dumpTextLinesFromBBoxes();
+            documentParseAndEliminateAndSort.get(0).dumpTextLinesFromMergedLines();
+
+        expect:
+            documentOnlyParse.get(0).getLines().stream()
+                    .map { l -> l.getText() }
+                    .filter { text -> text.startsWith("PODPIS OSOBY ,KTÓREJ POWIERZONO PROWADZENIE KSIĄG") }
+                    .count() == 3;
+
+            documentParseAndEliminateAndSort.get(0).getLines().stream()
+                    .map { l -> l.getText() }
+                    .filter { text -> text.startsWith("PODPIS OSOBY ,KTÓREJ POWIERZONO PROWADZENIE KSIĄG") }
+                    .count() == 1;
+
+        and:
+            documentOnlyParse.get(0).getLines().stream()
+                    .map { l -> l.getText() }
+                    .filter { text -> text.endsWith("30 czerwca 2011 r . ") }
+                    .count() == 4;
+
+            documentParseAndEliminateAndSort.get(0).getLines().stream()
+                    .map { l -> l.getText() }
+                    .filter { text -> text.endsWith("30 czerwca 2011 r . ") }
+                    .count() == 2;
+
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
+
 
 }
