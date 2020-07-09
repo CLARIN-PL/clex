@@ -45,4 +45,25 @@ public class Bbox {
     return innerWidth / outerWidth;
   }
 
+
+  public double overlapY(final Bbox bbox) {
+    if ((bbox.getBox().getTop() >
+        this.getBox().getBottom())
+        || (bbox.getBox().getBottom() <
+        this.getBox().getTop())) {
+      return 0;
+    }
+
+    final double outerTop = Math.min(this.getBox().getTop(), bbox.getBox().getTop());
+    final double outerBottom = Math.max(this.getBox().getBottom(), bbox.getBox().getBottom());
+    final double outerHeight = Math.abs(outerBottom - outerTop);
+
+    final double innerTop = Math.max(this.getBox().getTop(), bbox.getBox().getTop());
+    final double innerBottom = Math.min(this.getBox().getBottom(), bbox.getBox().getBottom());
+    final double innerHeight = Math.abs(innerBottom - innerTop);
+
+    return innerHeight / outerHeight;
+  }
+
+
 }

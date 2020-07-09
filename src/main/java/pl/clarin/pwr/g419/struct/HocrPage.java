@@ -60,7 +60,7 @@ public class HocrPage extends Bboxes {
   }
 
   public void sortLinesByTop() {
-    Collections.sort(lines, (o1, o2) -> (o1.getUpperBound() == o2.getUpperBound() ? 0 : (o1.getUpperBound() < o2.getUpperBound() ? -1 : 1)));
+    Collections.sort(lines, (o1, o2) -> (o1.getBottomBound() == o2.getBottomBound() ? 0 : (o1.getBottomBound() < o2.getBottomBound() ? -1 : 1)));
   }
 
   public Bboxes generateBboxesFromSortedLines() {

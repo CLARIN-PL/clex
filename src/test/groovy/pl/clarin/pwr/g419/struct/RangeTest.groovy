@@ -60,8 +60,8 @@ class RangeTest extends Specification {
             r1.merge(r2l, r2u)
 
         then:
-            r1.getLowerBound() == ml
-            r1.getUpperBound() == mu
+            r1.getTopBound() == ml
+            r1.getBottomBound() == mu
 
         where:
             r1l | r1u | r2l | r2u || ml | mu

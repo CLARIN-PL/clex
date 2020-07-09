@@ -54,13 +54,9 @@ public class HocrReader extends DefaultHandler {
       throws IOException, SAXException, ParserConfigurationException {
 
     parse(path);
-
+    this.document.stream().forEach(p -> eliminateRedundantLines(p, 1));
     this.document = sortBboxesInDocument(this.document);
     // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
-
-//    document.get(44).dumpTextLinesFromBBoxes();
-////    document.get(44).dumpTextLinesFromGeneratedBBoxes();
-//    document.get(44).dumpTextLinesFromMergedLines();
 
     return document;
   }
@@ -224,6 +220,24 @@ public class HocrReader extends DefaultHandler {
 
     page.setLines(mergedLines);
 
+  }
+
+
+  private void eliminateRedundantLines(HocrPage page, int iteration) {
+    for (int i = page.getLines().size() - 1; i > 0; i--) {
+      Range current = page.getLines().get(i);
+      Range previous = page.getLines().get(i - 1);
+
+      if (current.overlapY(previous) > 0.8) {
+        if ((current.overlapX(previous) > 0.2)) {
+          if (current.getText().contains(previous.getText())) {
+            page.getLines().remove(i - 1);
+          } else if (previous.getText().contains(current.getText())) {
+            page.getLines().remove(i);
+          }
+        }
+      }
+    }
   }
 
 
