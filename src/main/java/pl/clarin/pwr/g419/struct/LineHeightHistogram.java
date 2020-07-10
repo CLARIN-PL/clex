@@ -25,10 +25,10 @@ public class LineHeightHistogram {
 
     for (int lineNr = 0; lineNr < page.lines.size(); lineNr++) {
       final Range line = lines.get(lineNr);
-      Set<Pair<Integer, Integer>> lineNrs = this.data.get(line.getLength());
+      Set<Pair<Integer, Integer>> lineNrs = this.data.get(line.getHeight());
       if (lineNrs == null) {
         lineNrs = new HashSet<>();
-        this.data.put(line.getLength(), lineNrs);
+        this.data.put(line.getHeight(), lineNrs);
       }
       lineNrs.add(Pair.of(page.getNo(), lineNr));
     }
