@@ -33,36 +33,31 @@ public interface Contour {
         (target.getRight() < this.getLeft())) {
       return 0;
     }
-
-    final double outerLeft = Math.min(this.getLeft(), target.getLeft());
-    final double outerRight = Math.max(this.getRight(), target.getRight());
-    final double outerWidth = Math.abs(outerRight - outerLeft);
-
-    final double innerLeft = Math.max(this.getLeft(), target.getLeft());
-    final double innerRight = Math.min(this.getRight(), target.getRight());
-    final double innerWidth = Math.abs(innerRight - innerLeft);
-
-    return innerWidth / outerWidth;
+    return overlapCommon(this.getLeft(), this.getRight(), target.getLeft(), target.getRight());
   }
 
   default double overlapY(final Contour target) {
-    if ((this.getBottom() <
-        target.getTop())
-        || (target.getBottom() <
-        this.getTop())) {
+    if ((this.getBottom() < target.getTop())
+        ||
+        (target.getBottom() < this.getTop())) {
       return 0;
     }
-
-    final double outerTop = Math.min(this.getTop(), target.getTop());
-    final double outerBottom = Math.max(this.getBottom(), target.getBottom());
-    final double outerHeight = Math.abs(outerBottom - outerTop);
-
-    final double innerTop = Math.max(this.getTop(), target.getTop());
-    final double innerBottom = Math.min(this.getBottom(), target.getBottom());
-    final double innerHeight = Math.abs(innerBottom - innerTop);
-
-    return innerHeight / outerHeight;
+    return overlapCommon(this.getTop(), this.getBottom(), target.getTop(), target.getBottom());
   }
+
+  private double overlapCommon(int thisFirst, int thisLast, int thatFirst, int thatLast) {
+
+    final double outerFirst = Math.min(thisFirst, thatFirst);
+    final double outerLast = Math.max(thisLast, thatLast);
+    final double outerRange = Math.abs(outerLast - outerFirst);
+
+    final double innerFirst = Math.max(thisFirst, thatFirst);
+    final double innerLast = Math.min(thisLast, thatLast);
+    final double innerRange = Math.abs(innerLast - innerFirst);
+
+    return innerRange / outerRange;
+  }
+
 
   default int distanceXTo(final Contour target) {
     return Math.abs(target.getCenterX() - this.getCenterX());
@@ -72,9 +67,9 @@ public interface Contour {
     return Math.abs(target.getCenterY() - this.getCenterY());
   }
 
-  // zostawiamy odległość podniesioną do kwadratu by nmie wchodzić
+  // zostawiamy odległość podniesioną do kwadratu by nie wchodzić
   // w przetwarzanie zmiennoprzecinkowe - i tak nie jest nam
-  // potrzebna sama odległośći tylko jej porównanie z innymi
+  // potrzebna sama odległość tylko jej porównanie z innymi
   default int distanceSqrTo(final Contour target) {
     return (distanceXTo(target)) * (distanceXTo(target))
         +
