@@ -72,7 +72,7 @@ public interface Contour {
     return Math.abs(target.getCenterY() - this.getCenterY());
   }
 
-  // zostawiamy odległość podniesioną do kwadratu by nmie wchodzić
+  // zostawiamy odległość podniesioną do kwadratu by nie wchodzić
   // w przetwarzanie zmiennoprzecinkowe - i tak nie jest nam
   // potrzebna sama odległośći tylko jej porównanie z innymi
   default int distanceSqrTo(final Contour target) {
