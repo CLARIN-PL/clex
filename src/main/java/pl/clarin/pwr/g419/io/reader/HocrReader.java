@@ -228,12 +228,11 @@ public class HocrReader extends DefaultHandler {
       Range current = page.getLines().get(i);
       Range previous = page.getLines().get(i - 1);
 
-      if ( (current.overlapY(previous) > 0.8) &&  ((current.overlapX(previous) > 0.2))) {
-          if (current.getText().contains(previous.getText())) {
-            page.getLines().remove(i - 1);
-          } else if (previous.getText().contains(current.getText())) {
-            page.getLines().remove(i);
-          }
+      if ((current.overlapY(previous) > 0.8) && ((current.overlapX(previous) > 0.2))) {
+        if (current.getText().contains(previous.getText())) {
+          page.getLines().remove(i - 1);
+        } else if (previous.getText().contains(current.getText())) {
+          page.getLines().remove(i);
         }
       }
     }
