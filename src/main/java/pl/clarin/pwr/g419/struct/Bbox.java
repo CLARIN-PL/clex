@@ -21,8 +21,8 @@ public class Bbox {
   public String getLowNiceText() {
     return text
         .toLowerCase()
-        .replaceFirst("^[^a-zA-Z]+", "")
-        .replaceAll("[^a-zA-Z]+$", "");
+        .replaceFirst("^[^\\p{L}]+", "")
+        .replaceAll("[^\\p{L}]+$", "");
   }
 
 
