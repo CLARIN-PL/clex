@@ -54,7 +54,7 @@ public class HocrReader extends DefaultHandler {
       throws IOException, SAXException, ParserConfigurationException {
 
     parse(path);
-    this.document.stream().forEach(p -> eliminateRedundantLines(p, 1));
+    this.document.stream().forEach(p -> eliminateRedundantLines(p));
     this.document = sortBboxesInDocument(this.document);
     // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
 
