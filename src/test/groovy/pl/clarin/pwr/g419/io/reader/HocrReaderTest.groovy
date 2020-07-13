@@ -179,4 +179,19 @@ class HocrReaderTest extends Specification {
     }
 
 
+    def "Hocr method splitInterpunctionEnd should correctly process dates"() {
+        given:
+            def hocr = File.createTempFile("hocr", ".hocr")
+            FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-sample-dates.hocr"), hocr)
+            def document = new HocrReader().parseAndSortBboxes(hocr.toPath())
+
+        expect:
+            document.get(0).get(0).getText() == "30.08.2011"
+            document.get(0).get(1).getText() == "od 01.04.2008 do 30.09.2008"
+
+        cleanup:
+            FileUtils.deleteQuietly(hocr)
+    }
+
+
 }
