@@ -223,7 +223,7 @@ public class HocrReader extends DefaultHandler {
   }
 
 
-  private void eliminateRedundantLines(HocrPage page, int iteration) {
+  private void eliminateRedundantLines(HocrPage page) {
     for (int i = page.getLines().size() - 1; i > 0; i--) {
       Range current = page.getLines().get(i);
       Range previous = page.getLines().get(i - 1);
