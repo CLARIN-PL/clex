@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.ActionOptionInput;
 import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
+import pl.clarin.pwr.g419.action.options.ActionOptionSelectOne;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
@@ -36,6 +37,7 @@ public class ActionEval extends Action {
   ActionOptionMetadata optionMetadata = new ActionOptionMetadata();
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
+  ActionOptionSelectOne optionSelectOne = new ActionOptionSelectOne();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -49,6 +51,7 @@ public class ActionEval extends Action {
     this.options.add(optionMetadata);
     this.options.add(optionInput);
     this.options.add(optionOutput);
+    this.options.add(optionSelectOne);
 
     //normalizer.setPerson(new NormalizerPersonRole());
   }
@@ -65,11 +68,17 @@ public class ActionEval extends Action {
 
     // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
     final Path hocrIndex = Paths.get(optionInput.getString());
-    final List<Path> paths;
+    List<Path> paths;
     if (hocrIndex.toString().endsWith(".hocr")) {
       paths = List.of(hocrIndex);
     } else {
       paths = reader.loadPaths(hocrIndex);
+    }
+
+    // jeśli jest podane zawężenie do katalogu o podanym numerze to weż poda uwagę tylko ten dokument
+    if (optionSelectOne.getString() != null) {
+      log.info("Podano parameter selectOne = " + optionSelectOne.getString());
+      paths = paths.stream().filter(p -> p.getParent().endsWith(optionSelectOne.getString())).collect(Collectors.toList());
     }
 
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
