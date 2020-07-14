@@ -113,7 +113,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
 
 
   public List<FieldContext<Person>> tryHardToExtractPeopleInfoFromPage(HocrPage page) {
-    // czy w ogóle są jakieś role wymienione na tej stronie po tej linii w której są podpisy
+    // czy w ogóle są jakieś role wymienione na tej stronie (może dodać, że po tej linii w której są "Podpisy" ale to nie zawsze tak jest  )
     Set<String> roles = Set.of("prezes", "wiceprezes", "prokurent", "księgowa", "księgowy", "członek");
     List<Integer> detectedRoles = Lists.newArrayList();
     for (int i = 0; i < page.size(); i++) {
@@ -128,17 +128,20 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
     // czy na tej stronie są jakieś imiona albo nazwiska pod/nad tą/tymi linią/liniami gdzie są wykryte role
     for (int i = 0; i < detectedRoles.size(); i++) {
       int roleIndex = detectedRoles.get(i);
+      // znajdź BBoxy z jakąś treścią powyżej i poniżej BBoxa z rolą
       List<Integer> above = page.findBBoxesAboveBBox(roleIndex, 1);
       List<Integer> below = page.findBBoxesBelowBBox(roleIndex, 1);
 
+      // spróbuj z tych znalezionych Bboxów lub ich bliskiego sąsiedztwa wyciągnąć osoby
+      // i zapisz je do listy persons
       List<Annotation> persons = Lists.newArrayList();
       persons.addAll(tryToFindPersonNearIndexes(above, page));
       persons.addAll(tryToFindPersonNearIndexes(below, page));
 
+      // jeśli te same osoby są przyporządkowane do różnych ról tu (persons)
+      // i wśród wcześniej znalezionych (roleAndAnnotationList) to rozstrzygnij konflikty
+      // i dodaj wyniki do rezultatu (roleAndAnnotationList)
       mergeFoundAnnotationsOnPage(roleAndAnnotationList, persons, roleIndex, page);
-
-      // zapamiętujemy znalezione adnotacje dot. osób i dla jakiej roli jest ta adnotacja
-      persons.stream().forEach(ann -> roleAndAnnotationList.add(Pair.of(roleIndex, ann)));
     }
 
     return roleAndAnnotationList.stream().map(pair ->
@@ -155,36 +158,50 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
   public List<Annotation> tryToFindPersonNearIndexes(List<Integer> bboxesNearCandidates, HocrPage page) {
     List<Annotation> result = Lists.newArrayList();
 
+    for (int k = 0; k < bboxesNearCandidates.size(); k++) {
+
+      // maksymalny zakres jak bardzo "w bok" sięgamy od wskazanego pola by próbować znaleźć osobę
+      final int MAX_RANGE = 1;
+      for (int range = 0; range <= MAX_RANGE; range++) {
+        int newIndex = bboxesNearCandidates.get(k) + range;
+        if (newIndex >= page.size()) {
+          break;
+        }
+
+        findMatchAndMergeResultInLine(page, result, newIndex);
+      }
+
+      for (int range = -1; range <= -MAX_RANGE; range--) {
+        int newIndex = bboxesNearCandidates.get(k) + range;
+        if (newIndex < 0)
+          break;
+        if ((page.get(newIndex).isBlockEnd()) || (page.get(newIndex).isLineEnd()))
+          break; // tu próbujemy wykorzystać info na temat czy nie cofamy się do innego bloku
+
+        findMatchAndMergeResultInLine(page, result, newIndex);
+      }
+    }
+    return result;
+  }
+
+  private void findMatchAndMergeResultInLine(HocrPage page, List<Annotation> result, int newIndex) {
+
     final String NAME = "name";
     final Pattern justPersonPattern = new Pattern("person-hor:date-name-role")
         .next(new MatcherWordInSet(firstNames).group(NAME))
         .next(new MatcherWordInSet(firstNames).group(NAME).optional())
         .next(new MatcherRegexText(patternLastName, 40).group(NAME));
 
-    for (int k = 0; k < bboxesNearCandidates.size(); k++) {
+    Optional<PatternMatch> matching = justPersonPattern.matchesAt(page, newIndex);
+    if (matching.isPresent()) {
+      PatternMatch pm = matching.get();
+      Annotation foundAnnotation = new Annotation("person-on-signs-page", page, pm.getIndexBegin(), pm.getIndexEnd())
+          .withNorm(normalize(pm))
+          .withScore(pm.getScore())
+          .withSource(pm.getSource());
 
-      final int MAX_RANGE_BASE = 2;  // jednak 4 daje 193 false positiwy a 2 daje 187 false positivów. Może po crossvalidation bedzie lepiej
-      for (int range_base = 0; range_base <= MAX_RANGE_BASE; range_base++) {
-
-        int range_offset = (int) ((range_base + 1) / 2 * Math.signum(0.5 + (-1 * range_base % 2)));
-        if ((bboxesNearCandidates.get(k) + range_offset < 0) || (bboxesNearCandidates.get(k) + range_offset >= page.size()))
-          continue; // nie break bo z jednej strony wychodzi poza ale z drugiej może być jeszcze dobry
-
-        Optional<PatternMatch> matching = justPersonPattern.matchesAt(page, bboxesNearCandidates.get(k) + range_offset);
-        if (matching.isPresent()) {
-          PatternMatch pm = matching.get();
-          Annotation foundAnnotation = new Annotation("person-on-signs-page", page, pm.getIndexBegin(), pm.getIndexEnd())
-              .withNorm(normalize(pm))
-              .withScore(pm.getScore())
-              .withSource(pm.getSource());
-
-          mergeFoundAnnotationInLine(result, foundAnnotation);
-          continue; // dajemy spokój po znalezieniu pierwszego - hmmm ?
-        }
-      }
-
+      mergeFoundAnnotationInLine(result, foundAnnotation);
     }
-    return result;
   }
 
   private boolean mergeFoundAnnotationInLine(List<Annotation> result, Annotation newAnn) {
@@ -221,34 +238,38 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
     // sprawdź czy czasem taki jeden nowy BBox z imieniem i nazwiskiem nie jest przez inne Bboxy z innymi rolami wskazywany ...
     for (int i = 0; i < newPersons.size(); i++) {
       Annotation newPerson = newPersons.get(i);
-      log.debug(" Cross checking :" + newPerson);
+      log.debug(" Sprawdzamy :" + newPerson);
 
       for (int j = 0; j < roleAndAnnotationList.size(); j++) {
         Annotation against = roleAndAnnotationList.get(j).getValue();
-        log.debug("    against :" + against);
+        log.debug("    względem :" + against);
 
         // ... jeśli jest ...
         if (newPerson.getIndexBegin() == against.getIndexBegin()) {
-          log.debug(" CLASH!!! p1: " + newPerson + " p2: " + against);
+          log.debug(" Konflikt!!! p1: " + newPerson + " p2: " + against);
 
-          int centerXofPersonBbox = page.get(newPerson.getIndexBegin()).getBox().getCenterX();
-          int centerXofNewRoleBbox = page.get(newRoleIndex).getBox().getCenterX();
-          int centerXofOldRoleBbox = page.get(roleAndAnnotationList.get(j).getKey()).getBox().getCenterX();
+          // (porównywanie wg odległości standardowej)
+          Contour personBbox = newPerson.getContour();
+          Bbox newRoleBbox = page.get(newRoleIndex);
+          Bbox oldRoleBbox = page.get(roleAndAnnotationList.get(j).getKey());
 
-          int distanceToNewRole = Math.abs(centerXofNewRoleBbox - centerXofPersonBbox);
-          int distanceToOldRole = Math.abs(centerXofOldRoleBbox - centerXofPersonBbox);
+          int distanceSqrToNewRole = personBbox.distanceSqrTo(newRoleBbox);
+          int distanceSqrToOldRole = personBbox.distanceSqrTo(oldRoleBbox);
 
-          // ... to pozostaw tylko tego który jest bliżej
-          if (distanceToOldRole <= distanceToNewRole) {
-            // nie bierz już pod uwagę tego nowego
+          // ... to pozostaw tylko tego który jest bliżej :
+          if (distanceSqrToOldRole < distanceSqrToNewRole) {
+            // nie bierz już pod uwagę tego nowego a zostaw stary
             newPersons.remove(i);
-          } else {
-            // usuń starą adnotację z wyników
+          } else if (distanceSqrToOldRole > distanceSqrToNewRole) {
+            // usuń starą adnotację z wyników i będzie wstawiona nowa
             roleAndAnnotationList.remove(j);
           }
         }
       }
     }
+
+    // zapamiętujemy znalezione i "oczyszczone" adnotacje dot. osób i dla jakiej roli jest ta adnotacja
+    newPersons.stream().forEach(ann -> roleAndAnnotationList.add(Pair.of(newRoleIndex, ann)));
   }
 
 
