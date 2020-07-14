@@ -116,7 +116,7 @@ public class AnnotatorPersonVertical extends Annotator {
                                           final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
     return lines.stream()
-        .filter(line -> line.getLeft().getUpperBound() < firstBbox.getBox().getTop())
+        .filter(line -> line.getLeft().getBottomBound() < firstBbox.getBox().getTop())
         .map(line -> extractName(line.getRight(), left, right))
         .filter(b -> b.isPresent() && b.get().size() > 0)
         .map(Optional::get)

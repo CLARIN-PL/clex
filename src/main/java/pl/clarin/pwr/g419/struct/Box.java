@@ -17,4 +17,10 @@ public class Box {
   public int getWidth() {
     return right - left;
   }
+
+  public int getCenterX() {
+    return right + getWidth() / 2;
+  }
+
+
 }

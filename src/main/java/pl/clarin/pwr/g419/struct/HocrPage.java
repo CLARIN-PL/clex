@@ -60,13 +60,42 @@ public class HocrPage extends Bboxes {
   }
 
   public void sortLinesByTop() {
-    Collections.sort(lines, (o1, o2) -> (o1.getUpperBound() == o2.getUpperBound() ? 0 : (o1.getUpperBound() < o2.getUpperBound() ? -1 : 1)));
+    Collections.sort(lines, (o1, o2) -> (o1.getBottomBound() == o2.getBottomBound() ? 0 : (o1.getBottomBound() < o2.getBottomBound() ? -1 : 1)));
   }
 
   public Bboxes generateBboxesFromSortedLines() {
     List<Bbox> result = lines.stream().flatMap(line -> line.getBboxes().stream()).collect(Collectors.toList());
     return new Bboxes(result);
   }
+
+  public List<Integer> findBBoxesAboveBBox(int bboxNr, int howMany) {
+    Bbox referencedBbox = this.get(bboxNr);
+    List<Integer> bboxesAbove = new LinkedList<>();
+    int counter = 0;
+
+    for (int i = bboxNr - 1; i >= 0 && counter < howMany; i--) {
+      if (this.get(i).overlapX(referencedBbox) > 0) {
+        bboxesAbove.add(i);
+        counter++;
+      }
+    }
+    return bboxesAbove;
+  }
+
+  public List<Integer> findBBoxesBelowBBox(int bboxNr, int howMany) {
+    Bbox referencedBbox = this.get(bboxNr);
+    List<Integer> bboxesBelow = new LinkedList<>();
+    int counter = 0;
+
+    for (int i = bboxNr + 1; i < this.size() && counter < howMany; i++) {
+      if (this.get(i).overlapX(referencedBbox) > 0) {
+        bboxesBelow.add(i);
+        counter++;
+      }
+    }
+    return bboxesBelow;
+  }
+
 
   // ----------------------------------- diagnostyka ------------------------------
 
