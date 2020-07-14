@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Box {
+public class Box implements Contour {
   private int left;
 
   private int top;
@@ -13,14 +13,5 @@ public class Box {
   private int right;
 
   private int bottom;
-
-  public int getWidth() {
-    return right - left;
-  }
-
-  public int getCenterX() {
-    return right + getWidth() / 2;
-  }
-
 
 }

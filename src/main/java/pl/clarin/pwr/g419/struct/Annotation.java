@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.struct;
 
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -94,6 +95,18 @@ public class Annotation {
         indexEnd == that.indexEnd &&
         Objects.equals(type, that.type) &&
         Objects.equals(page, that.page);
+  }
+
+  public Contour getContour() {
+
+    Range r = new Range();
+    r.setPage(page);
+    r.setFirstBoxInRangeIndex(this.getIndexBegin());
+    r.setLastBoxInRangeIndex(this.getIndexEnd());
+    r.setTopBound(page.stream().skip(indexBegin).limit(indexEnd - indexBegin).map(b -> b.getTop()).min(Comparator.naturalOrder()).get());
+    r.setBottomBound(page.stream().skip(indexBegin).limit(indexEnd - indexBegin).map(b -> b.getBottom()).max(Comparator.naturalOrder()).get());
+
+    return r;
   }
 
   @Override
