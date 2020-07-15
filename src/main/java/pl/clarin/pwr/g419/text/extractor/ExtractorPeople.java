@@ -128,6 +128,8 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
     // czy na tej stronie są jakieś imiona albo nazwiska pod/nad tą/tymi linią/liniami gdzie są wykryte role
     for (int i = 0; i < detectedRoles.size(); i++) {
       int roleIndex = detectedRoles.get(i);
+      log.debug("  ");
+      log.debug(" ---------- SZUKAMY DLA ROLI : " + page.get(roleIndex).getText() + "(" + roleIndex + ")  -------------");
       // znajdź BBoxy z jakąś treścią powyżej i poniżej BBoxa z rolą
       List<Integer> above = page.findBBoxesAboveBBox(roleIndex, 1);
       List<Integer> below = page.findBBoxesBelowBBox(roleIndex, 1);
@@ -144,13 +146,17 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
       mergeFoundAnnotationsOnPage(roleAndAnnotationList, persons, roleIndex, page);
     }
 
-    return roleAndAnnotationList.stream().map(pair ->
+    // jak się okazuje są dokumenty które na stronie zpodpisami mają dwie serie tych podpisów i to takich samych
+    // (301256) i tu najprostszym sposobem to obchodzimy po prostu przekazujemy dalej tylko unikalne
+    Set<FieldContext<Person>> tmp = roleAndAnnotationList.stream().map(pair ->
     {
       Person person = strToPerson(pair.getValue().getNorm());
       person.setRole(page.get(pair.getKey()).getLowNiceText());
       FieldContext<Person> fc = new FieldContext<>(person, pair.getValue().getContext(), pair.getValue().getSource());
       return fc;
-    }).collect(Collectors.toList());
+    }).collect(Collectors.toSet());
+
+    return tmp.stream().collect(Collectors.toList());
 
   }
 
@@ -235,10 +241,11 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
                                           List<Annotation> newPersons,
                                           int newRoleIndex,
                                           HocrPage page) {
+    log.debug(" --> Adding :" + newPersons);
     // sprawdź czy czasem taki jeden nowy BBox z imieniem i nazwiskiem nie jest przez inne Bboxy z innymi rolami wskazywany ...
     for (int i = 0; i < newPersons.size(); i++) {
       Annotation newPerson = newPersons.get(i);
-      log.debug(" Sprawdzamy :" + newPerson);
+      log.debug("---> Sprawdzamy :" + newPerson);
 
       for (int j = 0; j < roleAndAnnotationList.size(); j++) {
         Annotation against = roleAndAnnotationList.get(j).getValue();
@@ -246,7 +253,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
 
         // ... jeśli jest ...
         if (newPerson.getIndexBegin() == against.getIndexBegin()) {
-          log.debug(" Konflikt!!! p1: " + newPerson + " p2: " + against);
+          log.debug("       Konflikt!!! p1: " + newPerson + " p2: " + against);
 
           // (porównywanie wg odległości standardowej)
           Contour personBbox = newPerson.getContour();
@@ -260,6 +267,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
           if (distanceSqrToOldRole < distanceSqrToNewRole) {
             // nie bierz już pod uwagę tego nowego a zostaw stary
             newPersons.remove(i);
+            i--; // skoro skasowaliśmy ten element to cofamy licznik o jeden
           } else if (distanceSqrToOldRole > distanceSqrToNewRole) {
             // usuń starą adnotację z wyników i będzie wstawiona nowa
             roleAndAnnotationList.remove(j);
@@ -267,6 +275,8 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
         }
       }
     }
+
+    log.debug("Ostatecznie dodajemy z tego " + newPersons);
 
     // zapamiętujemy znalezione i "oczyszczone" adnotacje dot. osób i dla jakiej roli jest ta adnotacja
     newPersons.stream().forEach(ann -> roleAndAnnotationList.add(Pair.of(newRoleIndex, ann)));

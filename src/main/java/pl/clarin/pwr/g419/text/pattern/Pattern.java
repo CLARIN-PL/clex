@@ -60,7 +60,6 @@ public class Pattern {
   }
 
   public Optional<PatternMatch> matchesAt(final HocrPage page, final int index) {
-    log.info("index = " + index + "| page.size = " + page.size());
     int i = index;
     final Map<String, String> groups = Maps.newHashMap();
     if (index >= page.size()) {

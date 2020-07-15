@@ -1,8 +1,6 @@
 package pl.clarin.pwr.g419.struct;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -94,6 +92,14 @@ public class HocrPage extends Bboxes {
       }
     }
     return bboxesBelow;
+  }
+
+  public Optional<Integer> findLinesNrForBboxIndex(int bboxIndex) {
+    for (int i = 0; i < lines.size(); i++)
+      if (lines.get(i).containsBboxWithIndex(bboxIndex))
+        return Optional.of(i);
+
+    return Optional.empty();
   }
 
 

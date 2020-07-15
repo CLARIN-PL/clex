@@ -87,9 +87,31 @@ public class InformationExtractor implements HasLogger {
     }
   }
 
+  private void calculatePeriodScore(Annotation a) {
+    if (a.getPage().getNo() == 1) {
+      a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
+      return;
+    }
+    if (a.getPage().getNo() == 2) {
+      a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
+      return;
+    }
+
+    Optional<Range> range = a.getLineFromLines();
+    if (range.isEmpty())
+      a.setScore(1);
+    else
+      a.setScore(range.get().getHeight());
+
+  }
+
 
   private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
       final HocrDocument document) {
+
+    document.getAnnotations()
+        .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
+
     final Optional<FieldContext<String>> period = document.getAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD)
         .topScore().sortByLoc().getFirst();
