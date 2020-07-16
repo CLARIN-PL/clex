@@ -185,17 +185,16 @@ public class HocrReader extends DefaultHandler {
   }
 
   private void mergeLines(final HocrPage page) {
-    final List<Pair<Range, Integer>> ranges = BboxUtils.createLines(page);
+
+    final List<Range> ranges = BboxUtils.createLines(page);
     final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
     for (int i = 0; i < ranges.size() - 1; i++) {
-      final Pair<Range, Integer> range = ranges.get(i);
-      final Pair<Range, Integer> nextRange = ranges.get(i + 1);
-      final Bbox bbox = page.get(range.getRight());
-      final Bbox nextBbox = page.get(range.getRight() + 1);
-      final Range r1 = range.getKey();
-      final Range r2 = nextRange.getKey();
+      final Range r1 = ranges.get(i);
+      final Range r2 = ranges.get(i + 1);
+      final Bbox bbox = page.get(r1.getLastBoxInRangeIndex());
+      final Bbox nextBbox = page.get(r1.getLastBoxInRangeIndex() + 1);
       if ((r1.overlap(r2) > 0.8 || r1.within(r2) > 0.8 || r2.within(r1) > 0.8)
-          && bbox.getBox().getRight() <= nextBbox.getBox().getLeft()) {
+          && bbox.getRight() <= nextBbox.getLeft()) {
         bbox.setLineEnd(false);
         bbox.setBlockEnd(true);
         nextBbox.setLineBegin(false);
@@ -214,7 +213,7 @@ public class HocrReader extends DefaultHandler {
     final List<Range> mergedLines = new LinkedList<>();
     for (int i = 0; i < ranges.size(); i++) {
       if (!mergedRangesIndexesToSkipInResult.contains(i)) {
-        mergedLines.add(ranges.get(i).getLeft());
+        mergedLines.add(ranges.get(i));
       }
     }
 

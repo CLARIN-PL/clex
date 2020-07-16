@@ -12,9 +12,10 @@ import pl.clarin.pwr.g419.struct.Range;
 
 public class BboxUtils {
 
-  public static List<Pair<Range, Integer>> createLines(final HocrPage page) {
+  public static List<Range> createLines(final HocrPage page) {
+    final List<Range> ranges = Lists.newArrayList();
     Optional<Range> lineRange = Optional.empty();
-    final List<Pair<Range, Integer>> ranges = Lists.newArrayList();
+
     for (int i = 0; i < page.size(); i++) {
       final Bbox bbox = page.get(i);
       if (lineRange.isPresent()) {
@@ -28,7 +29,7 @@ public class BboxUtils {
       if (bbox.isLineEnd()) {
         final Range range = lineRange.get();
         range.setLastBoxInRangeIndex(i);
-        ranges.add(new ImmutablePair<>(range, i));
+        ranges.add(range);
         lineRange = Optional.empty();
       }
     }
