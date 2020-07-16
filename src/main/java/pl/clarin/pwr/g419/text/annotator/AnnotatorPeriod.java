@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.util.*;
+import lombok.extern.slf4j.Slf4j;
+import pl.clarin.pwr.g419.struct.Annotation;
 import pl.clarin.pwr.g419.text.normalization.NormalizerStringMap;
 import pl.clarin.pwr.g419.text.normalization.NormalizerStringNum2Digit;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
@@ -14,7 +16,9 @@ import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
+import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
+@Slf4j
 public class AnnotatorPeriod extends Annotator {
 
   public static String PERIOD = "period";
@@ -153,6 +157,21 @@ public class AnnotatorPeriod extends Annotator {
     }
 
     return pm.getText();
+  }
+
+  @Override
+  protected boolean isValid(Annotation ann) {
+    final String[] parts = ann.getNorm().split(":");
+    if (parts.length == 2) {
+      Date startDate = parseDate(parts[0]);
+      Date endDate = parseDate(parts[1]);
+      if (startDate.after(endDate)) {
+        //log.debug(" Not valid: Odrzucamy ann " + ann.getNorm());
+        return false;   // zakres się nie nadaje bo koniec wcześniej niż początek
+      }
+      return true;
+    }
+    return false;
   }
 
 }

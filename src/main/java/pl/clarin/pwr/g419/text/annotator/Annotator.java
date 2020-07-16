@@ -33,10 +33,14 @@ public class Annotator implements HasLogger {
                 .withNorm(normalize(m))
                 .withScore(m.getScore())
                 .withSource(m.getSource()))
+        .filter(ann -> isValid(ann))
         .forEach(page::addAnnotation);
   }
 
   protected String normalize(final PatternMatch pm) {
     return pm.getText();
   }
+
+  protected boolean isValid(final Annotation ann) { return true; }
+
 }
