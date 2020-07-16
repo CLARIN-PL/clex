@@ -25,8 +25,10 @@ public class AnnotatorDate extends Annotator {
 
     final Map<String, String> months = getMonths();
     final Set<String> yearSuffix = Sets.newHashSet("r", "roku");
-    final Set<String> days = IntStream.range(1, 32)
+    Set<String> days = IntStream.range(1, 32)
         .mapToObj(Objects::toString).collect(Collectors.toSet());
+
+    days.addAll(List.of("01", "02", "03", "04", "05", "06", "07", "08", "09"));
 
     patterns.add(new Pattern()
         .next(new MatcherLowerText(days).group(DAY)
