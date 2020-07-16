@@ -17,6 +17,9 @@ public class HocrPage extends Bboxes {
   Annotations annotations = new Annotations();
   List<Range> lines;
   HocrDocument document;
+  int numberOfOriginalLines;
+  int numberOfOriginalBlocks;
+  int numberOfOriginalInlineBlocks;
 
   LineHeightHistogram histogram;
 
@@ -141,6 +144,14 @@ public class HocrPage extends Bboxes {
     }
 
     return false;
+  }
+
+  public void dumpNrOfLinesAndBlocks() {
+    log.debug(" [p=" + getNo() + "] lines= " + getNumberOfOriginalLines() + "  blocks=" + getNumberOfOriginalBlocks() + "  " + getNumberOfOriginalInlineBlocks());
+  }
+
+  public double isWithTableProb() {
+    return 2 * getNumberOfOriginalInlineBlocks() / getNumberOfOriginalBlocks();
   }
 
 
