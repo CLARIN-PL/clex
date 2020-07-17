@@ -111,6 +111,25 @@ public class InformationExtractor implements HasLogger {
 
     document.getAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
+/*
+    log.debug("================================ just: ");
+    document.getAnnotations()
+        .filterByType(AnnotatorPeriod.PERIOD)
+        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
+
+    log.debug("================================ topScore: ");
+    document.getAnnotations()
+        .filterByType(AnnotatorPeriod.PERIOD)
+        .topScore()
+        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
+
+    log.debug("================================ sortByLoc: ");
+    document.getAnnotations()
+        .filterByType(AnnotatorPeriod.PERIOD)
+        .topScore()
+        .sortByLoc()
+        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
+*/
 
     final Optional<FieldContext<String>> period = document.getAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD)

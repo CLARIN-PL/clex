@@ -67,7 +67,9 @@ public class HocrReader extends DefaultHandler {
     readDocument(path);
 
     this.document.setId(getIdFromPath(path));
-    this.document.stream().forEach(this::mergeLines);
+
+    this.document.stream().forEach(this::mergeLinesFirstIteration);
+    this.document.stream().forEach(HocrPage::dumpNrOfLinesAndBlocks);
     this.document.stream().forEach(this::splitInterpunctionEnd);
     this.document.stream().forEach(HocrPage::sortLinesByTop);
 
@@ -184,9 +186,22 @@ public class HocrReader extends DefaultHandler {
     }
   }
 
-  private void mergeLines(final HocrPage page) {
+  private void mergeLinesFirstIteration(final HocrPage page) {
+    mergeLines(page, 1);
+  }
 
+  private void mergeLinesSecondteration(final HocrPage page) {
+    mergeLines(page, 2);
+  }
+
+  private void mergeLines(final HocrPage page, int iteration) {
     final List<Range> ranges = BboxUtils.createLines(page);
+    if (iteration == 1) {
+      page.setNumberOfOriginalLines(ranges.size());
+    }
+
+    int blocksCounter = 0;
+    int inlineBlocksCounter = 0;
     final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
     for (int i = 0; i < ranges.size() - 1; i++) {
       final Range r1 = ranges.get(i);
@@ -197,17 +212,21 @@ public class HocrReader extends DefaultHandler {
           && bbox.getRight() <= nextBbox.getLeft()) {
         bbox.setLineEnd(false);
         bbox.setBlockEnd(true);
+        blocksCounter++;
+        inlineBlocksCounter++;
         nextBbox.setLineBegin(false);
         r2.setFirstBoxInRangeIndex(r1.getFirstBoxInRangeIndex());
         mergedRangesIndexesToSkipInResult.add(i);
       } else {
         // End of line also indicates end of block
         bbox.setBlockEnd(true);
+        blocksCounter++;
       }
     }
     if (page.size() > 0) {
       page.get(page.size() - 1).setLineEnd(true);
       page.get(page.size() - 1).setBlockEnd(true);
+      blocksCounter++;
     }
 
     final List<Range> mergedLines = new LinkedList<>();
@@ -217,6 +236,11 @@ public class HocrReader extends DefaultHandler {
       }
     }
 
+    if (iteration == 1) {
+      page.setNumberOfOriginalBlocks(blocksCounter);
+      page.setNumberOfOriginalInlineBlocks(inlineBlocksCounter);
+    }
+    
     page.setLines(mergedLines);
 
   }
@@ -329,7 +353,7 @@ public class HocrReader extends DefaultHandler {
     }
     resultDoc.addAll(pages);
 
-    resultDoc.stream().forEach(this::mergeLines);
+    resultDoc.stream().forEach(this::mergeLinesSecondteration);
 //    doc.stream().forEach(this::splitInterpunctionEnd);
 //    doc.stream().forEach(HocrPage::sortLinesByTop);
 
