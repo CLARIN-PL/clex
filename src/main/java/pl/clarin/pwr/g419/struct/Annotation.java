@@ -113,4 +113,19 @@ public class Annotation {
   public int hashCode() {
     return Objects.hash(type, indexBegin, indexEnd);
   }
+
+
+  public String toFullInfo() {
+    return toString() + " - page: " + page.getNo() + " - indStart = " + getIndexBegin();
+  }
+
+  public Optional<Range> getLineFromLines() {
+    Optional<Integer> lineNr = getPage().findLinesNrForBboxIndex(this.indexBegin);
+    if (lineNr.isEmpty())
+      return Optional.empty();
+    else
+      return Optional.of(getPage().getLines().get(lineNr.get()));
+  }
+
+
 }

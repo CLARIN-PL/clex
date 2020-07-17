@@ -47,6 +47,7 @@ public class AnnotatorPeriod extends Annotator {
     patterns.add(new Pattern("p1")
         .next(new MatcherLowerText(Set.of("okres")).optional())
         .next(new MatcherLowerText(Set.of("od")).optional())
+        .next(new MatcherLowerText(Sets.newHashSet("dnia")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_BEGIN))
         .next(new MatcherLowerText(Set.of("roku", "r")).optional())
         .next(new MatcherLowerText(".").optional())
