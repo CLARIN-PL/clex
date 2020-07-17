@@ -8,6 +8,7 @@ public class DocContextInfo {
   LineHeightHistogram histogram;
   int mostCommonHeightOfLine;
   int pageNrWithSigns = 0;
+  int leadingEmptyPages = 0;
 
 
 }
