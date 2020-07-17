@@ -24,7 +24,6 @@ class AnnotatorPeriodTest extends Specification {
 
         where:
             text                                               || norm
-            "1 stycznia 2020 do 01.01.2019"                    || "2020-01-01:2019-01-01"
             "I półrocze 2020"                                  || "2020-01-01:2020-06-30"
             "II półroczu 2010"                                 || "2010-07-01:2010-12-31"
             "6 miesięcy zakończony dnia 30 czerwca 2009"       || "2009-01-01:2009-06-30"
@@ -45,6 +44,30 @@ class AnnotatorPeriodTest extends Specification {
             "26.11.2004 r . do 30.06.2005 r ."                 || "2004-11-26:2005-06-30"
             "1 lipca 2008 r . do 31 grudnia 2008 r ."          || "2008-07-01:2008-12-31"
             "ZA OKRES OD 01.01.2008 DO 30.06.2008"             || "2008-01-01:2008-06-30"
+    }
+
+    @Unroll
+    def "annotate on '#text' with invalid periods should not return them"() {
+        given:
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
+            def annotatorDate = new AnnotatorDate()
+            def annotatorPeriod = new AnnotatorPeriod()
+            annotatorDate.annotate(page)
+
+        when:
+            annotatorPeriod.annotate(page)
+
+        then:
+            page.getAnnotations().stream().filter { an -> an.getType() == "period" }
+                    .collect { it.getNorm() }.size() == size
+
+        where:
+            text                                         || size
+            "1 stycznia 2020 do 01.01.2019"              || 0
+            "12 grudnia 2020 do 01.01.2019"              || 0
+            "ZA OKRES OD 01.01.2008 DO 30.06.2008"       || 1
+            "I półrocze 2020"                            || 1
+            "6 miesięcy zakończony dnia 30 czerwca 2009" || 1
     }
 
 }
