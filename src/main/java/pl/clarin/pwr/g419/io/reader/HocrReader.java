@@ -15,7 +15,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -70,6 +69,8 @@ public class HocrReader extends DefaultHandler {
 
     this.document.stream().forEach(this::mergeLinesFirstIteration);
     this.document.stream().forEach(HocrPage::dumpNrOfLinesAndBlocks);
+    //this.document.calculateNrOfLeadingEmptyPages();
+    this.document.trimLeadingEmptyPages();
     this.document.stream().forEach(this::splitInterpunctionEnd);
     this.document.stream().forEach(HocrPage::sortLinesByTop);
 
@@ -240,7 +241,7 @@ public class HocrReader extends DefaultHandler {
       page.setNumberOfOriginalBlocks(blocksCounter);
       page.setNumberOfOriginalInlineBlocks(inlineBlocksCounter);
     }
-    
+
     page.setLines(mergedLines);
 
   }
