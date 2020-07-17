@@ -65,6 +65,7 @@ public class AnnotatorPeriod extends Annotator {
         .next(new MatcherLowerText(months.keySet()).group(MONTH_BEGIN)
             .normalizer(new NormalizerStringMap(months)))
         .next(new MatcherLowerText(Sets.newHashSet("do", "–", "-")))
+        .next(new MatcherLowerText(Sets.newHashSet("dnia")).optional())
         .next(new MatcherAnnotationType(AnnotatorDate.DATE).group(DATE_END))
     );
     patterns.add(new Pattern("p3")
