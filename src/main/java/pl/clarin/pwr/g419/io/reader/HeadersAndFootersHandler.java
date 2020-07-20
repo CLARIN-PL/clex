@@ -3,8 +3,8 @@ package pl.clarin.pwr.g419.io.reader;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.struct.HeaderAndFooterStruct;
 import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.HocrLine;
 import pl.clarin.pwr.g419.struct.HocrPage;
-import pl.clarin.pwr.g419.struct.Range;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,11 +78,11 @@ public class HeadersAndFootersHandler {
 
     //przewijaj do strony co ma w ogóle linię na tym poziomie by było od czego zacząć porównywać ...
     int currentIndex = sIndex;
-    Range currentRange = null;
+    HocrLine currentHocrLine = null;
     while (
         (currentIndex < document.size())
             &&
-            (currentRange = getRange4Level(type, document.get(currentIndex), level)) == null
+            (currentHocrLine = getRange4Level(type, document.get(currentIndex), level)) == null
     ) {
       currentIndex++;
     }
@@ -93,15 +93,15 @@ public class HeadersAndFootersHandler {
     int startIndex = currentIndex;
     for (int pageIndex = startIndex + 1; pageIndex < eIndex; pageIndex++) {
       boolean continuingHeader;
-      Range newRange = getRange4Level(type, document.get(pageIndex), level);
-      if (newRange == null) {
+      HocrLine newHocrLine = getRange4Level(type, document.get(pageIndex), level);
+      if (newHocrLine == null) {
         continuingHeader = false;
       } else {
-        if (!currentRange.getText().equalsIgnoreCase(newRange.getText())) {
+        if (!currentHocrLine.getText().equalsIgnoreCase(newHocrLine.getText())) {
           //tekst się zmienił - jeśli wczesniej był na tylu stronach, że można zrobić nagłówek to go zrobimy
           continuingHeader = false;
         } else {
-          if (currentRange.getHeight() - newRange.getHeight() > SIGNIFICANT_DIFF_IN_RANGE_HEIGHT) {
+          if (currentHocrLine.getHeight() - newHocrLine.getHeight() > SIGNIFICANT_DIFF_IN_RANGE_HEIGHT) {
             continuingHeader = false;
           } else {
             continuingHeader = true;
@@ -111,19 +111,19 @@ public class HeadersAndFootersHandler {
 
 
       if (!continuingHeader) {
-        checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, pageIndex, currentRange, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
-        currentRange = newRange;
+        checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, pageIndex, currentHocrLine, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
+        currentHocrLine = newHocrLine;
         startIndex = pageIndex;
 
-        while (currentRange == null) {
+        while (currentHocrLine == null) {
           if (startIndex == document.size() - 1)
             break;
           startIndex++;
-          currentRange = getRange4Level(type, document.get(startIndex), level);
+          currentHocrLine = getRange4Level(type, document.get(startIndex), level);
         }
       }
     }
-    checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, eIndex, currentRange, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
+    checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, eIndex, currentHocrLine, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
 
     if (resultHeaderList.size() == 0) {
       return (level == 0) ? Collections.emptyList() : List.of(accumulator);
@@ -138,9 +138,9 @@ public class HeadersAndFootersHandler {
             .collect(Collectors.toList());
   }
 
-  private Range getRange4Level(Type type, HocrPage page, int level) {
+  private HocrLine getRange4Level(Type type, HocrPage page, int level) {
     int levelForType = getLevelForType(type, page, level);
-    List<Range> lines = page.getLines();
+    List<HocrLine> lines = page.getLines();
     if (lines == null)
       return null;
     if ((levelForType < 0) || (levelForType >= lines.size()))
@@ -155,18 +155,18 @@ public class HeadersAndFootersHandler {
 
   private void checkIfPossibleToMakeNewLevelHeaderAndMakeIt(int startIndex,
                                                             int pageIndex,
-                                                            Range currentRange,
+                                                            HocrLine currentHocrLine,
                                                             int PAGE_SPAN_THRESHOLD,
                                                             List<HeaderAndFooterStruct> result,
                                                             HeaderAndFooterStruct hafs) {
 
-    if (currentRange != null) {
+    if (currentHocrLine != null) {
       if (pageIndex - 1 - startIndex >= PAGE_SPAN_THRESHOLD) {
         HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(hafs);
         newHafs.setStartIndex(startIndex);
         newHafs.setEndIndex(pageIndex - 1);
         // cały czas coś mi mówi, żeby tu lepiej jednak trzymać Range
-        newHafs.getLines().add(currentRange.getText());
+        newHafs.getLines().add(currentHocrLine.getText());
 
         result.add(newHafs);
       }

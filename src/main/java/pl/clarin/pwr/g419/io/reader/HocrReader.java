@@ -197,17 +197,17 @@ public class HocrReader extends DefaultHandler {
   }
 
   private void mergeLines(final HocrPage page, int iteration) {
-    final List<Range> ranges = BboxUtils.createLines(page);
+    final List<HocrLine> hocrLines = BboxUtils.createLines(page);
     if (iteration == 1) {
-      page.setNumberOfOriginalLines(ranges.size());
+      page.setNumberOfOriginalLines(hocrLines.size());
     }
 
     int blocksCounter = 0;
     int inlineBlocksCounter = 0;
     final Set<Integer> mergedRangesIndexesToSkipInResult = new HashSet<>();
-    for (int i = 0; i < ranges.size() - 1; i++) {
-      final Range r1 = ranges.get(i);
-      final Range r2 = ranges.get(i + 1);
+    for (int i = 0; i < hocrLines.size() - 1; i++) {
+      final HocrLine r1 = hocrLines.get(i);
+      final HocrLine r2 = hocrLines.get(i + 1);
       final Bbox bbox = page.get(r1.getLastBoxInRangeIndex());
       final Bbox nextBbox = page.get(r1.getLastBoxInRangeIndex() + 1);
       if ((r1.overlap(r2) > 0.8 || r1.within(r2) > 0.8 || r2.within(r1) > 0.8)
@@ -231,10 +231,10 @@ public class HocrReader extends DefaultHandler {
       blocksCounter++;
     }
 
-    final List<Range> mergedLines = new LinkedList<>();
-    for (int i = 0; i < ranges.size(); i++) {
+    final List<HocrLine> mergedLines = new LinkedList<>();
+    for (int i = 0; i < hocrLines.size(); i++) {
       if (!mergedRangesIndexesToSkipInResult.contains(i)) {
-        mergedLines.add(ranges.get(i));
+        mergedLines.add(hocrLines.get(i));
       }
     }
 
@@ -250,8 +250,8 @@ public class HocrReader extends DefaultHandler {
 
   private void eliminateRedundantLines(HocrPage page) {
     for (int i = page.getLines().size() - 1; i > 0; i--) {
-      Range current = page.getLines().get(i);
-      Range previous = page.getLines().get(i - 1);
+      HocrLine current = page.getLines().get(i);
+      HocrLine previous = page.getLines().get(i - 1);
 
       if ((current.overlapY(previous) > 0.8) && ((current.overlapX(previous) > 0.2))) {
         if (current.getText().contains(previous.getText())) {
@@ -317,7 +317,7 @@ public class HocrReader extends DefaultHandler {
     boolean allSplitInterpunctionIndexesUsed = false;
 
     for (int lineNr = 0; lineNr < page.getLines().size(); lineNr++) {
-      final Range line = page.getLines().get(lineNr);
+      final HocrLine line = page.getLines().get(lineNr);
       if (offset != 0) {
         line.setFirstBoxInRangeIndex(line.getFirstBoxInRangeIndex() + offset);
         line.setLastBoxInRangeIndex(line.getLastBoxInRangeIndex() + offset);

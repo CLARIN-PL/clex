@@ -99,7 +99,7 @@ public class Annotation {
 
   public Contour getContour() {
 
-    Range r = new Range();
+    HocrLine r = new HocrLine();
     r.setPage(page);
     r.setFirstBoxInRangeIndex(this.getIndexBegin());
     r.setLastBoxInRangeIndex(this.getIndexEnd());
@@ -119,7 +119,7 @@ public class Annotation {
     return toString() + " - page: " + page.getNo() + " - indStart = " + getIndexBegin();
   }
 
-  public Optional<Range> getLineFromLines() {
+  public Optional<HocrLine> getLineFromLines() {
     Optional<Integer> lineNr = getPage().findLinesNrForBboxIndex(this.indexBegin);
     if (lineNr.isEmpty())
       return Optional.empty();

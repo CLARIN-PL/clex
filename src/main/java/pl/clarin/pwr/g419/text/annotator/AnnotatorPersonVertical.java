@@ -44,7 +44,7 @@ public class AnnotatorPersonVertical extends Annotator {
     final List<Annotation> blocks =
         al.stream().filter(this::isBlock).collect(Collectors.toList());
 
-    final List<Pair<Range, Bboxes>> lines = BboxUtils.createLines2(page);
+    final List<Pair<HocrLine, Bboxes>> lines = BboxUtils.createLines2(page);
 
     for (final Annotation an : blocks) {
       final int begin = page.get(an.getIndexBegin()).getBox().getLeft() - 100;
@@ -112,7 +112,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
   private Optional<Bboxes> findBlockAbove(final Annotation an,
                                           final int left, final int right,
-                                          final List<Pair<Range, Bboxes>> lines,
+                                          final List<Pair<HocrLine, Bboxes>> lines,
                                           final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
     return lines.stream()
@@ -125,13 +125,13 @@ public class AnnotatorPersonVertical extends Annotator {
   }
 
   private Optional<Bboxes> findLineBelow(final Annotation an,
-                                         final List<Pair<Range, Bboxes>> lines,
+                                         final List<Pair<HocrLine, Bboxes>> lines,
                                          final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
-    final Range firsRange = new Range(page, firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
+    final HocrLine firsHocrLine = new HocrLine(page, firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
     for (int i = 0; i < lines.size() - 1; i++) {
-      final Range line = lines.get(i).getKey();
-      if (firsRange.within(line) > 0.9) {
+      final HocrLine line = lines.get(i).getKey();
+      if (firsHocrLine.within(line) > 0.9) {
         return Optional.of(lines.get(i + 1).getValue());
       }
     }

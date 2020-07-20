@@ -97,7 +97,7 @@ public class InformationExtractor implements HasLogger {
       return;
     }
 
-    Optional<Range> range = a.getLineFromLines();
+    Optional<HocrLine> range = a.getLineFromLines();
     if (range.isEmpty())
       a.setScore(1);
     else

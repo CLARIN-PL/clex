@@ -3,13 +3,13 @@ package pl.clarin.pwr.g419.struct
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class RangeTest extends Specification {
+class HocrLineTest extends Specification {
 
     @Unroll
     def "[#r1l,#r1u].overlap([#r2l,#r2u]) should return #overlap"() {
         given:
-            def r1 = new Range(null, r1l, r1u)
-            def r2 = new Range(null, r2l, r2u)
+            def r1 = new HocrLine(null, r1l, r1u)
+            def r2 = new HocrLine(null, r2l, r2u)
 
         when:
             def result = r1.overlap(r2)
@@ -31,8 +31,8 @@ class RangeTest extends Specification {
     @Unroll
     def "[#r1l,#r1u].within([#r2l,#r2u]) should return #within"() {
         given:
-            def r1 = new Range(null, r1l, r1u)
-            def r2 = new Range(null, r2l, r2u)
+            def r1 = new HocrLine(null, r1l, r1u)
+            def r2 = new HocrLine(null, r2l, r2u)
 
         when:
             def result = r1.within(r2)
@@ -54,7 +54,7 @@ class RangeTest extends Specification {
     @Unroll
     def "[#r1l,#r1u].merge(#r2l,#r2u) should return [ml, mu]"() {
         given:
-            def r1 = new Range(null, r1l, r1u)
+            def r1 = new HocrLine(null, r1l, r1u)
 
         when:
             r1.merge(r2l, r2u)

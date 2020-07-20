@@ -21,10 +21,10 @@ public class LineHeightHistogram {
 
   private void buildHistogramOfLinesHeightsForPage(final HocrPage page) {
 
-    final List<Range> lines = page.getLines();
+    final List<HocrLine> lines = page.getLines();
 
     for (int lineNr = 0; lineNr < page.lines.size(); lineNr++) {
-      final Range line = lines.get(lineNr);
+      final HocrLine line = lines.get(lineNr);
       Set<Pair<Integer, Integer>> lineNrs = this.data.get(line.getHeight());
       if (lineNrs == null) {
         lineNrs = new HashSet<>();
@@ -71,7 +71,7 @@ public class LineHeightHistogram {
     lines.stream().forEach(pair ->
         {
           final HocrPage page = document.get(pair.getLeft() - 1); // !! W pair jest numer strony a nie indeks tablicy
-          final List<Range> linesOfPage = page.getLines();
+          final List<HocrLine> linesOfPage = page.getLines();
           final int pageNumber = pair.getRight();
           final String text = linesOfPage.get(pageNumber).getText();
 

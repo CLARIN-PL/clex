@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(exclude = "page")
 @ToString(exclude = "page")
-public class Range implements Contour {
+public class HocrLine implements Contour {
 
   HocrPage page;
 
@@ -19,15 +19,15 @@ public class Range implements Contour {
   int firstBoxInRangeIndex;
   int lastBoxInRangeIndex;
 
-  public Range() {
+  public HocrLine() {
   }
 
-  public Range(final int tBound, final int bBound) {
+  public HocrLine(final int tBound, final int bBound) {
     topBound = tBound;
     bottomBound = bBound;
   }
 
-  public Range(final HocrPage p, final int tBound, final int bBound) {
+  public HocrLine(final HocrPage p, final int tBound, final int bBound) {
     page = p;
     topBound = tBound;
     bottomBound = bBound;
@@ -62,23 +62,23 @@ public class Range implements Contour {
   }
 
 
-  public double overlap(final Range range) {
-    if (range.bottomBound < topBound || range.topBound > bottomBound) {
+  public double overlap(final HocrLine hocrLine) {
+    if (hocrLine.bottomBound < topBound || hocrLine.topBound > bottomBound) {
       return 0.0;
     }
-    final double top = Math.max(topBound, range.topBound);
-    final double bottom = Math.min(bottomBound, range.bottomBound);
+    final double top = Math.max(topBound, hocrLine.topBound);
+    final double bottom = Math.min(bottomBound, hocrLine.bottomBound);
     final double length = Math.abs(bottom - top);
-    final double maxLength = Math.max(getHeight(), range.getHeight());
+    final double maxLength = Math.max(getHeight(), hocrLine.getHeight());
     return length / maxLength;
   }
 
-  public double within(final Range range) {
-    if (range.bottomBound < topBound || range.topBound > bottomBound) {
+  public double within(final HocrLine hocrLine) {
+    if (hocrLine.bottomBound < topBound || hocrLine.topBound > bottomBound) {
       return 0.0;
     }
-    final double top = Math.max(topBound, range.topBound);
-    final double bottom = Math.min(bottomBound, range.bottomBound);
+    final double top = Math.max(topBound, hocrLine.topBound);
+    final double bottom = Math.min(bottomBound, hocrLine.bottomBound);
     final double length = Math.abs(bottom - top);
     return length / getHeight();
   }
