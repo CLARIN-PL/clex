@@ -15,7 +15,7 @@ public class HocrPage extends Bboxes {
 
   int no;
   Annotations annotations = new Annotations();
-  List<Range> lines;
+  List<Range> lines = new ArrayList<>();
   HocrDocument document;
   int numberOfOriginalLines;
   int numberOfOriginalBlocks;

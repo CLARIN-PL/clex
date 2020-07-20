@@ -53,17 +53,13 @@ public class HocrReader extends DefaultHandler {
       throws IOException, SAXException, ParserConfigurationException {
 
     parse(path);
-
-    document.get(0).dumpTextLinesFromBBoxes();
-//    document.get(44).dumpTextLinesFromGeneratedBBoxes();
-    document.get(0).dumpTextLinesFromMergedLines();
-
-
     this.document.stream().forEach(p -> eliminateRedundantLines(p));
-    this.document = sortBboxesInDocument(this.document);
+    this.document = regenerateDocumentFromLines(this.document);
+    this.document.stream().forEach(this::mergeLinesSecondteration);
     // teraz w dokumencie kolejność Bboxów jest zgodna z kolejnością posortowanych linii
-
-    findAndExtractHeadersAndFooters(document);
+    new HeadersAndFootersHandler().findAndExtractHeadersAndFooters(document);
+    this.document = regenerateDocumentFromLines(this.document);
+    this.document.stream().forEach(this::mergeLinesSecondteration);
 
     return document;
   }
@@ -345,7 +341,7 @@ public class HocrReader extends DefaultHandler {
   }
 
 
-  private HocrDocument sortBboxesInDocument(HocrDocument doc) {
+  private HocrDocument regenerateDocumentFromLines(HocrDocument doc) {
     HocrDocument resultDoc = new HocrDocument();
     resultDoc.setId(doc.getId());
 
@@ -359,7 +355,7 @@ public class HocrReader extends DefaultHandler {
     }
     resultDoc.addAll(pages);
 
-    resultDoc.stream().forEach(this::mergeLinesSecondteration);
+//    resultDoc.stream().forEach(this::mergeLinesSecondteration);
 //    doc.stream().forEach(this::splitInterpunctionEnd);
 //    doc.stream().forEach(HocrPage::sortLinesByTop);
 
@@ -393,68 +389,5 @@ public class HocrReader extends DefaultHandler {
     }
   }
 
-  private void findAndExtractHeadersAndFooters(HocrDocument document) {
-    List<HeaderAndFooterStruct> headers = findAndExtractHeaders(document);
-    List<HeaderAndFooterStruct> footers = findAndExtractFooters(document);
-
-    log.debug("XXXXXXXXXXXX - printing headers XXXXXXXXXXX");
-    headers.stream().forEach(h -> log.debug(" " + h));
-
-  }
-
-  private List<HeaderAndFooterStruct> findAndExtractHeaders(HocrDocument document) {
-    int HEADER_PAGE_SPAN_THRESHOLD = 3;
-    List<HeaderAndFooterStruct> headerList = new LinkedList<>();
-
-    Range currentRange = document.get(0).getLines().get(0);
-    int startIndex = 0;
-
-    for (int pageIndex = 1; pageIndex < document.size(); pageIndex++) {
-      Range newRange = document.get(pageIndex).getLines().get(0);
-
-      boolean continuingHeader = true;
-      if (!currentRange.getText().equalsIgnoreCase(newRange.getText())) {
-        //tekst się zmienił - jeśli wczesniej był na tylu stronach, że można zrobić nagłówek to go zrobimy
-        continuingHeader = false;
-      } else {
-        if (currentRange.getHeight() - newRange.getHeight() > 10) {
-          continuingHeader = false;
-        } else {
-          // jeśli jest dokładnie to samo to idziemy dalej - bo ta strona ma taki sam nagłówek/stopkę jak poprzednia
-          continuingHeader = true;
-        }
-      }
-
-      if (!continuingHeader) {
-        checkIfPossibleToMakeNewHeaderAndMakeIt(startIndex, pageIndex, currentRange, HEADER_PAGE_SPAN_THRESHOLD, headerList);
-        currentRange = newRange;
-        startIndex = pageIndex;
-      }
-    }
-
-    checkIfPossibleToMakeNewHeaderAndMakeIt(startIndex, document.size(), currentRange, HEADER_PAGE_SPAN_THRESHOLD, headerList);
-
-    return headerList;
-  }
-
-  private void checkIfPossibleToMakeNewHeaderAndMakeIt(int startIndex,
-                                                       int pageIndex,
-                                                       Range currentRange,
-                                                       int PAGE_SPAN_THRESHOLD,
-                                                       List<HeaderAndFooterStruct> result) {
-
-    if (pageIndex - 1 - startIndex >= PAGE_SPAN_THRESHOLD) {
-      HeaderAndFooterStruct hafs = new HeaderAndFooterStruct();
-      hafs.setStartRange(startIndex);
-      hafs.setEndRange(pageIndex - 1);
-      hafs.setLine(currentRange.getText());
-      result.add(hafs);
-    }
-  }
-
-
-  private List<HeaderAndFooterStruct> findAndExtractFooters(HocrDocument document) {
-    return new LinkedList<>();
-  }
 
 }

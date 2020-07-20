@@ -166,7 +166,7 @@ public class AnnotatorPeriod extends Annotator {
     if (parts.length == 2) {
       Date startDate = parseDate(parts[0]);
       Date endDate = parseDate(parts[1]);
-      if (startDate.after(endDate)) {
+      if (!startDate.before(endDate)) {
         //log.debug(" Not valid: Odrzucamy ann " + ann.getNorm());
         return false;   // zakres się nie nadaje bo koniec wcześniej niż początek
       }

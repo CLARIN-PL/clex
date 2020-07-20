@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
@@ -12,11 +14,16 @@ import java.util.concurrent.BrokenBarrierException;
 @NoArgsConstructor
 @ToString
 public class HeaderAndFooterStruct {
-  private int startRange;
-  private int endRange;
+  private int startIndex;
+  private int endIndex;
 
-  private String line;
-  private List<Bbox> lineBbox;
+  private List<String> lines = new LinkedList<>();
 
+
+  public HeaderAndFooterStruct(HeaderAndFooterStruct hafs) {
+    this.startIndex = hafs.startIndex;
+    this.endIndex = hafs.endIndex;
+    this.lines = new ArrayList<>(hafs.lines);
+  }
 
 }

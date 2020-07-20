@@ -88,7 +88,7 @@ public class ActionEval extends Action {
       try {
         evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
-        getLogger().error("Failed evaluate the document", ex);
+        getLogger().error("Failed evaluate the document. Path = " + path, ex);
       }
     });
 
