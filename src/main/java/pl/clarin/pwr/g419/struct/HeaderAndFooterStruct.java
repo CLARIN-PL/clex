@@ -20,6 +20,7 @@ public class HeaderAndFooterStruct {
 
   private Type type;
 
+  // poziom dokumentu - dla korzenia = -1; dla pierwszych linii = 0
   private int level;
 
   // strona, na której zaczyna się nagłówek/stopka - włącznie
@@ -27,6 +28,7 @@ public class HeaderAndFooterStruct {
   // strona, na której kończy się nagłówek/stopka - !!! włącznie !!!
   private int endIndex;
 
+  // HocrLine'y składające się na cały nagłówek do tego poziomu idąc od poziomu zerowego do aktualnego.
   private List<HocrLine> lines = new LinkedList<>();
 
   private HocrPage tmpPage;
