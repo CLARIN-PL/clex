@@ -343,6 +343,7 @@ public class HocrReader extends DefaultHandler {
 
   private HocrDocument regenerateDocumentFromLines(HocrDocument doc) {
     HocrDocument resultDoc = new HocrDocument();
+    resultDoc.setDocContextInfo(doc.getDocContextInfo());
     resultDoc.setId(doc.getId());
 
     List<HocrPage> pages = new ArrayList<>();

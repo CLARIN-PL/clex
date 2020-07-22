@@ -12,6 +12,7 @@ import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
+import pl.clarin.pwr.g419.text.extractor.ExtractorPeriod;
 import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
 import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
@@ -41,6 +42,7 @@ public class InformationExtractor implements HasLogger {
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
+  ExtractorPeriod extractorPeriod = new ExtractorPeriod();
 
   public MetadataWithContext extract(final HocrDocument document) {
 
@@ -50,6 +52,21 @@ public class InformationExtractor implements HasLogger {
     // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
+
+    log.debug(" Size of headers: " + document.getDocContextInfo().getHeaders().size());
+    document.getDocContextInfo().getHeaders().stream()
+        .forEach(header -> annotators.forEach(an -> an.annotate(header.getTmpPage())));
+    document.getDocContextInfo().getHeaders().stream()
+        .forEach(header -> header.getTmpPage().getAnnotations().stream()
+            .forEach(ann -> log.debug("H:Ann =" + ann)));
+
+    log.debug(" Size of footers: " + document.getDocContextInfo().getFooters().size());
+    document.getDocContextInfo().getFooters().stream()
+        .forEach(footer -> annotators.forEach(an -> an.annotate(footer.getTmpPage())));
+
+    document.getDocContextInfo().getFooters().stream()
+        .forEach(footer -> footer.getTmpPage().getAnnotations().stream()
+            .forEach(ann -> log.debug("F:Ann =" + ann)));
 
 
     document.stream()
@@ -61,7 +78,7 @@ public class InformationExtractor implements HasLogger {
 
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
 
-    getPeriod(document).ifPresent(p -> {
+    extractorPeriod.extract(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
       metadata.setPeriodTo(p.getRight());
     });
@@ -87,68 +104,6 @@ public class InformationExtractor implements HasLogger {
     }
   }
 
-  private void calculatePeriodScore(Annotation a) {
-    if (a.getPage().getNo() == 1) {
-      a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
-      return;
-    }
-    if (a.getPage().getNo() == 2) {
-      a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
-      return;
-    }
-
-    Optional<HocrLine> range = a.getLineFromLines();
-    if (range.isEmpty())
-      a.setScore(1);
-    else
-      a.setScore(range.get().getHeight());
-
-  }
-
-
-  private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
-      final HocrDocument document) {
-
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
-/*
-    log.debug("================================ just: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-
-    log.debug("================================ topScore: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore()
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-
-    log.debug("================================ sortByLoc: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore()
-        .sortByLoc()
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-*/
-
-    final Optional<FieldContext<String>> period = document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore().sortByLoc().getFirst();
-
-    if (period.isPresent()) {
-      final String[] parts = period.get().getField().split(":");
-      if (parts.length == 2) {
-        final FieldContext<Date> periodStart = new FieldContext<>(
-            parseDate(parts[0]), period.get().getContext(), period.get().getRule()
-        );
-        final FieldContext<Date> periodEnd = new FieldContext<>(
-            parseDate(parts[1]), period.get().getContext(), period.get().getRule()
-        );
-        return Optional.of(new ImmutablePair<>(periodStart, periodEnd));
-      }
-    }
-    return Optional.empty();
-  }
 
   private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
     AnnotationList drawingDateCandidates = document.getAnnotations()

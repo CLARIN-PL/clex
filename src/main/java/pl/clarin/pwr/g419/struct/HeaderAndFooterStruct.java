@@ -8,16 +8,26 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class HeaderAndFooterStruct {
+
+  public enum Type {HEADER, FOOTER}
+
+  private Type type;
+
+  // strona, na której zaczyna się nagłówek/stopka - włącznie
   private int startIndex;
+  // strona, na której kończy się nagłówek/stopka - !!! włącznie !!!
   private int endIndex;
 
-  private List<String> lines = new LinkedList<>();
+  private List<HocrLine> lines = new LinkedList<>();
+
+  private HocrPage tmpPage;
 
 
   public HeaderAndFooterStruct(HeaderAndFooterStruct hafs) {
@@ -25,5 +35,17 @@ public class HeaderAndFooterStruct {
     this.endIndex = hafs.endIndex;
     this.lines = new ArrayList<>(hafs.lines);
   }
+
+  public void generateTmpPageFromLines() {
+    List<Bbox> result = lines.stream().flatMap(line -> line.getBboxes().stream()).collect(Collectors.toList());
+    HocrPage page = new HocrPage(null, new Bboxes(result));
+    page.setLines(lines);
+    this.tmpPage = page;
+  }
+
+  public String toString() {
+    return "[" + getStartIndex() + ":" + getEndIndex() + "]\t" + lines.stream().map(l -> l.getText()).collect(Collectors.joining(" "));
+  }
+
 
 }

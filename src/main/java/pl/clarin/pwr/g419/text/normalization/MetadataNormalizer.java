@@ -12,4 +12,10 @@ public class MetadataNormalizer {
   Normalizer<Person> person = new NormalizerPersonDateRole();
   Normalizer<String> signPage = new NormalizerSignPage();
 
+  Normalizer<String> postalCode = new NormalizerString();
+  Normalizer<String> city = new NormalizerString();
+  Normalizer<String> street = new NormalizerString();
+  Normalizer<String> streetNo = new NormalizerString();
+
+
 }

@@ -3,12 +3,15 @@ package pl.clarin.pwr.g419.text.annotator;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.Annotation;
+import pl.clarin.pwr.g419.struct.HocrLine;
 import pl.clarin.pwr.g419.struct.HocrPage;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 
+@Slf4j
 public class Annotator implements HasLogger {
 
   List<Pattern> patterns;
@@ -25,6 +28,7 @@ public class Annotator implements HasLogger {
   }
 
   public void annotate(final HocrPage page) {
+    //log.error("Annotating page ");
     patterns.stream()
         .map(p -> p.find(page))
         .flatMap(Collection::stream)

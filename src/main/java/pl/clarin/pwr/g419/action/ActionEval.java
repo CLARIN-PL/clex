@@ -84,7 +84,8 @@ public class ActionEval extends Action {
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
     // jego przetwarzania
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
-    paths.parallelStream().forEach(path -> {
+    //paths.parallelStream().forEach(path -> {
+    paths.stream().forEach(path -> {
       try {
         evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
@@ -154,6 +155,16 @@ public class ActionEval extends Action {
             ref.getPeriodTo(), metadata.getPeriodTo()),
         evalField(document.getId(), "company", normalizer.getCompany(),
             ref.getCompany(), metadata.getCompany())
+
+//        evalField(document.getId(), "street", normalizer.getStreet(),
+//            ref.getStreet(), metadata.getStreet());
+//        evalField(document.getId(), "street_no", normalizer.getStreetNo(),
+//            ref.getStreetNo(), metadata.getStreetNo());
+//        evalField(document.getId(), "postal_code", normalizer.getPostalCode(),
+//            ref.getPostalCode(), metadata.getPostalCode());
+//        evalField(document.getId(), "city", normalizer.getCity(),
+//            ref.getCity(), metadata.getCity());
+
     );
 
     records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),

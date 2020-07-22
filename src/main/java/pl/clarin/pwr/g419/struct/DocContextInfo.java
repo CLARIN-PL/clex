@@ -1,6 +1,7 @@
 package pl.clarin.pwr.g419.struct;
 
 import lombok.Data;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -10,9 +11,9 @@ public class DocContextInfo {
   int mostCommonHeightOfLine;
   int pageNrWithSigns = 0;
   int leadingEmptyPages = 0;
-  
-  List<HeaderAndFooterStruct> headers;
-  List<HeaderAndFooterStruct> footers;
+
+  List<HeaderAndFooterStruct> headers = Collections.emptyList();
+  List<HeaderAndFooterStruct> footers = Collections.emptyList();
 
 
 }

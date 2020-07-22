@@ -2,6 +2,10 @@ package pl.clarin.pwr.g419.io.reader;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.struct.HeaderAndFooterStruct;
+
+import static pl.clarin.pwr.g419.struct.HeaderAndFooterStruct.Type.FOOTER;
+import static pl.clarin.pwr.g419.struct.HeaderAndFooterStruct.Type.HEADER;
+
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.HocrLine;
 import pl.clarin.pwr.g419.struct.HocrPage;
@@ -13,15 +17,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HeadersAndFootersHandler {
 
-  private enum Type {HEADER, FOOTER}
+  // przez ile stron musi powtarzać się linia byśmy uznali że to jest nagłówek
+  final public static int PAGE_SPAN_THRESHOLD = 3;
+
+  // jak wielka musi być różnica w wysokości linii z tym samym tekstem by uznać że to jednak nie takie same linie
+  final public static int SIGNIFICANT_DIFF_IN_RANGE_HEIGHT = 10;
 
 
   public void findAndExtractHeadersAndFooters(HocrDocument document) {
-    List<HeaderAndFooterStruct> headers = findAndExtractLeveledHeaders(Type.HEADER, document);
+    List<HeaderAndFooterStruct> headers = findAndExtractLeveledHeaders(HEADER, document);
     document.getDocContextInfo().setHeaders(headers);
-    log.error("DID:" + document.getId() + " XXXXXXXXXXXX - printing headers XXXXXXXXXXX");
-    headers.stream().forEach(h -> log.error(" " + h));
-
+    headers.stream().forEach(h -> h.generateTmpPageFromLines());
+    // wycinanie ze stron linii z nagłówkami
     headers.stream()
         .forEach(h -> document
             .stream()
@@ -38,11 +45,10 @@ public class HeadersAndFootersHandler {
         );
 
 
-    List<HeaderAndFooterStruct> footers = findAndExtractLeveledHeaders(Type.FOOTER, document);
+    List<HeaderAndFooterStruct> footers = findAndExtractLeveledHeaders(FOOTER, document);
     document.getDocContextInfo().setFooters(footers);
-    log.error("DID:" + document.getId() + " XXXXXXXXXXXX - printing footers XXXXXXXXXXX");
-    footers.stream().forEach(h -> log.error(" " + h));
-
+    footers.stream().forEach(f -> f.generateTmpPageFromLines());
+    // wycinanie ze stron linii ze stopkami
     footers.stream()
         .forEach(f -> document
             .stream()
@@ -57,88 +63,193 @@ public class HeadersAndFootersHandler {
                 }
             )
         );
+
+    // diagnostyka
+    log.debug("DID:" + document.getId() + " XXXXXXXXXXXX - printing headers XXXXXXXXXXX");
+    headers.stream().forEach(h -> log.debug(" " + h));
+
+    log.debug("DID:" + document.getId() + " XXXXXXXXXXXX - printing footers XXXXXXXXXXX");
+    footers.stream().forEach(h -> log.debug(" " + h));
   }
 
-  private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(Type type, HocrDocument document) {
+  private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(HeaderAndFooterStruct.Type type, HocrDocument document) {
     HeaderAndFooterStruct hafs = new HeaderAndFooterStruct();
+    hafs.setType(type);
     return findAndExtractLeveledHeaders(type, document, 0, 0, document.size(), hafs);
   }
 
-  private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(Type type,
+  /***
+   *
+   * @param type - sprawdzany typ: czy nagłówek (HEADER) czy stopka (FOOTER)
+   * @param document  - referencja do całego dokumentu. Potrzebna do iterowania po stronach
+   * @param level - "poziom" nagłówka - czy sprawdzamy pierwszą linię od góry, drugą od góry. Analogicznie dla stopki: ostatnią, przedostatnią
+   * @param startPageIndex - indeks strony od której zaczynamy sprawdzanie.
+   * @param endPageIndex - indeks strony następnej do tej, na której kończymy sprawdzanie. Czyli gdy chcemy sprawdzać do końca dokumentu dajemy document.size()
+   * @param previousLevelHeader- jeśli jesteśmy na level >0 to to jest struktura która zawiera dane o nagłówku z poprzedniego poziomu - znalezionym do tej pory
+   * @return - listę struktur nagłówków/stopek takich, że na pewno na następnym poziomie (level) już nie można było wyodrędnić dalszej
+   *            części nagłówka lub stopki
+   *
+   */
+  private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(HeaderAndFooterStruct.Type type,
                                                                    HocrDocument document,
                                                                    int level,
-                                                                   int sIndex,
-                                                                   int eIndex,
-                                                                   HeaderAndFooterStruct accumulator) {
-    log.debug("Starting findAndExtractLeveledHEaders with: type=" + type + " level=" + level + " sIndex=" + sIndex + " eIndex=" + eIndex + " acc=" + accumulator);
+                                                                   int startPageIndex,
+                                                                   int endPageIndex,
+                                                                   HeaderAndFooterStruct previousLevelHeader) {
+    log.debug("Starting findAndExtractLeveledHeaders with: type=" + type +
+        " level=" + level +
+        " startPageIndex=" + startPageIndex +
+        " endPageIndex=" + endPageIndex +
+        " prevLeaderHeader=" + previousLevelHeader);
 
-    int HEADER_PAGE_SPAN_THRESHOLD = 3;
-    int SIGNIFICANT_DIFF_IN_RANGE_HEIGHT = 10;
     List<HeaderAndFooterStruct> resultHeaderList = new LinkedList<>();
+    List<HeaderAndFooterStruct> finalResultHeaderList = new LinkedList<>();
 
-    //przewijaj do strony co ma w ogóle linię na tym poziomie by było od czego zacząć porównywać ...
-    int currentIndex = sIndex;
-    HocrLine currentHocrLine = null;
+    // jeśli nie ma w ogóle na stronie linii takich jak trzeba to przewijaj do strony co ma
+    // w ogóle linię na tym poziomie by było od czego zacząć porównywać ...
+    int currentPageIndex = startPageIndex;
+    HocrLine startHeaderHocrLine = null;
     while (
-        (currentIndex < document.size())
+        (currentPageIndex < endPageIndex)
             &&
-            (currentHocrLine = getRange4Level(type, document.get(currentIndex), level)) == null
+            (startHeaderHocrLine = getLineForLevel(type, document.get(currentPageIndex), level)) == null
     ) {
-      currentIndex++;
+      currentPageIndex++;
     }
-    if (currentIndex == document.size()) {
-      return List.of(accumulator);
+    if (currentPageIndex == endPageIndex) { // jesli przewinęlismy w ten sposób do końca to po prostu zwracamy nagłówek poprzedniego poziomu
+      return List.of(previousLevelHeader);
     }
 
-    int startIndex = currentIndex;
-    for (int pageIndex = startIndex + 1; pageIndex < eIndex; pageIndex++) {
-      boolean continuingHeader;
-      HocrLine newHocrLine = getRange4Level(type, document.get(pageIndex), level);
-      if (newHocrLine == null) {
-        continuingHeader = false;
-      } else {
-        if (!currentHocrLine.getText().equalsIgnoreCase(newHocrLine.getText())) {
-          //tekst się zmienił - jeśli wczesniej był na tylu stronach, że można zrobić nagłówek to go zrobimy
-          continuingHeader = false;
-        } else {
-          if (currentHocrLine.getHeight() - newHocrLine.getHeight() > SIGNIFICANT_DIFF_IN_RANGE_HEIGHT) {
-            continuingHeader = false;
-          } else {
-            continuingHeader = true;
+    int previousHeaderEndPageIndex = startPageIndex - 1;
+    boolean isIndexInHeaderState = false;
+    int startHeaderIndex = currentPageIndex;
+
+    // główna pętla - startujemy od startHeaderIncdex+1 bo sam startHeaderIndex mamy już sprawdzony i trzymany w startHeaderHocrLine
+    for (currentPageIndex = startHeaderIndex + 1; currentPageIndex < endPageIndex; currentPageIndex++) {
+
+      HocrLine currentHocrLine = getLineForLevel(type, document.get(currentPageIndex), level);
+      boolean areLinesTheSame = areLinesTheSame(startHeaderHocrLine, currentHocrLine);
+
+      if (!areLinesTheSame) {
+        boolean isHeaderCreated = checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startHeaderIndex, currentPageIndex, startHeaderHocrLine, resultHeaderList, previousLevelHeader);
+        if (isHeaderCreated) {
+          // stworzyliśmy nowy nagłówek ale być może między początkiem nowego a końcem poprzedniego, który tu na tym poziomie
+          // też stworzyliśmy jest przerwa i trzeba ją uwzględnić jeśli to jest level >0 bo wtedy trzeba zwrócić ten nagłówek
+          // z "niższego" poziomu przykrojony do tej przerwy
+
+          if (level > 0) {
+            if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
+              // tak - jest taka przerwa na przynajmniej jedną stronę
+              //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
+              HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
+              newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
+              newHafs.setEndIndex(startHeaderIndex - 1);
+              // linie zostają takie jak były na poziomie "niżej"
+
+              // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
+              // więc nie powinnismy go sprawdzać już na ewentualne powtórki na jeszcze następnym poziomie - czyli go zwracamy od razu taki jaki jest
+              finalResultHeaderList.add(newHafs);
+            }
+          }
+
+
+          previousHeaderEndPageIndex = currentPageIndex - 1;
+        }
+        startHeaderHocrLine = currentHocrLine;
+        startHeaderIndex = currentPageIndex;
+
+        while (startHeaderHocrLine == null) {
+          if (startHeaderIndex == endPageIndex - 1) {
+//          if (startHeaderIndex == endPageIndex) {
+            log.debug("startHeaderIndex == endPageIndex");
+            if (level > 0) {
+              if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
+                // tak - jest taka przerwa na przynajmniej jedną stronę
+                //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
+                HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
+                newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
+                newHafs.setEndIndex(startHeaderIndex - 1);
+                // linie zostają takie jak były na poziomie "niżej"
+
+                // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
+                // więc nie powinnismy go sprawdzać już na ewentualne powtórki na jeszcze następnym poziomie - czyli go zwracamy od razu taki jaki jest
+                finalResultHeaderList.add(newHafs);
+              }
+            }
+
+            break;
+          }
+          startHeaderIndex++;
+          startHeaderHocrLine = getLineForLevel(type, document.get(startHeaderIndex), level);
+        }
+      }
+
+
+    }
+    if (startHeaderHocrLine != null) {
+      boolean isHeaderCreated = checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startHeaderIndex, endPageIndex, startHeaderHocrLine, resultHeaderList, previousLevelHeader);
+      if (!isHeaderCreated) {
+        if (level > 0) {
+          if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
+            // tak - jest taka przerwa na przynajmniej jedną stronę
+            //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
+            HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
+            newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
+            newHafs.setEndIndex(startHeaderIndex - 1);
+            // linie zostają takie jak były na poziomie "niżej"
+
+            // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
+            // więc nie powinnismy go sprawdzać już na ewentualne powtórki na jeszcze następnym poziomie - czyli go zwracamy od razu taki jaki jest
+            finalResultHeaderList.add(newHafs);
           }
         }
       }
-
-
-      if (!continuingHeader) {
-        checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, pageIndex, currentHocrLine, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
-        currentHocrLine = newHocrLine;
-        startIndex = pageIndex;
-
-        while (currentHocrLine == null) {
-          if (startIndex == document.size() - 1)
-            break;
-          startIndex++;
-          currentHocrLine = getRange4Level(type, document.get(startIndex), level);
-        }
-      }
+    } else {
+      log.debug("startHeaderHocrLine != null");
     }
-    checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startIndex, eIndex, currentHocrLine, HEADER_PAGE_SPAN_THRESHOLD, resultHeaderList, accumulator);
 
     if (resultHeaderList.size() == 0) {
-      return (level == 0) ? Collections.emptyList() : List.of(accumulator);
+      return (level == 0) ? Collections.emptyList() : List.of(previousLevelHeader);
     }
 
-    return
+    log.debug("\tfinalResultHeaderList=" + finalResultHeaderList);
+    log.debug("\tresultHeaderList=" + resultHeaderList);
+
+    finalResultHeaderList.addAll(
         resultHeaderList
             .stream()
             .flatMap(hl ->
                 findAndExtractLeveledHeaders(type, document, level + 1, hl.getStartIndex(), hl.getEndIndex() + 1, hl).stream()
             )
-            .collect(Collectors.toList());
+            .collect(Collectors.toList())
+    );
+
+
+    return finalResultHeaderList;
   }
 
-  private HocrLine getRange4Level(Type type, HocrPage page, int level) {
+  private boolean areLinesTheSame(HocrLine firstHocrLine, HocrLine secondHocrLine) {
+    boolean result = false;
+    if (secondHocrLine == null) {
+      result = false;
+    } else {
+      if (!firstHocrLine.getText().equalsIgnoreCase(secondHocrLine.getText())) {
+        //tekst się zmienił - jeśli wczesniej był na tylu stronach, że można zrobić nagłówek to go zrobimy
+        result = false;
+      } else {
+        if (firstHocrLine.getHeight() - secondHocrLine.getHeight() > SIGNIFICANT_DIFF_IN_RANGE_HEIGHT) {
+          result = false;
+          // może jeszcze sprawdzanie czy header lub footer jest na "swojej" połowie dokumentu ???
+        } else {
+          // tekst jest dalej taki sam - kontynuacja nagłówka najpewniej
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
+  private HocrLine getLineForLevel(HeaderAndFooterStruct.Type type, HocrPage page, int level) {
     int levelForType = getLevelForType(type, page, level);
     List<HocrLine> lines = page.getLines();
     if (lines == null)
@@ -149,28 +260,28 @@ public class HeadersAndFootersHandler {
   }
 
 
-  private int getLevelForType(Type type, HocrPage page, int level) {
-    return (type == Type.HEADER) ? level : page.getLines().size() - level - 1;
+  private int getLevelForType(HeaderAndFooterStruct.Type type, HocrPage page, int level) {
+    return (type == HEADER) ? level : page.getLines().size() - level - 1;
   }
 
-  private void checkIfPossibleToMakeNewLevelHeaderAndMakeIt(int startIndex,
-                                                            int pageIndex,
-                                                            HocrLine currentHocrLine,
-                                                            int PAGE_SPAN_THRESHOLD,
-                                                            List<HeaderAndFooterStruct> result,
-                                                            HeaderAndFooterStruct hafs) {
+  private boolean checkIfPossibleToMakeNewLevelHeaderAndMakeIt(int startPageIndex,
+                                                               int currentPageIndex,
+                                                               HocrLine startHeaderHocrLine,
+                                                               List<HeaderAndFooterStruct> result,
+                                                               HeaderAndFooterStruct upLevelHeader) {
 
-    if (currentHocrLine != null) {
-      if (pageIndex - 1 - startIndex >= PAGE_SPAN_THRESHOLD) {
-        HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(hafs);
-        newHafs.setStartIndex(startIndex);
-        newHafs.setEndIndex(pageIndex - 1);
-        // cały czas coś mi mówi, żeby tu lepiej jednak trzymać Range
-        newHafs.getLines().add(currentHocrLine.getText());
+    //if (startHeaderHocrLine != null) {
+    if (currentPageIndex - startPageIndex >= PAGE_SPAN_THRESHOLD) {
+      HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(upLevelHeader);
+      newHafs.setStartIndex(startPageIndex);
+      newHafs.setEndIndex(currentPageIndex - 1);
+      newHafs.getLines().add(startHeaderHocrLine);
 
-        result.add(newHafs);
-      }
+      result.add(newHafs);
+      return true;
     }
+    //}
+    return false;
   }
 
 }
