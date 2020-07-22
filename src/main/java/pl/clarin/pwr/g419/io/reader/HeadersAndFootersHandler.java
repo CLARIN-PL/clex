@@ -74,8 +74,13 @@ public class HeadersAndFootersHandler {
 
   private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(HeaderAndFooterStruct.Type type, HocrDocument document) {
     HeaderAndFooterStruct hafs = new HeaderAndFooterStruct();
+
+    hafs.setStartIndex(0);
+    hafs.setEndIndex(document.size() - 1);
     hafs.setType(type);
-    return findAndExtractLeveledHeaders(type, document, 0, 0, document.size(), hafs);
+    hafs.setLevel(-1);
+
+    return findAndExtractLeveledHeaders(type, document, /*0, 0, document.size(),*/ hafs);
   }
 
   /***
@@ -92,10 +97,14 @@ public class HeadersAndFootersHandler {
    */
   private List<HeaderAndFooterStruct> findAndExtractLeveledHeaders(HeaderAndFooterStruct.Type type,
                                                                    HocrDocument document,
-                                                                   int level,
-                                                                   int startPageIndex,
-                                                                   int endPageIndex,
+//                                                                   int level,
+//                                                                   int startPageIndex,
+//                                                                   int endPageIndex,
                                                                    HeaderAndFooterStruct previousLevelHeader) {
+
+    int level = previousLevelHeader.getLevel() + 1;
+    int startPageIndex = previousLevelHeader.getStartIndex();
+    int endPageIndex = previousLevelHeader.getEndIndex() + 1;
     log.debug("Starting findAndExtractLeveledHeaders with: type=" + type +
         " level=" + level +
         " startPageIndex=" + startPageIndex +
@@ -124,7 +133,7 @@ public class HeadersAndFootersHandler {
     boolean isIndexInHeaderState = false;
     int startHeaderIndex = currentPageIndex;
 
-    // główna pętla - startujemy od startHeaderIncdex+1 bo sam startHeaderIndex mamy już sprawdzony i trzymany w startHeaderHocrLine
+    // główna pętla - startujemy od startHeaderIndex+1 bo sam startHeaderIndex mamy już sprawdzony i trzymany w startHeaderHocrLine
     for (currentPageIndex = startHeaderIndex + 1; currentPageIndex < endPageIndex; currentPageIndex++) {
 
       HocrLine currentHocrLine = getLineForLevel(type, document.get(currentPageIndex), level);
@@ -137,13 +146,13 @@ public class HeadersAndFootersHandler {
           // też stworzyliśmy jest przerwa i trzeba ją uwzględnić jeśli to jest level >0 bo wtedy trzeba zwrócić ten nagłówek
           // z "niższego" poziomu przykrojony do tej przerwy
 
+          //addPossibleChildHeader(previousHeaderEndPageIndex + 1, startPageIndex - 1, previousLevelHeader, finalResultHeaderList);
+
           if (level > 0) {
             if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
               // tak - jest taka przerwa na przynajmniej jedną stronę
               //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
-              HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
-              newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
-              newHafs.setEndIndex(startHeaderIndex - 1);
+              HeaderAndFooterStruct newHafs = previousLevelHeader.createChild(previousHeaderEndPageIndex + 1, startHeaderIndex - 1, null);
               // linie zostają takie jak były na poziomie "niżej"
 
               // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
@@ -162,13 +171,14 @@ public class HeadersAndFootersHandler {
           if (startHeaderIndex == endPageIndex - 1) {
 //          if (startHeaderIndex == endPageIndex) {
             log.debug("startHeaderIndex == endPageIndex");
+
+            //addPossibleChildHeader(previousHeaderEndPageIndex + 1, startHeaderIndex - 1, previousLevelHeader, finalResultHeaderList);
+
             if (level > 0) {
               if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
                 // tak - jest taka przerwa na przynajmniej jedną stronę
                 //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
-                HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
-                newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
-                newHafs.setEndIndex(startHeaderIndex - 1);
+                HeaderAndFooterStruct newHafs = previousLevelHeader.createChild(previousHeaderEndPageIndex + 1, startHeaderIndex - 1, null);
                 // linie zostają takie jak były na poziomie "niżej"
 
                 // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
@@ -176,6 +186,7 @@ public class HeadersAndFootersHandler {
                 finalResultHeaderList.add(newHafs);
               }
             }
+
 
             break;
           }
@@ -189,13 +200,14 @@ public class HeadersAndFootersHandler {
     if (startHeaderHocrLine != null) {
       boolean isHeaderCreated = checkIfPossibleToMakeNewLevelHeaderAndMakeIt(startHeaderIndex, endPageIndex, startHeaderHocrLine, resultHeaderList, previousLevelHeader);
       if (!isHeaderCreated) {
+        //addPossibleChildHeader(startHeaderIndex, previousHeaderEndPageIndex, previousLevelHeader, finalResultHeaderList);
+
         if (level > 0) {
           if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
             // tak - jest taka przerwa na przynajmniej jedną stronę
             //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
-            HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(previousLevelHeader);
-            newHafs.setStartIndex(previousHeaderEndPageIndex + 1);
-            newHafs.setEndIndex(startHeaderIndex - 1);
+            HeaderAndFooterStruct newHafs = previousLevelHeader
+                .createChild(previousHeaderEndPageIndex + 1, startHeaderIndex - 1, null);
             // linie zostają takie jak były na poziomie "niżej"
 
             // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
@@ -219,7 +231,7 @@ public class HeadersAndFootersHandler {
         resultHeaderList
             .stream()
             .flatMap(hl ->
-                findAndExtractLeveledHeaders(type, document, level + 1, hl.getStartIndex(), hl.getEndIndex() + 1, hl).stream()
+                findAndExtractLeveledHeaders(type, document,/* level + 1, hl.getStartIndex(), hl.getEndIndex() + 1,*/ hl).stream()
             )
             .collect(Collectors.toList())
     );
@@ -268,20 +280,35 @@ public class HeadersAndFootersHandler {
                                                                int currentPageIndex,
                                                                HocrLine startHeaderHocrLine,
                                                                List<HeaderAndFooterStruct> result,
-                                                               HeaderAndFooterStruct upLevelHeader) {
+                                                               HeaderAndFooterStruct previousLevelHeader) {
 
     //if (startHeaderHocrLine != null) {
     if (currentPageIndex - startPageIndex >= PAGE_SPAN_THRESHOLD) {
-      HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(upLevelHeader);
-      newHafs.setStartIndex(startPageIndex);
-      newHafs.setEndIndex(currentPageIndex - 1);
-      newHafs.getLines().add(startHeaderHocrLine);
-
+      HeaderAndFooterStruct newHafs = previousLevelHeader.createChild(startPageIndex, currentPageIndex - 1, startHeaderHocrLine);
       result.add(newHafs);
       return true;
     }
     //}
     return false;
   }
+
+  private void addPossibleChildHeader(int startHeaderIndex, int previousHeaderEndPageIndex,
+                                      HeaderAndFooterStruct previousLevelHeader,
+                                      List<HeaderAndFooterStruct> finalResultHeaderList) {
+    if (previousLevelHeader.getLevel() >= 0) {
+      if (startHeaderIndex - previousHeaderEndPageIndex >= 2) {
+        // tak - jest taka przerwa na przynajmniej jedną stronę
+        //   - nie sprawdzamy PAGE_SPAN_THRESHOLD bo z niższego poziomu wiemy że to nagłówej na pewno
+        HeaderAndFooterStruct newHafs = previousLevelHeader
+            .createChild(previousHeaderEndPageIndex + 1, startHeaderIndex - 1, null);
+        // linie zostają takie jak były na poziomie "niżej"
+
+        // ten nagłówek właśnie sprawdziliśmy że na tym poziomie już nic nie ma do niego
+        // więc nie powinnismy go sprawdzać już na ewentualne powtórki na jeszcze następnym poziomie - czyli go zwracamy od razu taki jaki jest
+        finalResultHeaderList.add(newHafs);
+      }
+    }
+  }
+
 
 }

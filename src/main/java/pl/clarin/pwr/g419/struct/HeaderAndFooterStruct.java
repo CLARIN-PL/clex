@@ -20,6 +20,8 @@ public class HeaderAndFooterStruct {
 
   private Type type;
 
+  private int level;
+
   // strona, na której zaczyna się nagłówek/stopka - włącznie
   private int startIndex;
   // strona, na której kończy się nagłówek/stopka - !!! włącznie !!!
@@ -42,6 +44,18 @@ public class HeaderAndFooterStruct {
     page.setLines(lines);
     this.tmpPage = page;
   }
+
+  public HeaderAndFooterStruct createChild(int startPageIndex, int endPageIndexIncl, HocrLine lineToAdd) {
+    HeaderAndFooterStruct newHafs = new HeaderAndFooterStruct(this);
+    newHafs.setLevel(this.getLevel() + 1);
+    newHafs.setStartIndex(startPageIndex);
+    newHafs.setEndIndex(endPageIndexIncl);
+    if (lineToAdd != null) {
+      newHafs.getLines().add(lineToAdd);
+    }
+    return newHafs;
+  }
+
 
   public String toString() {
     return "[" + getStartIndex() + ":" + getEndIndex() + "]\t" + lines.stream().map(l -> l.getText()).collect(Collectors.joining(" "));
