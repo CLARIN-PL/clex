@@ -73,7 +73,8 @@ public class HocrReader extends DefaultHandler {
 
     this.document.stream().forEach(this::mergeLinesFirstIteration);
     this.document.stream().forEach(HocrPage::dumpNrOfLinesAndBlocks);
-    this.document.trimLeadingEmptyPages();
+    //this.document.trimLeadingEmptyPages();
+    this.document.calculateNrOfLeadingEmptyPages();
     this.document.stream().forEach(this::splitInterpunctionEnd);
     this.document.stream().forEach(HocrPage::sortLinesByTop);
 

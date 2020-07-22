@@ -88,11 +88,12 @@ public class InformationExtractor implements HasLogger {
   }
 
   private void calculatePeriodScore(Annotation a) {
-    if (a.getPage().getNo() == 1) {
+    int leadingEmptyPages = a.getPage().getDocument().getDocContextInfo().getLeadingEmptyPages();
+    if (a.getPage().getNo() == 1 + leadingEmptyPages) {
       a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
       return;
     }
-    if (a.getPage().getNo() == 2) {
+    if (a.getPage().getNo() == 2 + leadingEmptyPages) {
       a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
       return;
     }
