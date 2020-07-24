@@ -33,6 +33,12 @@ public class CompanyLemmatizer {
     lemmas.put("POLSKIEGO", "POLSKI");
     lemmas.put("POLSKIEJ", "POLSKA");
 
+//    TODO : czy takie rozwinięcia pomagają ?
+//    lemmas.put("PKO", "POWSZECHNA KASA OSZCZĘDNOŚCI");
+//    lemmas.put("DM", "DOM MAKLERSKI");
+//    lemmas.put("PTI", "POWSZECHNE TOWARZYSTWO INWESTYCYJNE");
+
+
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
     ignore.add("SPÓŁKI");
