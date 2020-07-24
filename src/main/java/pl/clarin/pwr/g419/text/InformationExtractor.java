@@ -11,6 +11,7 @@ import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
+import pl.clarin.pwr.g419.text.extractor.ExtractorCompany;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeriod;
 import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
@@ -35,14 +36,12 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorSignsPage()
   );
 
-  CompanyLexicon companyLexicon = new CompanyLexicon();
-  NormalizerCompany companyNormalizer = new NormalizerCompany();
-  CompanyLemmatizer companyLemmatizer = new CompanyLemmatizer();
-
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
   ExtractorPeriod extractorPeriod = new ExtractorPeriod();
+  ExtractorCompany extractorCompany = new ExtractorCompany();
+
 
   public MetadataWithContext extract(final HocrDocument document) {
 
@@ -84,7 +83,7 @@ public class InformationExtractor implements HasLogger {
     });
 
     getDrawingDate(document).ifPresent(metadata::setDrawingDate);
-    getCompany(document).ifPresent(metadata::setCompany);
+    extractorCompany.extract(document).ifPresent(metadata::setCompany);
 
     extractorPeople.extract(document).ifPresent(metadata::setPeople);
 
@@ -119,26 +118,6 @@ public class InformationExtractor implements HasLogger {
         .sortByPos()
         .getFirst()
         .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));
-  }
-
-  private Optional<FieldContext<String>> getCompany(final HocrDocument document) {
-    final Optional<FieldContext<String>> value = document.getAnnotations()
-        .filterByType(AnnotatorCompany.COMPANY)
-        .topScore()
-        .sortByLoc()
-        .getFirst();
-    value.ifPresent(vc -> {
-      final String nameLem = companyLemmatizer.lemmatize(vc.getField().toUpperCase());
-      final String nameNorm = companyNormalizer.normalize(nameLem);
-      final String nameApprox = companyLexicon.approximate(nameNorm);
-      if (!nameNorm.equals(nameApprox)) {
-        vc.setField(nameApprox);
-        vc.setRule(String.format("%s; %s -> %s", vc.getRule(), nameNorm, nameApprox));
-      } else {
-        vc.setField(nameLem);
-      }
-    });
-    return value;
   }
 
 

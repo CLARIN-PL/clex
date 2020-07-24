@@ -46,12 +46,14 @@ public class HeadersAndFootersHandler {
             .forEach(page -> {
                   page
                       .getLines()
-                      // TODO tu powinno działać bez tego Math.min
-                      .subList(0, Math.min(h.getLines().size(), page.getLines().size()))
+                      .subList(0, h.getLines().size())
                       .clear();
                 }
             )
         );
+
+    // TODO - żeby wycinanie headerów i footerów się nie nałożyło przypadkowo na te same linie dla stron z małą ilością linii
+    // trzeba by tu odtworzyć strony już z usuniętymi headerami i dopiero wtedy je puścić do wycinania footerów
 
     List<HeaderAndFooterStruct> footers = findAndExtractLeveledHeaders(FOOTER, document);
     document.getDocContextInfo().setFooters(footers);
@@ -66,7 +68,6 @@ public class HeadersAndFootersHandler {
             .forEach(page -> {
                   page
                       .getLines()
-                      // TODO tu też powinno działać bez tego Math.min
                       .subList(page.getLines().size() - f.getLines().size(), page.getLines().size())
                       .clear();
                 }

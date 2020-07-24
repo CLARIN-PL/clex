@@ -30,6 +30,8 @@ public class CompanyLemmatizer {
     lemmas.put("INWESTYCYJNEGO", "INWESTYCYJNY");
     lemmas.put("FABRYK", "FABRYKI");
     lemmas.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
+    lemmas.put("POLSKIEGO", "POLSKI");
+    lemmas.put("POLSKIEJ", "POLSKA");
 
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
@@ -37,6 +39,11 @@ public class CompanyLemmatizer {
     ignore.add("FIRMY");
     ignore.add("UDZIAŁ");
     ignore.add("%");
+
+    ignore.add("SPÓŁKA AKCYJNA");
+    ignore.add("S.A");
+    ignore.add("S.A.");
+
   }
 
   public String lemmatize(final String text) {
