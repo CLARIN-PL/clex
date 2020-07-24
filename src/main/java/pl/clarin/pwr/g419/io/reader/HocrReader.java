@@ -72,7 +72,7 @@ public class HocrReader extends DefaultHandler {
     this.document.setId(getIdFromPath(path));
 
     this.document.stream().forEach(this::mergeLinesFirstIteration);
-    this.document.stream().forEach(HocrPage::dumpNrOfLinesAndBlocks);
+    //this.document.stream().forEach(HocrPage::dumpNrOfLinesAndBlocks);
     //this.document.trimLeadingEmptyPages();
     this.document.calculateNrOfLeadingEmptyPages();
     this.document.stream().forEach(this::splitInterpunctionEnd);
@@ -140,7 +140,11 @@ public class HocrReader extends DefaultHandler {
     } else if (elementName.equalsIgnoreCase(TAG_DIV)) {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
         this.page = new HocrPage(document);
+        final String title = attributes.getValue(ATTR_TITLE);
+        Box box = titleToBox(title);
+        this.page.setBox(box);
         this.page.setNo(pageNo++);
+        //log.trace(" For page " + pageNo + " set Box =" + this.page.getBox());
         document.add(page);
       }
     }
@@ -351,6 +355,7 @@ public class HocrReader extends DefaultHandler {
     for (int i = 0; i < document.size(); i++) {
       HocrPage page = document.get(i);
       HocrPage newPage = new HocrPage(resultDoc, page.generateBboxesFromSortedLines());
+      newPage.setBox(page.getBox());
       newPage.setNo(page.getNo());
       pages.add(newPage);
       // histogram i annotacje jeszcze nie wygenerowane

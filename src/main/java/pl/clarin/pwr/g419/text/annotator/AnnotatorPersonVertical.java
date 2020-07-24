@@ -56,7 +56,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
       final Optional<Bboxes> blockAbove = findBlockAbove(an, begin, end, lines, page);
       if (blockAbove.isPresent()
-          && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottom().getAsInt()) < 60
+          && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottomBbox().getAsInt()) < 60
       ) {
         name = blockAbove;
         source = "person-ver:name-above";
@@ -65,7 +65,7 @@ public class AnnotatorPersonVertical extends Annotator {
       if (name.isEmpty()) {
         final Optional<Bboxes> lineBelow = findLineBelow(an, lines, page);
         if (lineBelow.isPresent()
-            && Math.abs(anFirstBox.getBox().getBottom() - lineBelow.get().getTop().getAsInt()) < 30) {
+            && Math.abs(anFirstBox.getBox().getBottom() - lineBelow.get().getTopBbox().getAsInt()) < 30) {
           name = extractName(lineBelow.get(), begin, end);
           source = "person-ver:name-below";
         }
@@ -120,7 +120,7 @@ public class AnnotatorPersonVertical extends Annotator {
         .map(line -> extractName(line.getRight(), left, right))
         .filter(b -> b.isPresent() && b.get().size() > 0)
         .map(Optional::get)
-        .sorted((o1, o2) -> Integer.compare(o2.getBottom().getAsInt(), o1.getBottom().getAsInt()))
+        .sorted((o1, o2) -> Integer.compare(o2.getBottomBbox().getAsInt(), o1.getBottomBbox().getAsInt()))
         .findFirst();
   }
 

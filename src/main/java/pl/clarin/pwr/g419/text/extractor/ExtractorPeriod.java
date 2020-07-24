@@ -23,6 +23,8 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
   private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
       final HocrDocument document) {
 
+    // TODO - doszlifować wyciąganie i sortowanie annotacji z nagłówków i stopek
+    // np. wg liczby stron na których jest, kolejności w dokumencie, poziomu w drzewie nagłówków
     Optional<FieldContext<String>> periodFromHeader = document.getHeaderAndFooterAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).getFirst();
 
@@ -57,23 +59,23 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
 
     var result = getDatesPairFromPeriod(period);
 
-    log.debug(" PFH=" + resultPeriodFromHeader);
-    log.debug(" PFD=" + result);
-
+    log.trace(" PeriodFromHeader=" + resultPeriodFromHeader);
+    log.trace(" PeriodFromDocument=" + result);
 
     if (result.isEmpty() && resultPeriodFromHeader.isPresent()) {
-      log.debug(" NIEZGODNOSC DAT !!! GUT !!!");
-    }
-
-
-    if (result.isPresent() && resultPeriodFromHeader.isPresent()) {
+      log.debug(" Niezgodność dla Period ! Nie ma dla dokuemntu jest dla nagłówków. Doc Id=" + document.getId());
+      // normalne wyszukiwanie nie znalazło - wyszukiwanie po nagłówku znalazło - podstawiamy je
+      result = resultPeriodFromHeader;
+    } else if (result.isPresent() && resultPeriodFromHeader.isPresent()) {
       if (
           (result.get().getKey().getField().equals(resultPeriodFromHeader.get().getKey().getField()))
               && (result.get().getValue().getField().equals(resultPeriodFromHeader.get().getValue().getField()))
       ) {
-        log.debug(" ZGODNOSC DAT !!! ");
+        log.trace(" Zgodność dla Period z nagłówków i dokumentu !!! ");
       } else {
-        log.debug(" NIEZGODNOSC DAT !!! ");
+        log.debug(" Niezgodność dla Period ! Są obecne ale inne dla nagłówków a inne dla dokumentu.DOC ID=" + document.getId());
+        // bierzemy tą z nagłówka
+        result = resultPeriodFromHeader;
       }
     }
 

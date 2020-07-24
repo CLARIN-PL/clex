@@ -31,18 +31,22 @@ public class HeaderAndFooterStruct {
   // HocrLine'y składające się na cały nagłówek do tego poziomu idąc od poziomu zerowego do aktualnego.
   private List<HocrLine> lines = new LinkedList<>();
 
+  private List<HeaderAndFooterStruct> nextLevelHeaders = new LinkedList<>();
+
   private HocrPage tmpPage;
 
 
   public HeaderAndFooterStruct(HeaderAndFooterStruct hafs) {
     this.startIndex = hafs.startIndex;
     this.endIndex = hafs.endIndex;
+    this.level = hafs.level;
     this.lines = new ArrayList<>(hafs.lines);
   }
 
   public void generateTmpPageFromLines() {
     List<Bbox> result = lines.stream().flatMap(line -> line.getBboxes().stream()).collect(Collectors.toList());
     HocrPage page = new HocrPage(null, new Bboxes(result));
+    // tutaj nie trzeba Boxa ustawiać bo to jest tylko do zrobienia  adnotacji ta strona
     page.setLines(lines);
     this.tmpPage = page;
   }
@@ -60,7 +64,7 @@ public class HeaderAndFooterStruct {
 
 
   public String toString() {
-    return "[" + getStartIndex() + ":" + getEndIndex() + "]\t" + lines.stream().map(l -> l.getText()).collect(Collectors.joining(" "));
+    return "[ [" + (getStartIndex() /*+ 1*/) + ":" + (getEndIndex() /*+ 1*/) + "]:(" + level + ")\t'" + lines.stream().map(l -> l.getText()).collect(Collectors.joining(" | ")) + "' ]";
   }
 
 
