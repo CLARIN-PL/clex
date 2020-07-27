@@ -39,6 +39,9 @@ public class Annotator implements HasLogger {
                 .withSource(m.getSource()))
         .filter(ann -> isValid(ann))
         .forEach(page::addAnnotation);
+
+    //log.trace("[p=" + page.getNo() + "] Anns:" + page.getAnnotations());
+
   }
 
   protected String normalize(final PatternMatch pm) {

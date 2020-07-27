@@ -17,6 +17,7 @@ abstract public class ResourceLexicon extends HashSet<String> implements HasLogg
       load();
     } catch (final Exception ex) {
       getLogger().error("Failed to load CompanyLexicon from {}", getResourcePath());
+      getLogger().error("", ex);
     }
   }
 

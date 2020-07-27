@@ -69,27 +69,27 @@ public class ExtractorCompany implements IExtractor<FieldContext<String>> {
       }
     });
 
-    log.error(" Company FromHeader=" + companyFromHeader);
-    log.error(" Company FromDocument=" + value);
+    log.trace(" Company FromHeader=" + companyFromHeader);
+    log.trace(" Company FromDocument=" + value);
 
     var resultFromHeader = companyFromHeader;
     var result = value;
 
     if (result.isEmpty() && resultFromHeader.isPresent()) {
-      log.error(" Niezgodność dla Company ! Nie ma dla dokuemntu jest dla nagłówków. Doc Id=" + document.getId());
+      log.debug(" Niezgodność dla Company ! Nie ma dla dokuemntu jest dla nagłówków. Doc Id=" + document.getId());
       // normalne wyszukiwanie nie znalazło - wyszukiwanie po nagłówku znalazło - podstawiamy je
 
-//      result = resultFromHeader;
+      result = resultFromHeader;
     } else if (result.isPresent() && resultFromHeader.isPresent()) {
       if (
           (result.get().getField().equals(resultFromHeader.get().getField()))
               && (result.get().getField().equals(resultFromHeader.get().getField()))
       ) {
-        log.error(" Zgodność dla Company z nagłówków i dokumentu !!! ");
+        log.trace(" Zgodność dla Company z nagłówków i dokumentu !!! ");
       } else {
-        log.error(" Niezgodność dla Company ! Są obecne ale inne dla nagłówków a inne dla dokumentu.DOC ID=" + document.getId());
+        log.debug(" Niezgodność dla Company ! Są obecne ale inne dla nagłówków a inne dla dokumentu.DOC ID=" + document.getId());
         // bierzemy tą z nagłówka
-//        result = resultFromHeader;
+        result = resultFromHeader;
       }
     }
 

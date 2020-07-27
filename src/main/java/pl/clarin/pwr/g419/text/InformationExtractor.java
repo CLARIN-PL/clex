@@ -33,7 +33,10 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorPersonHorizontal(),
       new AnnotatorPersonVertical(),
       new AnnotatorDrawingDate(),
-      new AnnotatorSignsPage()
+      new AnnotatorSignsPage(),
+
+      new AnnotatorPostalCode(),
+      new AnnotatorCity()
   );
 
 
@@ -88,6 +91,8 @@ public class InformationExtractor implements HasLogger {
     extractorPeople.extract(document).ifPresent(metadata::setPeople);
 
     //assignDefaultSignDate(metadata);
+    getPostalCode(document).ifPresent(metadata::setPostalCode);
+    getCity(document).ifPresent(metadata::setCity);
 
     return metadata;
   }
@@ -118,6 +123,38 @@ public class InformationExtractor implements HasLogger {
         .sortByPos()
         .getFirst()
         .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));
+  }
+
+  private Optional<FieldContext<String>> getPostalCode(final HocrDocument document) {
+    AnnotationList postalCodeCandidates = document.getAnnotations()
+        .filterByType(AnnotatorPostalCode.POSTAL_CODE);
+
+    final AnnotationList firstPage = postalCodeCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      postalCodeCandidates = firstPage;
+    }
+
+    return postalCodeCandidates
+        .topScore()
+        .sortByPos()
+        .getFirst()
+        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+  }
+
+  private Optional<FieldContext<String>> getCity(final HocrDocument document) {
+    AnnotationList cityCandidates = document.getAnnotations()
+        .filterByType(AnnotatorCity.CITY);
+
+    final AnnotationList firstPage = cityCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      cityCandidates = firstPage;
+    }
+
+    return cityCandidates
+        .topScore()
+        .sortByPos()
+        .getFirst()
+        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
   }
 
 
