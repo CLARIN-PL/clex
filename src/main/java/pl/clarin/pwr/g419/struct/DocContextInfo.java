@@ -11,6 +11,11 @@ public class DocContextInfo {
   int mostCommonHeightOfLine;
   int pageNrWithSigns = 0;
   int leadingEmptyPages = 0;
+  int pageWithFoundCity = 0;
+  String foundCity;
+  int pageWithFoundPostalCode = 0;
+  String foundPostalCode;
+
 
   List<HeaderAndFooterStruct> headers = Collections.emptyList();
   List<HeaderAndFooterStruct> footers = Collections.emptyList();

@@ -156,14 +156,15 @@ public class ActionEval extends Action {
         evalField(document.getId(), "company", normalizer.getCompany(),
             ref.getCompany(), metadata.getCompany()),
 
-        evalField(document.getId(), "street", normalizer.getStreet(),
-            ref.getStreet(), metadata.getStreet()),
-        evalField(document.getId(), "street_no", normalizer.getStreetNo(),
-            ref.getStreetNo(), metadata.getStreetNo()),
         evalField(document.getId(), "postal_code", normalizer.getPostalCode(),
             ref.getPostalCode(), metadata.getPostalCode()),
         evalField(document.getId(), "city", normalizer.getCity(),
-            ref.getCity(), metadata.getCity())
+            ref.getCity(), metadata.getCity()),
+        evalField(document.getId(), "street", normalizer.getStreet(),
+            ref.getStreet(), metadata.getStreet()),
+        evalField(document.getId(), "street_no", normalizer.getStreetNo(),
+            ref.getStreetNo(), metadata.getStreetNo())
+
 
     );
 

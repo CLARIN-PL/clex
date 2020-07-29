@@ -36,8 +36,13 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorSignsPage(),
 
       new AnnotatorPostalCode(),
-      new AnnotatorCity()
+      new AnnotatorCity(),
+      new AnnotatorStreetPrefix(),
+      new AnnotatorStreetNo(),
+      new AnnotatorStreet()
   );
+
+  AnnotatorStreet annotatorStreet = new AnnotatorStreet();
 
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
@@ -93,6 +98,9 @@ public class InformationExtractor implements HasLogger {
     //assignDefaultSignDate(metadata);
     getPostalCode(document).ifPresent(metadata::setPostalCode);
     getCity(document).ifPresent(metadata::setCity);
+    getStreet(document).ifPresent(metadata::setStreet);
+    getStreetNo(document).ifPresent(metadata::setStreetNo);
+
 
     return metadata;
   }
@@ -134,11 +142,15 @@ public class InformationExtractor implements HasLogger {
       postalCodeCandidates = firstPage;
     }
 
-    return postalCodeCandidates
+    Optional<FieldContext<String>> result = postalCodeCandidates
         .topScore()
         .sortByPos()
         .getFirst()
         .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+
+//    document.getDocContextInfo().setPageWithFoundPostalCode(result.get().getPage());
+//    document.getDocContextInfo().setFoundPostalCode(result.get().getField());
+    return result;
   }
 
   private Optional<FieldContext<String>> getCity(final HocrDocument document) {
@@ -150,7 +162,46 @@ public class InformationExtractor implements HasLogger {
       cityCandidates = firstPage;
     }
 
-    return cityCandidates
+    Optional<FieldContext<String>> result = cityCandidates
+        .topScore()
+        .sortByPos()
+        .getFirst()
+        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+
+//    document.getDocContextInfo().setPageWithFoundCity(result.get().getPage());
+//    document.getDocContextInfo().setFoundCity(result.get().getField());
+
+    return result;
+  }
+
+  private Optional<FieldContext<String>> getStreet(final HocrDocument document) {
+
+    AnnotationList streetCandidates = document.getAnnotations()
+        .filterByType(AnnotatorStreet.STREET);
+
+    final AnnotationList firstPage = streetCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      streetCandidates = firstPage;
+    }
+
+    return streetCandidates
+        .topScore()
+        .sortByPos()
+        .getFirst()
+        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+  }
+
+  private Optional<FieldContext<String>> getStreetNo(final HocrDocument document) {
+
+    AnnotationList streetNoCandidates = document.getAnnotations()
+        .filterByType(AnnotatorStreet.STREET_NO);
+
+    final AnnotationList firstPage = streetNoCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      streetNoCandidates = firstPage;
+    }
+
+    return streetNoCandidates
         .topScore()
         .sortByPos()
         .getFirst()
