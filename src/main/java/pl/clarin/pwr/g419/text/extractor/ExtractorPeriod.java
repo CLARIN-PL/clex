@@ -3,6 +3,7 @@ package pl.clarin.pwr.g419.text.extractor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import pl.clarin.pwr.g419.io.reader.HeadersAndFootersHandler;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorPeriod;
 import java.util.Date;
@@ -24,13 +25,15 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
       final HocrDocument document) {
 
     // TODO - doszlifować wyciąganie i sortowanie annotacji z nagłówków i stopek
-    // np. wg liczby stron na których jest, kolejności w dokumencie, poziomu w drzewie nagłówków
+    // TODO - np. wg liczby stron na których jest, kolejności w dokumencie, poziomu w drzewie nagłówków
     Optional<FieldContext<String>> periodFromHeader = document.getHeaderAndFooterAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).getFirst();
 
     var resultPeriodFromHeader = getDatesPairFromPeriod(periodFromHeader);
 
 
+//    document.getAllPagesAnnotations()
+//        .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
     document.getAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
 /*
@@ -59,6 +62,7 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
 
     var result = getDatesPairFromPeriod(period);
 
+
     log.trace(" PeriodFromHeader=" + resultPeriodFromHeader);
     log.trace(" PeriodFromDocument=" + result);
 
@@ -84,21 +88,25 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
   }
 
   private void calculatePeriodScore(Annotation a) {
-    int leadingEmptyPages = a.getPage().getDocument().getDocContextInfo().getLeadingEmptyPages();
-    if (a.getPage().getNo() == 1 + leadingEmptyPages) {
-      a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
-      return;
-    }
-    if (a.getPage().getNo() == 2 + leadingEmptyPages) {
-      a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
-      return;
-    }
+    if (a.getPage().getNo() > HeadersAndFootersHandler.TMP_PAGE_NR_OFFSET_FOR_FOOTERS) {
+      a.setScore(1000);
+    } else {
+      int leadingEmptyPages = a.getPage().getDocument().getDocContextInfo().getLeadingEmptyPages();
+      if (a.getPage().getNo() == 1 + leadingEmptyPages) {
+        a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
+        return;
+      }
+      if (a.getPage().getNo() == 2 + leadingEmptyPages) {
+        a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
+        return;
+      }
 
-    Optional<HocrLine> range = a.getLineFromLines();
-    if (range.isEmpty())
-      a.setScore(1);
-    else
-      a.setScore(range.get().getHeight());
+      Optional<HocrLine> range = a.getLineFromLines();
+      if (range.isEmpty())
+        a.setScore(1);
+      else
+        a.setScore(range.get().getHeight());
+    }
 
   }
 

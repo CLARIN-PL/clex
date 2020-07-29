@@ -28,15 +28,24 @@ public class HeadersAndFootersHandler {
   // ale dla .1.0/10.0 nie łapie całości stopki z doc. 175062 (tam jest jeszcze wklejony obrazek jako podstopka)
   // TODO - może rozbić granice na osobno dolną i górną i lepiej je dobierać
   final public static double FOCUS_ZONE_FRACTION_FOR_VERTICAL_PAGES = 1.0 / 10.0;
-
   final public static double FOCUS_ZONE_FRACTION_FOR_HORIZONTAL_PAGES = 1.0 / 4.0;  //???
+
+
+  // przesunięcie numeracji stron dla tymczasowych stron wygenerowanych dla samych nagłówków
+  final public static int TMP_PAGE_NR_OFFSET_FOR_HEADERS = 2000;
+
+  // przesunięcie numeracji stron dla tymczasowych stron wygenerowanych dla samych stopek
+  final public static int TMP_PAGE_NR_OFFSET_FOR_FOOTERS = 1000;
+
 
   public void findAndExtractHeadersAndFooters(HocrDocument document) {
 
     List<HeaderAndFooterStruct> headers = findAndExtractLeveledHeaders(HEADER, document);
     document.getDocContextInfo().setHeaders(headers);
     document.getDocContextInfo().sortHeaders();
-    headers.stream().forEach(h -> h.generateTmpPageFromLines());
+    for (int tmpPageIndex = 0; tmpPageIndex < headers.size(); tmpPageIndex++) {
+      headers.get(tmpPageIndex).generateTmpPageFromLines(TMP_PAGE_NR_OFFSET_FOR_HEADERS + 1 + tmpPageIndex);
+    }
     // wycinanie ze stron linii z nagłówkami
     headers.stream()
         .forEach(h -> document
@@ -58,7 +67,9 @@ public class HeadersAndFootersHandler {
     List<HeaderAndFooterStruct> footers = findAndExtractLeveledHeaders(FOOTER, document);
     document.getDocContextInfo().setFooters(footers);
     document.getDocContextInfo().sortFooters();
-    footers.stream().forEach(f -> f.generateTmpPageFromLines());
+    for (int tmpPageIndex = 0; tmpPageIndex < footers.size(); tmpPageIndex++) {
+      footers.get(tmpPageIndex).generateTmpPageFromLines(TMP_PAGE_NR_OFFSET_FOR_FOOTERS + 1 + tmpPageIndex);
+    }
     // wycinanie ze stron linii ze stopkami
     footers.stream()
         .forEach(f -> document

@@ -60,28 +60,11 @@ public class InformationExtractor implements HasLogger {
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
-    log.debug(" Size of headers: " + document.getDocContextInfo().getHeaders().size());
-    document.getDocContextInfo().getHeaders().stream()
-        .forEach(header -> annotators.forEach(an -> an.annotate(header.getTmpPage())));
-    document.getDocContextInfo().getHeaders().stream()
-        .forEach(header -> header.getTmpPage().getAnnotations().stream()
-            .forEach(ann -> log.debug("H:Ann =" + ann)));
-
-    log.debug(" Size of footers: " + document.getDocContextInfo().getFooters().size());
-    document.getDocContextInfo().getFooters().stream()
-        .forEach(footer -> annotators.forEach(an -> an.annotate(footer.getTmpPage())));
-
-    document.getDocContextInfo().getFooters().stream()
-        .forEach(footer -> footer.getTmpPage().getAnnotations().stream()
-            .forEach(ann -> log.debug("F:Ann =" + ann)));
-
-
-    document.stream()
+    // poprzez wykorzystanie getAllPages annotujemy także sztucznie wygenerowane strony dla nagłówków i stopek
+    document.getAllPages().stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
-
     final MetadataWithContext metadata = new MetadataWithContext();
-
 
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
 

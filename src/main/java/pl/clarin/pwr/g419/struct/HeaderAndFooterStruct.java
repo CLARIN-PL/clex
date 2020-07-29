@@ -43,11 +43,12 @@ public class HeaderAndFooterStruct {
     this.lines = new ArrayList<>(hafs.lines);
   }
 
-  public void generateTmpPageFromLines() {
+  public void generateTmpPageFromLines(int tmpPageNr) {
     List<Bbox> result = lines.stream().flatMap(line -> line.getBboxes().stream()).collect(Collectors.toList());
     HocrPage page = new HocrPage(null, new Bboxes(result));
     // tutaj nie trzeba Boxa ustawiać bo to jest tylko do zrobienia  adnotacji ta strona
     page.setLines(lines);
+    page.setNo(tmpPageNr);
     this.tmpPage = page;
   }
 
