@@ -26,14 +26,10 @@ public class HocrDocument extends ArrayList<HocrPage> {
         .flatMap(Collection::stream).collect(Collectors.toList()));
   }
 
-  // jeszcze teraz nie używane ...
-  /*
   public AnnotationList getAllPagesAnnotations() {
     return new AnnotationList(this.getAllPages().stream().map(HocrPage::getAnnotations)
         .flatMap(Collection::stream).collect(Collectors.toList()));
   }
-
-   */
 
   public AnnotationList getHeaderAnnotations() {
     return new AnnotationList(this.getDocContextInfo().getHeaders().stream().map(h -> h.getTmpPage()).map(HocrPage::getAnnotations)

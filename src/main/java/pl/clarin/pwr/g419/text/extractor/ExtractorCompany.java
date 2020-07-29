@@ -33,25 +33,10 @@ public class ExtractorCompany implements IExtractor<FieldContext<String>> {
 
   private Optional<FieldContext<String>> getCompany(final HocrDocument document) {
 
+    document.getAllPagesAnnotations()
+        .filterByType(AnnotatorCompany.COMPANY).forEach(an -> an.calculateScore(null));
 
-    Optional<FieldContext<String>> companyFromHeader = document.getHeaderAndFooterAnnotations()
-        .filterByType(AnnotatorCompany.COMPANY).getFirst();
-
-    companyFromHeader.ifPresent(vc -> {
-          final String nameLem = companyLemmatizer.lemmatize(vc.getField().toUpperCase());
-          final String nameNorm = companyNormalizer.normalize(nameLem);
-          final String nameApprox = companyLexicon.approximate(nameNorm);
-          if (!nameNorm.equals(nameApprox)) {
-            vc.setField(nameApprox);
-            vc.setRule(String.format("%s; %s -> %s", vc.getRule(), nameNorm, nameApprox));
-          } else {
-            vc.setField(nameLem);
-          }
-        }
-    );
-
-
-    final Optional<FieldContext<String>> value = document.getAnnotations()
+    final Optional<FieldContext<String>> value = document.getAllPagesAnnotations()
         .filterByType(AnnotatorCompany.COMPANY)
         .topScore()
         .sortByLoc()
@@ -69,31 +54,7 @@ public class ExtractorCompany implements IExtractor<FieldContext<String>> {
       }
     });
 
-    log.trace(" Company FromHeader=" + companyFromHeader);
-    log.trace(" Company FromDocument=" + value);
-
-    var resultFromHeader = companyFromHeader;
-    var result = value;
-
-    if (result.isEmpty() && resultFromHeader.isPresent()) {
-      log.debug(" Niezgodność dla Company ! Nie ma dla dokuemntu jest dla nagłówków. Doc Id=" + document.getId());
-      // normalne wyszukiwanie nie znalazło - wyszukiwanie po nagłówku znalazło - podstawiamy je
-
-      result = resultFromHeader;
-    } else if (result.isPresent() && resultFromHeader.isPresent()) {
-      if (
-          (result.get().getField().equals(resultFromHeader.get().getField()))
-              && (result.get().getField().equals(resultFromHeader.get().getField()))
-      ) {
-        log.trace(" Zgodność dla Company z nagłówków i dokumentu !!! ");
-      } else {
-        log.debug(" Niezgodność dla Company ! Są obecne ale inne dla nagłówków a inne dla dokumentu.DOC ID=" + document.getId());
-        // bierzemy tą z nagłówka
-        result = resultFromHeader;
-      }
-    }
-
-    return result;
+    return value;
   }
 
 

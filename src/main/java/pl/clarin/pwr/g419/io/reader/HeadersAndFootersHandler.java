@@ -44,7 +44,7 @@ public class HeadersAndFootersHandler {
     document.getDocContextInfo().setHeaders(headers);
     document.getDocContextInfo().sortHeaders();
     for (int tmpPageIndex = 0; tmpPageIndex < headers.size(); tmpPageIndex++) {
-      headers.get(tmpPageIndex).generateTmpPageFromLines(TMP_PAGE_NR_OFFSET_FOR_HEADERS + 1 + tmpPageIndex);
+      headers.get(tmpPageIndex).generateTmpPageFromLines(document, TMP_PAGE_NR_OFFSET_FOR_HEADERS + 1 + tmpPageIndex);
     }
     // wycinanie ze stron linii z nagłówkami
     headers.stream()
@@ -68,7 +68,7 @@ public class HeadersAndFootersHandler {
     document.getDocContextInfo().setFooters(footers);
     document.getDocContextInfo().sortFooters();
     for (int tmpPageIndex = 0; tmpPageIndex < footers.size(); tmpPageIndex++) {
-      footers.get(tmpPageIndex).generateTmpPageFromLines(TMP_PAGE_NR_OFFSET_FOR_FOOTERS + 1 + tmpPageIndex);
+      footers.get(tmpPageIndex).generateTmpPageFromLines(document, TMP_PAGE_NR_OFFSET_FOR_FOOTERS + 1 + tmpPageIndex);
     }
     // wycinanie ze stron linii ze stopkami
     footers.stream()

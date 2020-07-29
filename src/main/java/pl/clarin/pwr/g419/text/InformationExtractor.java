@@ -5,18 +5,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
-import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.extractor.ExtractorCompany;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
 import pl.clarin.pwr.g419.text.extractor.ExtractorPeriod;
 import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
-import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
-import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
 
 import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
@@ -64,6 +59,12 @@ public class InformationExtractor implements HasLogger {
     document.getAllPages().stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
+    return extractFromAnnotationsToMetadata(document);
+  }
+
+
+  private MetadataWithContext extractFromAnnotationsToMetadata(HocrDocument document) {
+
     final MetadataWithContext metadata = new MetadataWithContext();
 
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
@@ -83,8 +84,6 @@ public class InformationExtractor implements HasLogger {
     getCity(document).ifPresent(metadata::setCity);
     getStreet(document).ifPresent(metadata::setStreet);
     getStreetNo(document).ifPresent(metadata::setStreetNo);
-
-
     return metadata;
   }
 

@@ -28,7 +28,6 @@ public class Annotator implements HasLogger {
   }
 
   public void annotate(final HocrPage page) {
-    //log.error("Annotating page ");
     patterns.stream()
         .map(p -> p.find(page))
         .flatMap(Collection::stream)
@@ -40,8 +39,7 @@ public class Annotator implements HasLogger {
         .filter(ann -> isValid(ann))
         .forEach(page::addAnnotation);
 
-    //log.trace("[p=" + page.getNo() + "] Anns:" + page.getAnnotations());
-
+    log.trace("[p=" + page.getNo() + "] Anns:" + page.getAnnotations());
   }
 
   protected String normalize(final PatternMatch pm) {
