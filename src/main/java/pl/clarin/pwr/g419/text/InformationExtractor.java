@@ -33,9 +33,6 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorStreet()
   );
 
-  AnnotatorStreet annotatorStreet = new AnnotatorStreet();
-
-
   ExtractorPeople extractorPeople = new ExtractorPeople();
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
   ExtractorPeriod extractorPeriod = new ExtractorPeriod();
