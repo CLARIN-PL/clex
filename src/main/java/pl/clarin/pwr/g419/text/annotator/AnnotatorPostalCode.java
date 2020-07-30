@@ -14,7 +14,7 @@ public class AnnotatorPostalCode extends Annotator {
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
 
-    patterns.add(new Pattern("pc1")
+    patterns.add(new Pattern("postal_code_1")
         .next(new MatcherRegexText("[0-9][0-9]-[0-9][0-9][0-9]", 2).group(POSTAL_CODE)));
 
 

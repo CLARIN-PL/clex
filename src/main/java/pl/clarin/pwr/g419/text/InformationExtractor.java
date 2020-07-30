@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
-import pl.clarin.pwr.g419.text.extractor.ExtractorCompany;
-import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
-import pl.clarin.pwr.g419.text.extractor.ExtractorPeriod;
-import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
+import pl.clarin.pwr.g419.text.extractor.*;
 
 import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
@@ -33,7 +30,6 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorPostalCode(),
       new AnnotatorCity(),
       new AnnotatorStreetPrefix(),
-      new AnnotatorStreetNo(),
       new AnnotatorStreet()
   );
 
@@ -44,6 +40,7 @@ public class InformationExtractor implements HasLogger {
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
   ExtractorPeriod extractorPeriod = new ExtractorPeriod();
   ExtractorCompany extractorCompany = new ExtractorCompany();
+  ExtractorStreet extractorStreet = new ExtractorStreet();
 
 
   public MetadataWithContext extract(final HocrDocument document) {
@@ -55,6 +52,7 @@ public class InformationExtractor implements HasLogger {
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
+    log.debug(" XXXXXXXXXXXXXXXXXXX Annotating XXXXXXXXXXXXXXXXXXXXXXX");
     // poprzez wykorzystanie getAllPages annotujemy także sztucznie wygenerowane strony dla nagłówków i stopek
     document.getAllPages().stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
@@ -82,8 +80,14 @@ public class InformationExtractor implements HasLogger {
     //assignDefaultSignDate(metadata);
     getPostalCode(document).ifPresent(metadata::setPostalCode);
     getCity(document).ifPresent(metadata::setCity);
-    getStreet(document).ifPresent(metadata::setStreet);
-    getStreetNo(document).ifPresent(metadata::setStreetNo);
+
+    extractorStreet.extract(document).ifPresent(p -> {
+      metadata.setStreet(p.getLeft());
+      if (p.getRight().isPresent()) {
+        metadata.setStreetNo(p.getRight().get());
+      }
+    });
+
     return metadata;
   }
 
@@ -116,9 +120,14 @@ public class InformationExtractor implements HasLogger {
   }
 
   private Optional<FieldContext<String>> getPostalCode(final HocrDocument document) {
-    AnnotationList postalCodeCandidates = document.getAnnotations()
+
+    document.getAllPagesAnnotations()
+        .filterByType(AnnotatorPostalCode.POSTAL_CODE).forEach(an -> an.calculateScore(null));
+
+    AnnotationList postalCodeCandidates = document.getAllPagesAnnotations()
         .filterByType(AnnotatorPostalCode.POSTAL_CODE);
 
+    // TODO - sprawdzić tu i w innych podobnych miejscach czy firstPage nie ma konflikótw z pierwszym z nagłówka/stopki
     final AnnotationList firstPage = postalCodeCandidates.filterByPageNo(1);
     if (firstPage.size() > 0) {
       postalCodeCandidates = firstPage;
@@ -130,13 +139,20 @@ public class InformationExtractor implements HasLogger {
         .getFirst()
         .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
 
-//    document.getDocContextInfo().setPageWithFoundPostalCode(result.get().getPage());
-//    document.getDocContextInfo().setFoundPostalCode(result.get().getField());
+    if (result.isPresent()) {
+      document.getDocContextInfo().setPageWithFoundPostalCode(result.get().getPage());
+      document.getDocContextInfo().setFoundPostalCode(result.get().getField());
+    }
     return result;
   }
 
   private Optional<FieldContext<String>> getCity(final HocrDocument document) {
-    AnnotationList cityCandidates = document.getAnnotations()
+
+    document.getAllPagesAnnotations()
+        .filterByType(AnnotatorCity.CITY).forEach(an -> an.calculateScore(null));
+
+
+    AnnotationList cityCandidates = document.getAllPagesAnnotations()
         .filterByType(AnnotatorCity.CITY);
 
     final AnnotationList firstPage = cityCandidates.filterByPageNo(1);
@@ -150,44 +166,12 @@ public class InformationExtractor implements HasLogger {
         .getFirst()
         .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
 
-//    document.getDocContextInfo().setPageWithFoundCity(result.get().getPage());
-//    document.getDocContextInfo().setFoundCity(result.get().getField());
+    if (result.isPresent()) {
+      document.getDocContextInfo().setPageWithFoundCity(result.get().getPage());
+      document.getDocContextInfo().setFoundCity(result.get().getField());
+    }
 
     return result;
-  }
-
-  private Optional<FieldContext<String>> getStreet(final HocrDocument document) {
-
-    AnnotationList streetCandidates = document.getAnnotations()
-        .filterByType(AnnotatorStreet.STREET);
-
-    final AnnotationList firstPage = streetCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      streetCandidates = firstPage;
-    }
-
-    return streetCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
-  }
-
-  private Optional<FieldContext<String>> getStreetNo(final HocrDocument document) {
-
-    AnnotationList streetNoCandidates = document.getAnnotations()
-        .filterByType(AnnotatorStreet.STREET_NO);
-
-    final AnnotationList firstPage = streetNoCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      streetNoCandidates = firstPage;
-    }
-
-    return streetNoCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
   }
 
 

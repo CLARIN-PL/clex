@@ -3,12 +3,10 @@ package pl.clarin.pwr.g419.text.annotator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import pl.clarin.pwr.g419.kbase.lexicon.StreetLexicon;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherWordInSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +29,7 @@ public class AnnotatorStreet extends Annotator {
 
     final List<Pattern> patterns = Lists.newArrayList();
 
-    patterns.add(new Pattern("s1")
+    patterns.add(new Pattern("street_1")
         .next(new MatcherAnnotationType(AnnotatorStreetPrefix.STREET_PREFIX).group(STREET_PREFIX).optional())
         //.next(new MatcherRegexText("(?i)przy", 6).group(STREET).optional())
         .next(new MatcherRegexText("(?i)(ul\\.|al\\.)", 3).group(STREET))
@@ -57,40 +55,45 @@ public class AnnotatorStreet extends Annotator {
     super(STREET, getPatterns());
   }
 
+
   @Override
   protected String normalize(final PatternMatch pm) {
 
-    String tmpValue = pm.getGroupValue(STREET).orElse(pm.getText());
+    String tmpStreetNoValue = pm.getGroupValue(STREET_NO).orElse(pm.getText());
+
+    String tmpStreetValue = pm.getGroupValue(STREET).orElse(pm.getText());
 
     boolean isPrzyOrNa = false;
 
-    if (tmpValue.startsWith("przy")) {
+    if (tmpStreetValue.startsWith("przy")) {
       isPrzyOrNa = true;
-      tmpValue = tmpValue.substring(5);
-    } else if (tmpValue.startsWith("na")) {
+      tmpStreetValue = tmpStreetValue.substring("przy ".length());
+    } else if (tmpStreetValue.startsWith("na")) {
       isPrzyOrNa = true;
-      tmpValue = tmpValue.substring(3);
+      tmpStreetValue = tmpStreetValue.substring("na ".length());
     }
 
 
     if (isPrzyOrNa) {
       // TODO - zmiana tylko ostatniego wystąpienia
-      if (tmpValue.endsWith("kiej")) {
-        tmpValue = tmpValue.replaceAll("kiej", "ka");
-      } else if (tmpValue.endsWith("czej")) {
-        tmpValue = tmpValue.replaceAll("czej", "cza");
-      } else if (tmpValue.endsWith("nej")) {
-        tmpValue = tmpValue.replaceAll("nej", "na");
+      if (tmpStreetValue.endsWith("kiej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("kiej", "ka");
+      } else if (tmpStreetValue.endsWith("czej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("czej", "cza");
+      } else if (tmpStreetValue.endsWith("nej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("nej", "na");
       }
     }
 
-    //log.error("tmpValue = '" + tmpValue + "'");
-    if (tmpValue.toLowerCase().startsWith("ul."))
-      tmpValue = tmpValue.substring(4);
-    else if (tmpValue.toLowerCase().startsWith("al."))
-      tmpValue = tmpValue.substring(4);
+    //log.error("tmpStreetValue = '" + tmpStreetValue + "'");
+    if (tmpStreetValue.toLowerCase().startsWith("ul."))
+      tmpStreetValue = tmpStreetValue.substring("ul. ".length());
+    else if (tmpStreetValue.toLowerCase().startsWith("al."))
+      tmpStreetValue = tmpStreetValue.substring("al. ".length());
 
-    return tmpValue;
+//    return tmpStreetValue;
+
+    return tmpStreetValue + ":" + tmpStreetNoValue;
   }
 
 }

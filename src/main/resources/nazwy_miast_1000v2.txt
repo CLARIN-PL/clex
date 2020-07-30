@@ -146,7 +146,7 @@ Będzin
 Poznań-Wilda
 Pszczyna
 Hajnówka
-Wola
+WolaDELETE
 Józefów
 Luboń
 Bolesławiec
@@ -160,7 +160,7 @@ Stalowa Wola
 Oława
 Dębica
 Milanówek
-Września
+WrześniaDELETE
 Wejherowo
 Pruszcz Gdański
 Szczecinek
@@ -1014,7 +1014,7 @@ Lubniewice
 Bartąg
 Sząbruk
 Dębogórze
-Linia
+LiniaDELETE
 Wierzchowisko
 Giebułtów
 Niemcza
@@ -1440,7 +1440,7 @@ Osięciny
 Wieszowa
 Miechucino
 Wąchock
-Kazimierz
+KazimierzDELETE
 Laski
 Kokoszkowy
 Paprotnia
@@ -2585,7 +2585,7 @@ Niekanin
 Skołoszów
 Lgota
 Srebrna Góra
-Wiele
+WieleDELETE
 Pęcice
 Sośnie
 Suchy Dwór
@@ -4594,7 +4594,7 @@ Apolonia
 Kozierów
 Kończyce
 Gorzędów
-Miały
+MiałyDELETE
 Piława Dolna
 Grabowiec
 Będargowo
@@ -5842,7 +5842,7 @@ Krosna-Wieś
 Otusz
 Ełk
 Klonówka
-Miejsce
+MiejsceDELETE
 Solna
 Badowo-Mściska
 Kalwy
@@ -7135,7 +7135,7 @@ Grabowo
 Obrytki
 Modliszewo
 Gotartów
-Oddział
+OddziałDELETE
 Redlanka
 Dobrołęka
 Pogorzel

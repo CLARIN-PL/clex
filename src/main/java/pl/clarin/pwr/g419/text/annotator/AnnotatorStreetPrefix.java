@@ -22,6 +22,8 @@ public class AnnotatorStreetPrefix extends Annotator {
     return patterns;
   }
 
+  // TODO  - StreetPrefix - do wrzucenia tak jak numer uklicy by nie robić osobnego
+
   public AnnotatorStreetPrefix() {
     super(STREET_PREFIX, getPatterns());
   }

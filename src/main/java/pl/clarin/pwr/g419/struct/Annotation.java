@@ -133,6 +133,11 @@ public class Annotation {
       return Optional.of(getPage().getLines().get(lineNr.get()));
   }
 
+  /***
+   * Wylicza score dla tej annotacji. Może przyjąć dodatkową, inną metodę wyliczania "z zewnątrz" i użyć jej
+   * @param additionalCalcScoreFunction
+   * @return
+   */
   public int calculateScore(Function<Annotation, Integer> additionalCalcScoreFunction) {
     if (this.getPage().getNo() > HeadersAndFootersHandler.TMP_PAGE_NR_OFFSET_FOR_FOOTERS) {
       this.setScore(1000);
