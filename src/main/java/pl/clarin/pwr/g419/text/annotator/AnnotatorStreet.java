@@ -16,7 +16,6 @@ public class AnnotatorStreet extends Annotator {
   public static String STREET = "street";
   public static String STREET_PREFIX = "street";
   public static String STREET_NO = "street_no";
-  public static String NUMBER_FOR_STREET = "number_for_street";
 
   //public static StreetLexicon streetLexicon = new StreetLexicon();
 
@@ -59,8 +58,6 @@ public class AnnotatorStreet extends Annotator {
   @Override
   protected String normalize(final PatternMatch pm) {
 
-    String tmpStreetNoValue = pm.getGroupValue(STREET_NO).orElse(pm.getText());
-
     String tmpStreetValue = pm.getGroupValue(STREET).orElse(pm.getText());
 
     boolean isPrzyOrNa = false;
@@ -93,7 +90,15 @@ public class AnnotatorStreet extends Annotator {
 
 //    return tmpStreetValue;
 
-    return tmpStreetValue + ":" + tmpStreetNoValue;
+
+    String result;
+    if (pm.getGroupValue(STREET_NO).isPresent()) {
+      result = tmpStreetValue + ":" + pm.getGroupValue(STREET_NO).get();
+    } else {
+      result = tmpStreetValue + ":";
+    }
+
+    return result;
   }
 
 }
