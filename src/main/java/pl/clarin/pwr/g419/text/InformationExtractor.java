@@ -38,6 +38,9 @@ public class InformationExtractor implements HasLogger {
   ExtractorPeriod extractorPeriod = new ExtractorPeriod();
   ExtractorCompany extractorCompany = new ExtractorCompany();
   ExtractorStreet extractorStreet = new ExtractorStreet();
+  ExtractorPostalCode extractorPostalCode = new ExtractorPostalCode();
+  ExtractorCity extractorCity = new ExtractorCity();
+  ExtractorDrawingDate extractorDrawingDate = new ExtractorDrawingDate();
 
 
   public MetadataWithContext extract(final HocrDocument document) {
@@ -63,27 +66,23 @@ public class InformationExtractor implements HasLogger {
     final MetadataWithContext metadata = new MetadataWithContext();
 
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
-
     extractorPeriod.extract(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
       metadata.setPeriodTo(p.getRight());
     });
-
-    getDrawingDate(document).ifPresent(metadata::setDrawingDate);
+    extractorDrawingDate.extract(document).ifPresent(metadata::setDrawingDate);
     extractorCompany.extract(document).ifPresent(metadata::setCompany);
-
     extractorPeople.extract(document).ifPresent(metadata::setPeople);
-
-    //assignDefaultSignDate(metadata);
-    getPostalCode(document).ifPresent(metadata::setPostalCode);
-    getCity(document).ifPresent(metadata::setCity);
-
+    extractorPostalCode.extract(document).ifPresent(metadata::setPostalCode);
+    extractorCity.extract(document).ifPresent(metadata::setCity);
     extractorStreet.extract(document).ifPresent(p -> {
       metadata.setStreet(p.getLeft());
       if (p.getRight().isPresent()) {
         metadata.setStreetNo(p.getRight().get());
       }
     });
+
+    //assignDefaultSignDate(metadata);
 
     return metadata;
   }
@@ -97,78 +96,6 @@ public class InformationExtractor implements HasLogger {
             f.setRule(f.getRule() + "; date=drawing_date");
           });
     }
-  }
-
-
-  private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
-    AnnotationList drawingDateCandidates = document.getAnnotations()
-        .filterByType(AnnotatorDrawingDate.DRAWING_DATE);
-
-    final AnnotationList firstPage = drawingDateCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      drawingDateCandidates = firstPage;
-    }
-
-    return drawingDateCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));
-  }
-
-  private Optional<FieldContext<String>> getPostalCode(final HocrDocument document) {
-
-    document.getAllPagesAnnotations()
-        .filterByType(AnnotatorPostalCode.POSTAL_CODE).forEach(an -> an.calculateScore(null));
-
-    AnnotationList postalCodeCandidates = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorPostalCode.POSTAL_CODE);
-
-    // TODO - sprawdzić tu i w innych podobnych miejscach czy firstPage nie ma konflikótw z pierwszym z nagłówka/stopki
-    final AnnotationList firstPage = postalCodeCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      postalCodeCandidates = firstPage;
-    }
-
-    Optional<FieldContext<String>> result = postalCodeCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
-
-    if (result.isPresent()) {
-      document.getDocContextInfo().setPageWithFoundPostalCode(result.get().getPage());
-      document.getDocContextInfo().setFoundPostalCode(result.get().getField());
-    }
-    return result;
-  }
-
-  private Optional<FieldContext<String>> getCity(final HocrDocument document) {
-
-    document.getAllPagesAnnotations()
-        .filterByType(AnnotatorCity.CITY).forEach(an -> an.calculateScore(null));
-
-
-    AnnotationList cityCandidates = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorCity.CITY);
-
-    final AnnotationList firstPage = cityCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      cityCandidates = firstPage;
-    }
-
-    Optional<FieldContext<String>> result = cityCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
-
-    if (result.isPresent()) {
-      document.getDocContextInfo().setPageWithFoundCity(result.get().getPage());
-      document.getDocContextInfo().setFoundCity(result.get().getField());
-    }
-
-    return result;
   }
 
 

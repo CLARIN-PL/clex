@@ -15,7 +15,8 @@ public class AnnotatorPostalCode extends Annotator {
     final List<Pattern> patterns = Lists.newArrayList();
 
     patterns.add(new Pattern("postal_code_1")
-        .next(new MatcherRegexText("[0-9][0-9]-[0-9][0-9][0-9]", 2).group(POSTAL_CODE)));
+        // rozpoznawania dwóch różnych a  identycznie wyglądających znaków "-"
+        .next(new MatcherRegexText("[0-9][0-9](-|‐)[0-9][0-9][0-9]", 2).group(POSTAL_CODE)));
 
 
     return patterns;
@@ -27,7 +28,8 @@ public class AnnotatorPostalCode extends Annotator {
 
   @Override
   protected String normalize(final PatternMatch pm) {
-    return pm.getGroupValue(POSTAL_CODE).orElse(pm.getText());
+    // normalizacja do standardowego znaku "-"
+    return (pm.getGroupValue(POSTAL_CODE).orElse(pm.getText())).replace("‐", "-");
   }
 
 }

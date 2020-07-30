@@ -24,6 +24,8 @@ class AnnotatorPostalCodeTest extends Specification {
 
         where:
             text                  || norm
+            "94-250"              || ["94-250"]  // normalny zmian "-" w input
+            "94‐250"              || ["94-250"]  // inny znak "-" w input
             "33-100"              || ["33-100"]
             "333-100"             || []
             "33-1000"             || []
