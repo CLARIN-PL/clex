@@ -33,7 +33,7 @@ public class AnnotatorRole extends Annotator {
     );
 
     patterns.add(
-        patternSequence("Dyrektor Wykonawczy ds. Planowania i Sprawozdawczości".toLowerCase())
+        patternSequence("Dyrektor Wykonawczy ds. Planowania i Sprawozdawczości".toLowerCase(), "")
     );
 
     return patterns;
@@ -41,14 +41,6 @@ public class AnnotatorRole extends Annotator {
 
   public AnnotatorRole() {
     super(ROLE, getPatterns());
-  }
-
-  private static Pattern patternSequence(final String sequence) {
-    final Pattern pattern = new Pattern();
-    for (final String word : sequence.split(" ")) {
-      pattern.next(new MatcherLowerText(word));
-    }
-    return pattern;
   }
 
   @Override

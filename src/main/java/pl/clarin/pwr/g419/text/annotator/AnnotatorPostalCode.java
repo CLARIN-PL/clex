@@ -16,7 +16,13 @@ public class AnnotatorPostalCode extends Annotator {
 
     patterns.add(new Pattern("postal_code_1")
         // rozpoznawania dwóch różnych a  identycznie wyglądających znaków "-"
-        .next(new MatcherRegexText("[0-9][0-9](-|‐)[0-9][0-9][0-9]", 2).group(POSTAL_CODE)));
+        .next(new MatcherRegexText("[0-9][0-9](-|‐)[0-9][0-9][0-9]", 2)
+            //.ignore(Set.of("00-498", "00-950", "00-638"))  //  wykluczamy KDPW, KNF, PriceWaterhouseCooper - nie da rady tak - tam są też inne firmy
+            .group(POSTAL_CODE)
+        )
+
+
+    );
 
 
     return patterns;

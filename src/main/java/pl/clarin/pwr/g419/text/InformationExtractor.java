@@ -29,8 +29,9 @@ public class InformationExtractor implements HasLogger {
 
       new AnnotatorPostalCode(),
       new AnnotatorCity(),
-      new AnnotatorStreetPrefix(),
-      new AnnotatorStreet()
+      new AnnotatorStreet(),
+//
+      new AnnotatorHeadQuarters()
   );
 
   ExtractorPeople extractorPeople = new ExtractorPeople();

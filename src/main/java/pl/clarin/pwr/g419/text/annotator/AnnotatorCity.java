@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import pl.clarin.pwr.g419.kbase.lexicon.CityLexicon;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherWordInSet;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherTwoWordsSequenceInSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +29,7 @@ public class AnnotatorCity extends Annotator {
     final List<Pattern> patterns = Lists.newArrayList();
 
     patterns.add(new Pattern("city1")
-        .next(new MatcherWordInSet(cityNames).group(CITY)));
+        .next(new MatcherTwoWordsSequenceInSet(cityNames).group(CITY)));
 
 
     // TODO -- "z siedzibą w Kuźni Raciborskiej" doc.id. 118609, odmiana miast
@@ -77,6 +77,9 @@ public class AnnotatorCity extends Annotator {
 
     //ednostka dominująca Cognor S.A. (”jednostka dominująca”, „spółka dominująca”, ”Spółka”) z
     //siedzibą w Gdańsku przy ul. Budowlanych 42  - doc.id 119858
+
+    // jednostką dominującą”) z siedzibą w
+    //Warszawie przy ulicy Poleczki 13, obejmującego: doc.id 13615
 
 
     return patterns;

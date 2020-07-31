@@ -5,7 +5,7 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
-import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
 import java.util.List;
 import java.util.Set;
@@ -29,12 +29,11 @@ public class AnnotatorStreet extends Annotator {
     final List<Pattern> patterns = Lists.newArrayList();
 
     patterns.add(new Pattern("street_1")
-        .next(new MatcherAnnotationType(AnnotatorStreetPrefix.STREET_PREFIX).group(STREET_PREFIX).optional())
-        //.next(new MatcherRegexText("(?i)przy", 6).group(STREET).optional())
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
         .next(new MatcherRegexText("(?i)(ul\\.|al\\.)", 3).group(STREET))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
-        .next(new MatcherRegexText("[0-9]{1,3}", 2).group(STREET_NO).optional())
+        .next(new MatcherRegexText("[0-9]{1,3}(-[0-9]{1,3})?\\p{L}?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
     );
 
 //    patterns.add(new Pattern("s2")
@@ -87,9 +86,6 @@ public class AnnotatorStreet extends Annotator {
       tmpStreetValue = tmpStreetValue.substring("ul. ".length());
     else if (tmpStreetValue.toLowerCase().startsWith("al."))
       tmpStreetValue = tmpStreetValue.substring("al. ".length());
-
-//    return tmpStreetValue;
-
 
     String result;
     if (pm.getGroupValue(STREET_NO).isPresent()) {

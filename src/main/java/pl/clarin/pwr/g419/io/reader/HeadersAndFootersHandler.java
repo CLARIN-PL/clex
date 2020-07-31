@@ -162,14 +162,14 @@ public class HeadersAndFootersHandler {
         if (startTextHocrLine == null) continue;
 
         // znaleźliśmy linię - zapamiętujemy jej tekst i indeks do strony na której ją znaleźliśmy
-        log.trace("cpi=" + currentPageIndex + " startTextHocrLine=" + startTextHocrLine.getText());
+        //log.trace("cpi=" + currentPageIndex + " startTextHocrLine=" + startTextHocrLine.getText());
         startTextPageIndex = currentPageIndex;
         continue;
       }
 
       // skoro już mamy jedną znalezioną linię to sprawdzamy analogiczne linie na następnych stronach ...
       HocrLine currentHocrLine = getLineForLevel(type, document.get(currentPageIndex), level, previousLevelHeader);
-      log.trace("cpi=" + currentPageIndex + " text=" + (currentHocrLine != null ? "'" + currentHocrLine.getText() + "'" : "---"));
+      //log.trace("cpi=" + currentPageIndex + " text=" + (currentHocrLine != null ? "'" + currentHocrLine.getText() + "'" : "---"));
 
       // ... najpierw obsługa "wyjątku" gdy natrafiliśmy na miejsce gdzie nie ma tekstu ...
       if (currentHocrLine == null) {
@@ -184,7 +184,7 @@ public class HeadersAndFootersHandler {
 
       // ... obsuga standardowa: mamy w aktualnej linii tekst - możemy porównywać z linią, w której się zaczął pojawiać jakikolwiek tekst
       boolean areLinesTheSame = areLinesTheSame(startTextHocrLine, currentHocrLine);
-      log.trace("\tareLinesTheSame=" + areLinesTheSame);
+      //log.trace("\tareLinesTheSame=" + areLinesTheSame);
       if (areLinesTheSame) {
         isInsideHeaderState = true;
         assert (startTextHocrLine != null);
@@ -295,7 +295,7 @@ public class HeadersAndFootersHandler {
    */
   private List<HeaderAndFooterStruct> linearizeEdgeOfHeadersTree(HeaderAndFooterStruct hafs) {
     String intend = "\t".repeat(hafs.getLevel() + 1);
-    log.trace(intend + "START Linearizing : hafs=" + hafs);
+    //log.trace(intend + "START Linearizing : hafs=" + hafs);
 
     List<HeaderAndFooterStruct> result;
 
@@ -308,13 +308,13 @@ public class HeadersAndFootersHandler {
       result = inMixNode(hafs);
     }
 
-    log.trace(intend + "END-- Linearizing : result = " + result);
+    //log.trace(intend + "END-- Linearizing : result = " + result);
     return result;
   }
 
   private List<HeaderAndFooterStruct> inMixNode(HeaderAndFooterStruct hafs) {
     String intend = "\t".repeat(hafs.getLevel() + 1);
-    log.trace(intend + "START InMix : hafs=" + hafs);
+    //log.trace(intend + "START InMix : hafs=" + hafs);
 
     List<HeaderAndFooterStruct> result = new ArrayList<>();
     int currentPageIndex = hafs.getStartIndex();
@@ -349,7 +349,7 @@ public class HeadersAndFootersHandler {
       }
     }
 
-    log.trace(intend + "END-- InMix: result =" + result);
+    //log.trace(intend + "END-- InMix: result =" + result);
     return result;
   }
 
