@@ -37,6 +37,9 @@ public class CompanyLemmatizer {
     lemmas.put("PKO", "POWSZECHNA KASA OSZCZĘDNOŚCI");
     lemmas.put("DM", "DOM MAKLERSKI");
     lemmas.put("PTI", "POWSZECHNE TOWARZYSTWO INWESTYCYJNE");
+    lemmas.put("BOŚ", "BANK OCHRONY ŚRODOWISKA");
+    lemmas.put("PEKAO", "POLSKA KASA OPIEKI");
+    lemmas.put("PBKM", "POLSKI BANK KOMÓREK MACIERZYSTYCH");
 
 
     ignore.add("PÓŁROCZNY");

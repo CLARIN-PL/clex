@@ -49,6 +49,17 @@ class AnnotatorStreetTest extends Specification {
             "przy ul. Kasprzaka 39-44"                         || ["Kasprzaka:39-44"]
             "przy ul. Kasprzaka 302-304 ."                     || ["Kasprzaka:302-304"]
             "przy ul. Mihai Bravu 302-304 ."                   || ["Mihai Bravu:302-304"]
+            "(ul. Gdańska 4a  )"                               || ["Gdańska:4a"]
+            "(ul. Gdańska 4a lok.  )"                          || ["Gdańska:4a lok."]   /// !!!!
+// TODO     "(ul. Gdańska 4a lok C4 )"                         || ["Gdańska:4a lok C4"]    - literka w nr. lokalu pierwsza
+// TODO     "(ul. Gdańska 4a lok. C4 )"                        || ["Gdańska:4a lok. C4"]   - literka pierwsza w nr. lokalu
+
+            "ul. Słowiańska 19A-19D"                           || ["Słowiańska:19A-19D"]
+            "ul. Słowiańska 19 lok. 524"                       || ["Słowiańska:19 lok. 524"]
+            "ul. Słowiańska 18 lok. 3b"                        || ["Słowiańska:18 lok. 3b"]
+            "przy ulicy Kasprzaka 39-44"                       || ["Kasprzaka:39-44"]
+            "przy alei Bohaterów Getta 39a-44c"                || ["Bohaterów Getta:39a-44c"]
+
 
             // bo mała litera na początku następnego słowa delimituje nazwę !!!!! :-)
 

@@ -82,6 +82,19 @@ public class AnnotatorCity extends Annotator {
     //Warszawie przy ulicy Poleczki 13, obejmującego: doc.id 13615
 
 
+    //Adresem siedziby są Kielce, ul. Zagnańska 27, 25-528
+    //Kielce.  doc.id - 36037
+
+    //Siedziba:
+    //Grupa Onet.pl Spółka Akcyjna (podmiot dominujący Grupy)
+    //ul. Wiertnicza 166
+    //02-952 Warszawa, Polska   - doc. id 13798
+
+
+    // Skonsolidowane sprawozdanie finansowe sporządza się i dokumentację konsolidacyjną przechowuje
+    //się w siedzibie jednostki dominującej: 20-703 Lublin, ul. Cisowa 11. - doc.id 144502
+
+
     return patterns;
   }
 

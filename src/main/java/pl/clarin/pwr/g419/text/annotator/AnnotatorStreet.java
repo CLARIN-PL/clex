@@ -28,6 +28,7 @@ public class AnnotatorStreet extends Annotator {
 
     final List<Pattern> patterns = Lists.newArrayList();
 
+/*
     patterns.add(new Pattern("street_1")
         .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
         .next(new MatcherRegexText("(?i)(ul\\.|al\\.)", 3).group(STREET))
@@ -35,6 +36,30 @@ public class AnnotatorStreet extends Annotator {
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
         .next(new MatcherRegexText("[0-9]{1,3}(-[0-9]{1,3})?\\p{L}?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
     );
+
+ */
+
+    patterns.add(new Pattern("street_dot")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.)", 3).group(STREET))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
+        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?(-[0-9]{1,3}\\p{L}?)?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
+        .next(new MatcherRegexText("lok(\\.)?", 2).group(STREET_NO).optional())
+        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?", 2).group(STREET_NO).optional())
+    );
+
+    patterns.add(new Pattern("street_nodot")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|ulicy|alei)", 3).group(STREET))
+        //.next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al)", 3).group(STREET))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
+        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?(-[0-9]{1,3}\\p{L}?)?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
+        .next(new MatcherRegexText("lok(\\.)?", 2).group(STREET_NO).optional())
+        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?", 2).group(STREET_NO).optional())
+    );
+
 
 //    patterns.add(new Pattern("s2")
 //        .next(new MatcherRegexText("(?i)(ul\\.|al\\.)", 3).group(STREET))
@@ -81,11 +106,17 @@ public class AnnotatorStreet extends Annotator {
       }
     }
 
-    //log.error("tmpStreetValue = '" + tmpStreetValue + "'");
-    if (tmpStreetValue.toLowerCase().startsWith("ul."))
-      tmpStreetValue = tmpStreetValue.substring("ul. ".length());
-    else if (tmpStreetValue.toLowerCase().startsWith("al."))
-      tmpStreetValue = tmpStreetValue.substring("al. ".length());
+    //log.trace("tmpStreetValue = '" + tmpStreetValue + "'");
+    Set<String> trimFromStart = Set.of("ul. ", "(ul. ",
+        "ul ", "(ul ",
+        "al. ", "(al. ",
+        "al ", "(al ",
+        "ulicy ", "alei ");
+    for (String tr : trimFromStart) {
+      if (tmpStreetValue.toLowerCase().startsWith(tr)) {
+        tmpStreetValue = tmpStreetValue.substring(tr.length());
+      }
+    }
 
     String result;
     if (pm.getGroupValue(STREET_NO).isPresent()) {
@@ -96,5 +127,15 @@ public class AnnotatorStreet extends Annotator {
 
     return result;
   }
+
+  private String trimFromStartIfMatch(String str, Set<String> words) {
+    for (String tr : words) {
+      if (str.toLowerCase().startsWith(tr)) {
+        return str.substring(tr.length());
+      }
+    }
+    return str;
+  }
+
 
 }
