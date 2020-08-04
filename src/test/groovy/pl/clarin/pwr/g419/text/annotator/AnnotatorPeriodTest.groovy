@@ -44,6 +44,8 @@ class AnnotatorPeriodTest extends Specification {
             "26.11.2004 r . do 30.06.2005 r ."                 || "2004-11-26:2005-06-30"
             "1 lipca 2008 r . do 31 grudnia 2008 r ."          || "2008-07-01:2008-12-31"
             "ZA OKRES OD 01.01.2008 DO 30.06.2008"             || "2008-01-01:2008-06-30"
+            "1 stycznia do dnia 30.06.2008"                    || "2008-01-01:2008-06-30"
+
     }
 
     @Unroll
