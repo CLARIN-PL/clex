@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
+import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.Set;
 public class AnnotatorStreet extends Annotator {
 
   public static String STREET = "street";
-  public static String STREET_PREFIX = "street";
   public static String STREET_NO = "street_no";
 
   //public static StreetLexicon streetLexicon = new StreetLexicon();
@@ -39,25 +39,17 @@ public class AnnotatorStreet extends Annotator {
 
  */
 
-    patterns.add(new Pattern("street_dot")
-        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.)", 3).group(STREET))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
-        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?(-[0-9]{1,3}\\p{L}?)?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
-        .next(new MatcherRegexText("lok(\\.)?", 2).group(STREET_NO).optional())
-        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?", 2).group(STREET_NO).optional())
+    patterns.add(new Pattern("street_house_nr_with_letter")
+        .next(new MatcherAnnotationType(AnnotatorStreetOnly.STREET_ONLY).group(STREET))
+        .next(new MatcherRegexText("[0-9]{1,3}", 2).group(STREET_NO))
+        .next(new MatcherRegexText("[A-Ka-k]", 1).group(STREET_NO))
     );
 
-    patterns.add(new Pattern("street_nodot")
-        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|ulicy|alei)", 3).group(STREET))
-        //.next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al)", 3).group(STREET))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET).optional())
+
+    patterns.add(new Pattern("street_all")
+        .next(new MatcherAnnotationType(AnnotatorStreetOnly.STREET_ONLY).group(STREET))
         .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?(-[0-9]{1,3}\\p{L}?)?(/[0-9]{1,3})?", 2).group(STREET_NO).optional())
-        .next(new MatcherRegexText("lok(\\.)?", 2).group(STREET_NO).optional())
-        .next(new MatcherRegexText("[0-9]{1,3}\\p{L}?", 2).group(STREET_NO).optional())
+        .next(new MatcherAnnotationType(AnnotatorStreetNrLok.STREET_NR_LOK).group(STREET_NO).optional())
     );
 
 
@@ -83,40 +75,6 @@ public class AnnotatorStreet extends Annotator {
   protected String normalize(final PatternMatch pm) {
 
     String tmpStreetValue = pm.getGroupValue(STREET).orElse(pm.getText());
-
-    boolean isPrzyOrNa = false;
-
-    if (tmpStreetValue.startsWith("przy")) {
-      isPrzyOrNa = true;
-      tmpStreetValue = tmpStreetValue.substring("przy ".length());
-    } else if (tmpStreetValue.startsWith("na")) {
-      isPrzyOrNa = true;
-      tmpStreetValue = tmpStreetValue.substring("na ".length());
-    }
-
-
-    if (isPrzyOrNa) {
-      // TODO - zmiana tylko ostatniego wystąpienia
-      if (tmpStreetValue.endsWith("kiej")) {
-        tmpStreetValue = tmpStreetValue.replaceAll("kiej", "ka");
-      } else if (tmpStreetValue.endsWith("czej")) {
-        tmpStreetValue = tmpStreetValue.replaceAll("czej", "cza");
-      } else if (tmpStreetValue.endsWith("nej")) {
-        tmpStreetValue = tmpStreetValue.replaceAll("nej", "na");
-      }
-    }
-
-    //log.trace("tmpStreetValue = '" + tmpStreetValue + "'");
-    Set<String> trimFromStart = Set.of("ul. ", "(ul. ",
-        "ul ", "(ul ",
-        "al. ", "(al. ",
-        "al ", "(al ",
-        "ulicy ", "alei ");
-    for (String tr : trimFromStart) {
-      if (tmpStreetValue.toLowerCase().startsWith(tr)) {
-        tmpStreetValue = tmpStreetValue.substring(tr.length());
-      }
-    }
 
     String result;
     if (pm.getGroupValue(STREET_NO).isPresent()) {

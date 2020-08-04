@@ -12,9 +12,13 @@ class AnnotatorStreetTest extends Specification {
     def "annotate on '#text' should return '#norm "() {
         given:
             def page = new HocrPage(null, TestUtils.getSequenceOfBboxes(text))
+            def annotatorStreetOnly = new AnnotatorStreetOnly()
+            def annotatorStreetNrLok = new AnnotatorStreetNrLok()
             def annotatorStreet = new AnnotatorStreet()
 
         when:
+            annotatorStreetOnly.annotate(page)
+            annotatorStreetNrLok.annotate(page)
             annotatorStreet.annotate(page)
 
         then:

@@ -15,7 +15,7 @@ public class MetadataNormalizer {
   Normalizer<String> postalCode = new NormalizerString();
   Normalizer<String> city = new NormalizerStringToUpperCase();
   Normalizer<String> street = new NormalizerStringToUpperCase();
-  Normalizer<String> streetNo = new NormalizerString();
+  Normalizer<String> streetNo = new NormalizerStringToUpperCaseCutPreLastSpace();
 
 
 }
