@@ -10,6 +10,10 @@ public class MetadataNormalizer {
   Normalizer<Date> date = new NormalizerDate();
   Normalizer<String> company = new NormalizerCompany();
   Normalizer<Person> person = new NormalizerPersonDateRole();
+  Normalizer<Person> personDate = new NormalizerPersonDate();
+  Normalizer<Person> personRole = new NormalizerPersonRole();
+
+
   Normalizer<String> signPage = new NormalizerSignPage();
 
   Normalizer<String> postalCode = new NormalizerString();

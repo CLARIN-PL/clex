@@ -8,9 +8,7 @@ public class NormalizerPersonRole extends Normalizer<Person> {
     if (person == null) {
       return "";
     }
-    return String.format("%s_%s_%s",
-        //formatDate(person.getDate()),
-        "",
+    return String.format("%s_%s",
         normalizeRole(person.getRole().toLowerCase()),
         normalizeName(person.getName())
     );
