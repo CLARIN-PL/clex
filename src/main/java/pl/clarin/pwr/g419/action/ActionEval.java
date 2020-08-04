@@ -82,7 +82,7 @@ public class ActionEval extends Action {
     }
 
     if (optionPersonEvaluationVariants.getString() != null) {
-      log.info("Podano parameter personevalvariant = " + optionSelectOne.getString());
+      log.info("Podano parameter personevalvariant = " + optionPersonEvaluationVariants.getString());
     }
 
 
