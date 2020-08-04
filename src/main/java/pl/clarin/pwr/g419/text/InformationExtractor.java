@@ -29,6 +29,8 @@ public class InformationExtractor implements HasLogger {
 
       new AnnotatorPostalCode(),
       new AnnotatorCity(),
+      new AnnotatorStreetOnly(),
+      new AnnotatorStreetNrLok(),
       new AnnotatorStreet(),
 //
       new AnnotatorHeadQuarters()
@@ -83,7 +85,7 @@ public class InformationExtractor implements HasLogger {
       }
     });
 
-    //assignDefaultSignDate(metadata);
+    assignDefaultSignDate(metadata);
 
     return metadata;
   }
