@@ -5,7 +5,6 @@ import pl.clarin.pwr.g419.struct.AnnotationList;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorDrawingDate;
-import pl.clarin.pwr.g419.text.annotator.AnnotatorPostalCode;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,6 +25,14 @@ public class ExtractorDrawingDate implements IExtractor<FieldContext<Date>> {
     final AnnotationList firstPage = drawingDateCandidates.filterByPageNo(1);
     if (firstPage.size() > 0) {
       drawingDateCandidates = firstPage;
+    }
+
+    if (firstPage.size() == 0) {
+      final AnnotationList signsPage = drawingDateCandidates
+          .filterByPageNo(document.getDocContextInfo().getPageNrWithSigns());
+      if (signsPage.size() > 0) {
+        drawingDateCandidates = signsPage;
+      }
     }
 
     return drawingDateCandidates

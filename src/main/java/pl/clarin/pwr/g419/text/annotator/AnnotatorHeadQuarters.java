@@ -30,8 +30,7 @@ public class AnnotatorHeadQuarters extends Annotator {
     patterns.add(new Pattern("hq6")
         .next(new MatcherLowerText("siedziba"))
         .next(new MatcherLowerText("spólki").optional())
-        .next(new MatcherLowerText("spólki").optional())
-
+        .next(new MatcherLowerText("spółki").optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY).optional())
@@ -41,8 +40,17 @@ public class AnnotatorHeadQuarters extends Annotator {
 
 
     patterns.add(new Pattern("hq1")
-        .next(new MatcherRegexText("Siedziba", 6))
-        .next(new MatcherRegexText("spółki", 6).optional())
+        .next(new MatcherLowerText("Siedziba"))
+        .next(new MatcherLowerText("spółki").optional())
+        .next(new MatcherLowerText("dominującej").optional())
+        .next(new MatcherLowerText("mieściła").optional())
+        .next(new MatcherLowerText("się").optional())
+        .next(new MatcherLowerText("w").optional())
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY).optional())
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(CITY).optional())
+        .next(new MatcherLowerText(Set.of(",")).optional())
+        .next(new MatcherAnnotationType(AnnotatorStreet.STREET).group(STREET).optional())
     );
 /*
     patterns.add(new Pattern("hq2")
