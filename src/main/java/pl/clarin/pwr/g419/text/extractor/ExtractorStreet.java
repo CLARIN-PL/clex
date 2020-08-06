@@ -1,5 +1,6 @@
 package pl.clarin.pwr.g419.text.extractor;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -7,10 +8,11 @@ import pl.clarin.pwr.g419.struct.AnnotationList;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorStreet;
-import java.util.Optional;
 
 @Slf4j
 public class ExtractorStreet implements IExtractor<Pair<FieldContext<String>, Optional<FieldContext<String>>>> {
+
+  //StreetLemmatizer streetLemmatizer = new StreetLemmatizer();
 
   @Override
   public Optional<Pair<FieldContext<String>, Optional<FieldContext<String>>>> extract(final HocrDocument document) {
@@ -32,19 +34,19 @@ public class ExtractorStreet implements IExtractor<Pair<FieldContext<String>, Op
       streetCandidates = firstPage;
     }
 
-    Optional<FieldContext<String>> streetAndNo = streetCandidates
+    final Optional<FieldContext<String>> streetAndNo = streetCandidates
         .topScore()
         .sortByPos()
         .getFirst()
         .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
 
-    var resultStreetAndNo = decomposeStreetAndNo(streetAndNo);
+    final var resultStreetAndNo = decomposeStreetAndNo(streetAndNo);
     // przetwórzmy i zwrócmy
     return resultStreetAndNo;
   }
 
   private Optional<Pair<FieldContext<String>, Optional<FieldContext<String>>>>
-  decomposeStreetAndNo(Optional<FieldContext<String>> streetAndNo) {
+  decomposeStreetAndNo(final Optional<FieldContext<String>> streetAndNo) {
     if (streetAndNo.isPresent()) {
       final String[] parts = streetAndNo.get().getField().split(":");
       if (parts.length >= 1) {

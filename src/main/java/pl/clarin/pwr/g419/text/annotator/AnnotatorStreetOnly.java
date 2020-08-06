@@ -3,6 +3,7 @@ package pl.clarin.pwr.g419.text.annotator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import pl.clarin.pwr.g419.text.lemmatizer.StreetLemmatizer;
 import pl.clarin.pwr.g419.text.pattern.Pattern;
 import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
@@ -15,7 +16,7 @@ public class AnnotatorStreetOnly extends Annotator {
 
   public static String STREET_ONLY = "street_only";
 
-  //public static StreetLexicon streetLexicon = new StreetLexicon();
+  private final StreetLemmatizer lemmatizer = new StreetLemmatizer();
 
   private static List<Pattern> getPatterns() {
 
@@ -62,20 +63,22 @@ public class AnnotatorStreetOnly extends Annotator {
 
     patterns.add(new Pattern("street_dot")
         .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 4).group(STREET_ONLY))
         .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
         .next(new MatcherLowerText(Set.of("św.", "płk.", "pl.", "gen.", "prof.")).group(STREET_ONLY).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}+", 20).group(STREET_ONLY).optional())
     );
 
     patterns.add(new Pattern("street_nodot")
         .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl|ulicy|alei|placu)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl|ulicy|alei|placu)", 6).group(STREET_ONLY))
         .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
         .next(new MatcherLowerText(Set.of("św.", "płk.", "pl.", "gen.", "prof.")).group(STREET_ONLY).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}+", 20).group(STREET_ONLY).optional())
     );
 
     return patterns;
