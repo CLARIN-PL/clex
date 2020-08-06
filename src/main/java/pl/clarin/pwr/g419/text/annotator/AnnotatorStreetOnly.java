@@ -26,16 +26,54 @@ public class AnnotatorStreetOnly extends Annotator {
 
     final List<Pattern> patterns = Lists.newArrayList();
 
+    // popularne ulice trzywyrazowe:
+    patterns.add(new Pattern("street_dot_jpii")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 3).group(STREET_ONLY))
+        .next(new MatcherLowerText("jana").group(STREET_ONLY))
+        .next(new MatcherLowerText("pawła").group(STREET_ONLY))
+        .next(new MatcherLowerText("ii").group(STREET_ONLY))
+    );
+
+    patterns.add(new Pattern("street_dot_ken")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 3).group(STREET_ONLY))
+        .next(new MatcherLowerText("komisji").group(STREET_ONLY))
+        .next(new MatcherLowerText("edukacji").group(STREET_ONLY))
+        .next(new MatcherLowerText("narodowej").group(STREET_ONLY))
+    );
+
+    patterns.add(new Pattern("street_nodot_jpii")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl)", 3).group(STREET_ONLY))
+        .next(new MatcherLowerText("jana").group(STREET_ONLY))
+        .next(new MatcherLowerText("pawła").group(STREET_ONLY))
+        .next(new MatcherLowerText("ii").group(STREET_ONLY))
+    );
+
+    patterns.add(new Pattern("street_nodot_ken")
+        .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl)", 3).group(STREET_ONLY))
+        .next(new MatcherLowerText("komisji").group(STREET_ONLY))
+        .next(new MatcherLowerText("edukacji").group(STREET_ONLY))
+        .next(new MatcherLowerText("narodowej").group(STREET_ONLY))
+    );
+
+
     patterns.add(new Pattern("street_dot")
         .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherLowerText(Set.of("św.", "płk.", "pl.", "gen.", "prof.")).group(STREET_ONLY).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY).optional())
     );
 
     patterns.add(new Pattern("street_nodot")
         .next(new MatcherLowerText(Set.of("przy", "na")).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|ulicy|alei)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl|ulicy|alei|placu)", 3).group(STREET_ONLY))
+        .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherLowerText(Set.of("św.", "płk.", "pl.", "gen.", "prof.")).group(STREET_ONLY).optional())
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY))
         .next(new MatcherRegexText("\\p{Lu}\\p{Ll}+", 20).group(STREET_ONLY).optional())
     );
@@ -63,7 +101,17 @@ public class AnnotatorStreetOnly extends Annotator {
         tmpStreetValue = tmpStreetValue.replaceAll("czej", "cza");
       } else if (tmpStreetValue.endsWith("nej")) {
         tmpStreetValue = tmpStreetValue.replaceAll("nej", "na");
+      } else if (tmpStreetValue.endsWith("stej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("stej", "sta");
+      } else if (tmpStreetValue.endsWith("owej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("owej", "owa");
+      } else if (tmpStreetValue.endsWith("otej")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("otej", "ota");
+      } else if (tmpStreetValue.endsWith("skim")) {
+        tmpStreetValue = tmpStreetValue.replaceAll("skim", "ski");
       }
+
+
     }
 
     //log.trace("tmpStreetValue = '" + tmpStreetValue + "'");
@@ -72,11 +120,13 @@ public class AnnotatorStreetOnly extends Annotator {
         "ul ", "(ul ",
         "al. ", "(al. ",
         "al ", "(al ",
-        "ulicy ", "alei ");
+        "pl. ", "(pl. ",
+        "pl ", "(pl ",
+        "ulicy ", "alei ", "placu ");
 
     tmpStreetValue = trimFromStartIfMatch(tmpStreetValue, trimStartWords);
 
-    return tmpStreetValue;
+    return tmpStreetValue.toUpperCase();
   }
 
   private String trimFromStartIfMatch(String str, Set<String> words) {
