@@ -5,16 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.HasLogger;
-import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.*;
-import pl.clarin.pwr.g419.text.extractor.ExtractorPeople;
-import pl.clarin.pwr.g419.text.extractor.ExtractorSignsPage;
-import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
-import pl.clarin.pwr.g419.text.normalization.NormalizerCompany;
+import pl.clarin.pwr.g419.text.extractor.*;
 
 import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
@@ -31,16 +25,26 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorPersonHorizontal(),
       new AnnotatorPersonVertical(),
       new AnnotatorDrawingDate(),
-      new AnnotatorSignsPage()
+      new AnnotatorSignsPage(),
+
+      new AnnotatorPostalCode(),
+      new AnnotatorCity(),
+      new AnnotatorStreetOnly(),
+      new AnnotatorStreetNrLok(),
+      new AnnotatorStreet(),
+//
+      new AnnotatorHeadQuarters()
   );
-
-  CompanyLexicon companyLexicon = new CompanyLexicon();
-  NormalizerCompany companyNormalizer = new NormalizerCompany();
-  CompanyLemmatizer companyLemmatizer = new CompanyLemmatizer();
-
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
   ExtractorSignsPage extractorSignsPage = new ExtractorSignsPage();
+  ExtractorPeriod extractorPeriod = new ExtractorPeriod();
+  ExtractorCompany extractorCompany = new ExtractorCompany();
+  ExtractorStreet extractorStreet = new ExtractorStreet();
+  ExtractorPostalCode extractorPostalCode = new ExtractorPostalCode();
+  ExtractorCity extractorCity = new ExtractorCity();
+  ExtractorDrawingDate extractorDrawingDate = new ExtractorDrawingDate();
+
 
   public MetadataWithContext extract(final HocrDocument document) {
 
@@ -51,27 +55,37 @@ public class InformationExtractor implements HasLogger {
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
-
-    document.stream()
+    log.debug(" XXXXXXXXXXXXXXXXXXX Annotating XXXXXXXXXXXXXXXXXXXXXXX");
+    // poprzez wykorzystanie getAllPages annotujemy także sztucznie wygenerowane strony dla nagłówków i stopek
+    document.getAllPages().stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
 
+    return extractFromAnnotationsToMetadata(document);
+  }
+
+
+  private MetadataWithContext extractFromAnnotationsToMetadata(HocrDocument document) {
 
     final MetadataWithContext metadata = new MetadataWithContext();
 
-
     extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
-
-    getPeriod(document).ifPresent(p -> {
+    extractorPeriod.extract(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
       metadata.setPeriodTo(p.getRight());
     });
-
-    getDrawingDate(document).ifPresent(metadata::setDrawingDate);
-    getCompany(document).ifPresent(metadata::setCompany);
-
+    extractorDrawingDate.extract(document).ifPresent(metadata::setDrawingDate);
+    extractorCompany.extract(document).ifPresent(metadata::setCompany);
     extractorPeople.extract(document).ifPresent(metadata::setPeople);
+    extractorPostalCode.extract(document).ifPresent(metadata::setPostalCode);
+    extractorCity.extract(document).ifPresent(metadata::setCity);
+    extractorStreet.extract(document).ifPresent(p -> {
+      metadata.setStreet(p.getLeft());
+      if (p.getRight().isPresent()) {
+        metadata.setStreetNo(p.getRight().get());
+      }
+    });
 
-    //assignDefaultSignDate(metadata);
+    assignDefaultSignDate(metadata);
 
     return metadata;
   }
@@ -85,105 +99,6 @@ public class InformationExtractor implements HasLogger {
             f.setRule(f.getRule() + "; date=drawing_date");
           });
     }
-  }
-
-  private void calculatePeriodScore(Annotation a) {
-    if (a.getPage().getNo() == 1) {
-      a.setScore(200);  // jak na pierwszej stronie to jednak chyba najlepszy
-      return;
-    }
-    if (a.getPage().getNo() == 2) {
-      a.setScore(100);  // jak na drugiej stronie to jednak chyba lepszy od tych z następnych
-      return;
-    }
-
-    Optional<Range> range = a.getLineFromLines();
-    if (range.isEmpty())
-      a.setScore(1);
-    else
-      a.setScore(range.get().getHeight());
-
-  }
-
-
-  private Optional<Pair<FieldContext<Date>, FieldContext<Date>>> getPeriod(
-      final HocrDocument document) {
-
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD).forEach(this::calculatePeriodScore);
-/*
-    log.debug("================================ just: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-
-    log.debug("================================ topScore: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore()
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-
-    log.debug("================================ sortByLoc: ");
-    document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore()
-        .sortByLoc()
-        .stream().forEach(a -> log.debug(" AnnPeriod: " + a.toFullInfo()));
-*/
-
-    final Optional<FieldContext<String>> period = document.getAnnotations()
-        .filterByType(AnnotatorPeriod.PERIOD)
-        .topScore().sortByLoc().getFirst();
-
-    if (period.isPresent()) {
-      final String[] parts = period.get().getField().split(":");
-      if (parts.length == 2) {
-        final FieldContext<Date> periodStart = new FieldContext<>(
-            parseDate(parts[0]), period.get().getContext(), period.get().getRule()
-        );
-        final FieldContext<Date> periodEnd = new FieldContext<>(
-            parseDate(parts[1]), period.get().getContext(), period.get().getRule()
-        );
-        return Optional.of(new ImmutablePair<>(periodStart, periodEnd));
-      }
-    }
-    return Optional.empty();
-  }
-
-  private Optional<FieldContext<Date>> getDrawingDate(final HocrDocument document) {
-    AnnotationList drawingDateCandidates = document.getAnnotations()
-        .filterByType(AnnotatorDrawingDate.DRAWING_DATE);
-
-    final AnnotationList firstPage = drawingDateCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      drawingDateCandidates = firstPage;
-    }
-
-    return drawingDateCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(parseDate(vc.getField()), vc.getContext(), vc.getRule()));
-  }
-
-  private Optional<FieldContext<String>> getCompany(final HocrDocument document) {
-    final Optional<FieldContext<String>> value = document.getAnnotations()
-        .filterByType(AnnotatorCompany.COMPANY)
-        .topScore()
-        .sortByLoc()
-        .getFirst();
-    value.ifPresent(vc -> {
-      final String nameLem = companyLemmatizer.lemmatize(vc.getField().toUpperCase());
-      final String nameNorm = companyNormalizer.normalize(nameLem);
-      final String nameApprox = companyLexicon.approximate(nameNorm);
-      if (!nameNorm.equals(nameApprox)) {
-        vc.setField(nameApprox);
-        vc.setRule(String.format("%s; %s -> %s", vc.getRule(), nameNorm, nameApprox));
-      } else {
-        vc.setField(nameLem);
-      }
-    });
-    return value;
   }
 
 

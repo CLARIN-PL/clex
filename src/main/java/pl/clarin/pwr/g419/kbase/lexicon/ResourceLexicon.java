@@ -13,20 +13,27 @@ abstract public class ResourceLexicon extends HashSet<String> implements HasLogg
   abstract protected String getResourcePath();
 
   public ResourceLexicon() {
+    this(0);
+  }
+
+  // jeśli limit==0 to ładuj wszystko
+  public ResourceLexicon(int limit) {
     try {
-      load();
+      load(limit);
     } catch (final Exception ex) {
       getLogger().error("Failed to load CompanyLexicon from {}", getResourcePath());
+      getLogger().error("", ex);
     }
   }
 
-  protected void load() throws IOException {
+  protected void load(int limit) throws IOException {
     try (
         final InputStream stream = NeLexicon2.class.getResourceAsStream(getResourcePath());
     ) {
       final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
       reader.lines()
           .map(line -> line.strip())
+          .limit(limit == 0 ? Long.MAX_VALUE : limit)
           .forEach(this::add);
     }
   }

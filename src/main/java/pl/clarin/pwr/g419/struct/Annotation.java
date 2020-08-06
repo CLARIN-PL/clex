@@ -3,11 +3,17 @@ package pl.clarin.pwr.g419.struct;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import pl.clarin.pwr.g419.io.reader.HeadersAndFootersHandler;
 
+@Slf4j
 @Data
+
 public class Annotation {
 
   String type;
@@ -99,7 +105,7 @@ public class Annotation {
 
   public Contour getContour() {
 
-    Range r = new Range();
+    HocrLine r = new HocrLine();
     r.setPage(page);
     r.setFirstBoxInRangeIndex(this.getIndexBegin());
     r.setLastBoxInRangeIndex(this.getIndexEnd());
@@ -119,7 +125,7 @@ public class Annotation {
     return toString() + " - page: " + page.getNo() + " - indStart = " + getIndexBegin();
   }
 
-  public Optional<Range> getLineFromLines() {
+  public Optional<HocrLine> getLineFromLines() {
     Optional<Integer> lineNr = getPage().findLinesNrForBboxIndex(this.indexBegin);
     if (lineNr.isEmpty())
       return Optional.empty();
@@ -127,5 +133,22 @@ public class Annotation {
       return Optional.of(getPage().getLines().get(lineNr.get()));
   }
 
+  /***
+   * Wylicza score dla tej annotacji. Może przyjąć dodatkową, inną metodę wyliczania "z zewnątrz" i użyć jej
+   * @param additionalCalcScoreFunction
+   * @return
+   */
+  public int calculateScore(Function<Annotation, Integer> additionalCalcScoreFunction) {
+    if (this.getPage().getNo() > HeadersAndFootersHandler.TMP_PAGE_NR_OFFSET_FOR_FOOTERS) {
+      this.setScore(1000);
+    } else {
+      if (additionalCalcScoreFunction != null) {
+        int calculatedScore = additionalCalcScoreFunction.apply(this);
+        this.setScore(calculatedScore);
+      }
+    }
+    log.trace("Final score :" + getScore() + " for Annotation " + this);
+    return getScore();
+  }
 
 }

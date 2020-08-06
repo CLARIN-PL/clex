@@ -28,11 +28,8 @@ public class Bboxes extends ArrayList<Bbox> {
     return this.stream().map(Bbox::getText).collect(Collectors.joining(" "));
   }
 
-  public OptionalInt getBottom() {
-    return this.stream().mapToInt(b -> b.getBox().getBottom()).max();
-  }
 
-  public OptionalInt getTop() {
-    return this.stream().mapToInt(b -> b.getBox().getTop()).min();
-  }
+  public OptionalInt getBottomBbox() { return this.stream().mapToInt(b -> b.getBox().getBottom()).max(); }
+
+  public OptionalInt getTopBbox() { return this.stream().mapToInt(b -> b.getBox().getTop()).min(); }
 }

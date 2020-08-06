@@ -11,7 +11,7 @@ public class AnnotatorSignsPage extends Annotator {
 
   private static List<Pattern> getPatterns() {
     final List<Pattern> patterns = Lists.newArrayList();
-    patterns.add(new Pattern()
+    patterns.add(new Pattern("sign_page_1")
         .next(new MatcherRegexText("(?i)Podpisy", 6)));
     return patterns;
   }

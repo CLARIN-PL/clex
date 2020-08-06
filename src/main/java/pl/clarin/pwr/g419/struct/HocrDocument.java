@@ -1,7 +1,6 @@
 package pl.clarin.pwr.g419.struct;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.Data;
 
@@ -13,10 +12,40 @@ public class HocrDocument extends ArrayList<HocrPage> {
   Metadata metadata = new Metadata();
   DocContextInfo docContextInfo = new DocContextInfo();
 
+  // zwraca wszystkie strony - także te "tymczasowe" wygenerowane dla nagłówków
+  public List<HocrPage> getAllPages() {
+    ArrayList<HocrPage> pages = new ArrayList<>(this);
+    pages.addAll(getDocContextInfo().getHeaders().stream().map(h -> h.getTmpPage()).collect(Collectors.toList()));
+    pages.addAll(getDocContextInfo().getFooters().stream().map(h -> h.getTmpPage()).collect(Collectors.toList()));
+    return pages;
+  }
+
 
   public AnnotationList getAnnotations() {
     return new AnnotationList(this.stream().map(HocrPage::getAnnotations)
         .flatMap(Collection::stream).collect(Collectors.toList()));
+  }
+
+  public AnnotationList getAllPagesAnnotations() {
+    return new AnnotationList(this.getAllPages().stream().map(HocrPage::getAnnotations)
+        .flatMap(Collection::stream).collect(Collectors.toList()));
+  }
+
+  public AnnotationList getHeaderAnnotations() {
+    return new AnnotationList(this.getDocContextInfo().getHeaders().stream().map(h -> h.getTmpPage()).map(HocrPage::getAnnotations)
+        .flatMap(Collection::stream).collect(Collectors.toList()));
+  }
+
+  public final AnnotationList getFooterAnnotations() {
+    return new AnnotationList(this.getDocContextInfo().getFooters().stream().map(h -> h.getTmpPage()).map(HocrPage::getAnnotations)
+        .flatMap(Collection::stream).collect(Collectors.toList()));
+  }
+
+  public final AnnotationList getHeaderAndFooterAnnotations() {
+    List<Annotation> result = new LinkedList<>();
+    result.addAll(getHeaderAnnotations());
+    result.addAll(getFooterAnnotations());
+    return new AnnotationList(result);
   }
 
 

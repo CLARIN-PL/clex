@@ -2,6 +2,8 @@ package pl.clarin.pwr.g419.struct;
 
 public interface Contour {
 
+  public enum Orientation {VERTICAL, HORIZONTAL}
+
   int getLeft();
 
   int getRight();
@@ -80,6 +82,11 @@ public interface Contour {
   default String toCoords() {
     return " [t:" + getTop() + ",b:" + getBottom() + "] " +
         "[l:" + getLeft() + ",r:" + getRight() + "]";
+  }
+
+  default Orientation getOrientation() {
+    if (getHeight() > getWidth()) return Orientation.VERTICAL;
+    return Orientation.HORIZONTAL;
   }
 
 

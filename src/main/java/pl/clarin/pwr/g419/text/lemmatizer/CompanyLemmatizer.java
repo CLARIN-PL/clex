@@ -30,6 +30,17 @@ public class CompanyLemmatizer {
     lemmas.put("INWESTYCYJNEGO", "INWESTYCYJNY");
     lemmas.put("FABRYK", "FABRYKI");
     lemmas.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
+    lemmas.put("POLSKIEGO", "POLSKI");
+    lemmas.put("POLSKIEJ", "POLSKA");
+
+//    TODO : czy takie rozwinięcia pomagają ?
+    lemmas.put("PKO", "POWSZECHNA KASA OSZCZĘDNOŚCI");
+    lemmas.put("DM", "DOM MAKLERSKI");
+    lemmas.put("PTI", "POWSZECHNE TOWARZYSTWO INWESTYCYJNE");
+    lemmas.put("BOŚ", "BANK OCHRONY ŚRODOWISKA");
+    lemmas.put("PEKAO", "POLSKA KASA OPIEKI");
+    lemmas.put("PBKM", "POLSKI BANK KOMÓREK MACIERZYSTYCH");
+
 
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
@@ -37,6 +48,11 @@ public class CompanyLemmatizer {
     ignore.add("FIRMY");
     ignore.add("UDZIAŁ");
     ignore.add("%");
+
+    ignore.add("SPÓŁKA AKCYJNA");
+    ignore.add("S.A");
+    ignore.add("S.A.");
+
   }
 
   public String lemmatize(final String text) {

@@ -11,15 +11,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EqualsAndHashCode(exclude = {"document", "annotations"})
 @ToString(exclude = "document")
-public class HocrPage extends Bboxes {
+public class HocrPage extends Bboxes implements Contour {
 
   int no;
   Annotations annotations = new Annotations();
-  List<Range> lines;
+  List<HocrLine> lines = new ArrayList<>();
   HocrDocument document;
   int numberOfOriginalLines;
   int numberOfOriginalBlocks;
   int numberOfOriginalInlineBlocks;
+  Box box;
 
   LineHeightHistogram histogram;
 
@@ -153,6 +154,24 @@ public class HocrPage extends Bboxes {
   public double isWithTableProb() {
     return 2 * getNumberOfOriginalInlineBlocks() / getNumberOfOriginalBlocks();
   }
+
+  @Override
+  public int getLeft() {
+    return getBox().getLeft();
+  }
+
+  @Override
+  public int getRight() {
+    return getBox().getRight();
+  }
+
+  @Override
+  public int getTop() {
+    return getBox().getTop();
+  }
+
+  @Override
+  public int getBottom() { return getBox().getBottom(); }
 
 
 }

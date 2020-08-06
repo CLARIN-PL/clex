@@ -16,10 +16,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import pl.clarin.pwr.g419.action.options.ActionOptionInput;
-import pl.clarin.pwr.g419.action.options.ActionOptionMetadata;
-import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
-import pl.clarin.pwr.g419.action.options.ActionOptionSelectOne;
+import pl.clarin.pwr.g419.action.options.*;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
@@ -38,6 +35,8 @@ public class ActionEval extends Action {
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
   ActionOptionSelectOne optionSelectOne = new ActionOptionSelectOne();
+  ActionOptionPersonEvaluationVariants optionPersonEvaluationVariants
+      = new ActionOptionPersonEvaluationVariants();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -52,6 +51,7 @@ public class ActionEval extends Action {
     this.options.add(optionInput);
     this.options.add(optionOutput);
     this.options.add(optionSelectOne);
+    this.options.add(optionPersonEvaluationVariants);
 
     //normalizer.setPerson(new NormalizerPersonRole());
   }
@@ -81,6 +81,11 @@ public class ActionEval extends Action {
       paths = paths.stream().filter(p -> p.getParent().endsWith(optionSelectOne.getString())).collect(Collectors.toList());
     }
 
+    if (optionPersonEvaluationVariants.getString() != null) {
+      log.info("Podano parameter personevalvariant = " + optionPersonEvaluationVariants.getString());
+    }
+
+
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
     // jego przetwarzania
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
@@ -88,7 +93,7 @@ public class ActionEval extends Action {
       try {
         evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
       } catch (final Exception ex) {
-        getLogger().error("Failed evaluate the document", ex);
+        getLogger().error("Failed evaluate the document. Path = " + path, ex);
       }
     });
 
@@ -153,11 +158,37 @@ public class ActionEval extends Action {
         evalField(document.getId(), "period_to", normalizer.getDate(),
             ref.getPeriodTo(), metadata.getPeriodTo()),
         evalField(document.getId(), "company", normalizer.getCompany(),
-            ref.getCompany(), metadata.getCompany())
+            ref.getCompany(), metadata.getCompany()),
+
+        evalField(document.getId(), "postal_code", normalizer.getPostalCode(),
+            ref.getPostalCode(), metadata.getPostalCode()),
+        evalField(document.getId(), "city", normalizer.getCity(),
+            ref.getCity(), metadata.getCity()),
+        evalField(document.getId(), "street", normalizer.getStreet(),
+            ref.getStreet(), metadata.getStreet()),
+        evalField(document.getId(), "street_no", normalizer.getStreetNo(),
+            ref.getStreetNo(), metadata.getStreetNo())
+
+
     );
 
-    records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-        ref.getPeople(), metadata.getPeople()));
+
+    String pev = optionPersonEvaluationVariants.getString();
+    int intPev = 3;
+    if ((pev != null) && (pev.equals("2"))) {
+      intPev = 2;
+    }
+
+    if (intPev == 3) {
+      records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
+          ref.getPeople(), metadata.getPeople()));
+    } else if (intPev == 2) {
+      records.addAll(evalSets(document.getId(), "person-role", normalizer.getPersonRole(),
+          ref.getPeople(), metadata.getPeople()));
+      records.addAll(evalSets(document.getId(), "person-date", normalizer.getPersonDate(),
+          ref.getPeople(), metadata.getPeople()));
+    }
+
 
     return records;
   }

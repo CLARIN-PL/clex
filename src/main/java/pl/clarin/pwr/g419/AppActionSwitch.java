@@ -79,8 +79,9 @@ public class AppActionSwitch implements CommandLineRunner {
     info.append("* PolEval 2020 competitor in Task 4: Information extraction          *\n");
     info.append("* and entity typing from long documents with complex layouts         *\n");
     info.append("*                                                                    *\n");
-    info.append("* Author : Michał Marcińczuk                                         *\n");
+    info.append("* Author : Michał Marcińczuk, Michał Olek                            *\n");
     info.append("* Contact: michal.marcinczuk@pwr.wroc.pl                             *\n");
+    info.append("*          michal.olek@pwr.wroc.pl                                   *\n");
     info.append("*                                                                    *\n");
     info.append("* G4.19 Research Group, Wrocław University of Science and Technology *\n");
     info.append("*--------------------------------------------------------------------*\n");

@@ -44,7 +44,7 @@ public class AnnotatorPersonVertical extends Annotator {
     final List<Annotation> blocks =
         al.stream().filter(this::isBlock).collect(Collectors.toList());
 
-    final List<Pair<Range, Bboxes>> lines = BboxUtils.createLines2(page);
+    final List<Pair<HocrLine, Bboxes>> lines = BboxUtils.createLines2(page);
 
     for (final Annotation an : blocks) {
       final int begin = page.get(an.getIndexBegin()).getBox().getLeft() - 100;
@@ -56,7 +56,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
       final Optional<Bboxes> blockAbove = findBlockAbove(an, begin, end, lines, page);
       if (blockAbove.isPresent()
-          && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottom().getAsInt()) < 60
+          && Math.abs(anFirstBox.getBox().getTop() - blockAbove.get().getBottomBbox().getAsInt()) < 60
       ) {
         name = blockAbove;
         source = "person-ver:name-above";
@@ -65,7 +65,7 @@ public class AnnotatorPersonVertical extends Annotator {
       if (name.isEmpty()) {
         final Optional<Bboxes> lineBelow = findLineBelow(an, lines, page);
         if (lineBelow.isPresent()
-            && Math.abs(anFirstBox.getBox().getBottom() - lineBelow.get().getTop().getAsInt()) < 30) {
+            && Math.abs(anFirstBox.getBox().getBottom() - lineBelow.get().getTopBbox().getAsInt()) < 30) {
           name = extractName(lineBelow.get(), begin, end);
           source = "person-ver:name-below";
         }
@@ -112,7 +112,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
   private Optional<Bboxes> findBlockAbove(final Annotation an,
                                           final int left, final int right,
-                                          final List<Pair<Range, Bboxes>> lines,
+                                          final List<Pair<HocrLine, Bboxes>> lines,
                                           final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
     return lines.stream()
@@ -120,18 +120,18 @@ public class AnnotatorPersonVertical extends Annotator {
         .map(line -> extractName(line.getRight(), left, right))
         .filter(b -> b.isPresent() && b.get().size() > 0)
         .map(Optional::get)
-        .sorted((o1, o2) -> Integer.compare(o2.getBottom().getAsInt(), o1.getBottom().getAsInt()))
+        .sorted((o1, o2) -> Integer.compare(o2.getBottomBbox().getAsInt(), o1.getBottomBbox().getAsInt()))
         .findFirst();
   }
 
   private Optional<Bboxes> findLineBelow(final Annotation an,
-                                         final List<Pair<Range, Bboxes>> lines,
+                                         final List<Pair<HocrLine, Bboxes>> lines,
                                          final HocrPage page) {
     final Bbox firstBbox = page.get(an.getIndexBegin());
-    final Range firsRange = new Range(page, firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
+    final HocrLine firsHocrLine = new HocrLine(page, firstBbox.getBox().getTop(), firstBbox.getBox().getBottom());
     for (int i = 0; i < lines.size() - 1; i++) {
-      final Range line = lines.get(i).getKey();
-      if (firsRange.within(line) > 0.9) {
+      final HocrLine line = lines.get(i).getKey();
+      if (firsHocrLine.within(line) > 0.9) {
         return Optional.of(lines.get(i + 1).getValue());
       }
     }

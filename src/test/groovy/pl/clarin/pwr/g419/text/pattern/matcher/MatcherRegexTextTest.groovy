@@ -14,6 +14,30 @@ class MatcherRegexTextTest extends Specification {
         given:
             def pattern = Pattern.compile("[0-9]{1,2}[.-][0-9]{1,2}[.-][0-9]{4}")
             def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("1.01.2020 ; 02.02 .2020 2020"))
+
+            def matcher = new MatcherRegexText(pattern, 10)
+
+        when:
+            def result = matcher.matchesAt(page, index)
+            print(" res =" + result)
+
+        then:
+            result.orElse(new MatcherResult(0)).getLength() == length
+
+        where:
+            index || length
+            0     || 1
+            1     || 0
+            2     || 2
+            3     || 0
+            4     || 0
+    }
+
+
+    def "matchesAt for index #index should return #length for postal code "() {
+        given:
+            def pattern = Pattern.compile("[0-9]{2}-[0-9]{3}")
+            def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("50-123 ; 50- 123 ; -123"))
             def matcher = new MatcherRegexText(pattern, 10)
 
         when:
