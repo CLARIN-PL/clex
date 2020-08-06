@@ -6,21 +6,23 @@ public class NormalizerStreet extends Normalizer<String> {
 
   @Override
   public String normalize(final String value) {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
 
-    Set<String> trimStartWords = Set.of(
+    final Set<String> trimStartWords = Set.of(
         "ul. ",
         "ul ",
         "al. ",
         "al "
     );
 
-    return trimFromStartIfMatch(value, trimStartWords);
+    return trimFromStartIfMatch(value, trimStartWords).toUpperCase();
 
   }
 
-  private String trimFromStartIfMatch(String str, Set<String> words) {
-    for (String tr : words) {
+  private String trimFromStartIfMatch(final String str, final Set<String> words) {
+    for (final String tr : words) {
       if (str.toLowerCase().startsWith(tr)) {
         return str.substring(tr.length());
       }
