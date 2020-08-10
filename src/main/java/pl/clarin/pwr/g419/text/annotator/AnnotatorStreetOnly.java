@@ -29,9 +29,9 @@ public class AnnotatorStreetOnly extends Annotator {
         .next(new MatcherRegexText("(?i)((\\()?ul\\.|(\\()?al\\.|(\\()?pl\\.)", 4))
         .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
         .next(new MatcherAnnotationType(AnnotatorStreetNameStartAbbreviation.STREET_NAME_START_ABBRV).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 20).group(STREET_ONLY))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 20).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("\\p{Lu}(\\p{Lu}|\\p{Ll})+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 1).group(STREET_ONLY))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 1).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}(\\p{Lu}|\\p{Ll})+", 1).group(STREET_ONLY).optional())
     );
 
     patterns.add(new Pattern("street_only_nodot")
@@ -39,9 +39,9 @@ public class AnnotatorStreetOnly extends Annotator {
         .next(new MatcherRegexText("(?i)((\\()?ul|(\\()?al|(\\()?pl|ulicy|alei|placu)", 6))
         .next(new MatcherRegexText("[0-9]+", 20).group(STREET_ONLY).optional())
         .next(new MatcherAnnotationType(AnnotatorStreetNameStartAbbreviation.STREET_NAME_START_ABBRV).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 20).group(STREET_ONLY))
-        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 20).group(STREET_ONLY).optional())
-        .next(new MatcherRegexText("\\p{Lu}(\\p{Lu}|\\p{Ll})+", 20).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 1).group(STREET_ONLY))
+        .next(new MatcherRegexText("\\p{Lu}\\p{Ll}{2,20}", 1).group(STREET_ONLY).optional())
+        .next(new MatcherRegexText("\\p{Lu}(\\p{Lu}|\\p{Ll})+", 1).group(STREET_ONLY).optional())
     );
 
     return patterns;
