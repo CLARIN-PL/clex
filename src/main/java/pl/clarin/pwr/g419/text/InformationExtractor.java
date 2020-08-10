@@ -16,6 +16,7 @@ import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
+      // kolejność ma znaczenie 
       new AnnotatorDate(),
       new AnnotatorPeriod(),
       new AnnotatorCompanyPrefix(),
@@ -26,12 +27,12 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorPersonVertical(),
       new AnnotatorDrawingDate(),
       new AnnotatorSignsPage(),
-
       new AnnotatorPostalCode(),
       new AnnotatorCity(),
-      new AnnotatorStreetOnly(),
+
       new AnnotatorStreetNrLok(),
       new AnnotatorStreetNameStartAbbreviation(),
+      new AnnotatorStreetOnly(),
       new AnnotatorStreet(),
 //
       new AnnotatorHeadQuarters()
