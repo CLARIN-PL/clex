@@ -14,10 +14,22 @@ public class NormalizerStreet extends Normalizer<String> {
         "ul. ",
         "ul ",
         "al. ",
-        "al "
+        "al ",
+        "pl. ",
+        "pl "
     );
 
-    return trimFromStartIfMatch(value, trimStartWords).toUpperCase();
+    String result = trimFromStartIfMatch(value, trimStartWords).toUpperCase();
+
+    String[] words = result.split(" ");
+    if (words.length > 0) {
+      String lastWord = words[words.length - 1];
+      if (Character.isDigit(lastWord.charAt(0))) {
+        result = result.substring(0, result.length() - lastWord.length() - 1);
+      }
+    }
+
+    return result;
 
   }
 

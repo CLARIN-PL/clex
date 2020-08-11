@@ -12,6 +12,11 @@ public class StreetLemmatizer {
     endings.put("kiej", "ka");
     endings.put("czej", "cza");
     endings.put("nej", "na");
+    endings.put("stej", "sta");
+    endings.put("owej", "owa");
+    endings.put("otej", "ota");
+    endings.put("mskich", "mskie");
+    endings.put("skim", "ski"); // 2-gi wyraz
   }
 
   public String lemmatize(final String text) {
