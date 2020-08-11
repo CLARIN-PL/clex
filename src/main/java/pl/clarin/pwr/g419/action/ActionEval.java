@@ -119,8 +119,9 @@ public class ActionEval extends Action {
     try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
          final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
       try {
-        csvPrinter.printRecord(record("Eval", "Document", "Field", "Truth",
-            "Extracted", "Context", "Rule"));
+        csvPrinter.printRecord(record("Eval", "Document", "Field",
+            "Truth Normalized", "Extracted Normalized",
+            "Truth", "Extracted", "Context", "Rule"));
         csvPrinter.printRecords(records.stream()
             .sorted(Comparator.comparing(o -> o.get(1)))
             .collect(Collectors.toList()));
@@ -149,8 +150,6 @@ public class ActionEval extends Action {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList(
-//        evalField(document.getId(), "sign_page", normalizer.getSignPage(),
-//            ref.getSignsPage(), metadata.getSignsPage()),
         evalField(document.getId(), "drawing_date", normalizer.getDate(),
             ref.getDrawingDate(), metadata.getDrawingDate()),
         evalField(document.getId(), "period_from", normalizer.getDate(),
@@ -159,7 +158,6 @@ public class ActionEval extends Action {
             ref.getPeriodTo(), metadata.getPeriodTo()),
         evalField(document.getId(), "company", normalizer.getCompany(),
             ref.getCompany(), metadata.getCompany()),
-
         evalField(document.getId(), "postal_code", normalizer.getPostalCode(),
             ref.getPostalCode(), metadata.getPostalCode()),
         evalField(document.getId(), "city", normalizer.getCity(),
@@ -168,12 +166,9 @@ public class ActionEval extends Action {
             ref.getStreet(), metadata.getStreet()),
         evalField(document.getId(), "street_no", normalizer.getStreetNo(),
             ref.getStreetNo(), metadata.getStreetNo())
-
-
     );
 
-
-    String pev = optionPersonEvaluationVariants.getString();
+    final String pev = optionPersonEvaluationVariants.getString();
     int intPev = 3;
     if ((pev != null) && (pev.equals("2"))) {
       intPev = 2;
@@ -189,7 +184,6 @@ public class ActionEval extends Action {
           ref.getPeople(), metadata.getPeople()));
     }
 
-
     return records;
   }
 
@@ -198,18 +192,18 @@ public class ActionEval extends Action {
                                                   final Normalizer<T> normalizer,
                                                   final T reference,
                                                   final FieldContext<T> extracted) {
-    final String referenceValue = normalizer.normalize(reference);
-    final String extractedValue = normalizer.normalize(extracted.getField());
-    if (Objects.equals(referenceValue, extractedValue)) {
+    final String referenceValueNorm = normalizer.normalize(reference);
+    final String extractedValueNorm = normalizer.normalize(extracted.getField());
+    if (Objects.equals(referenceValueNorm, extractedValueNorm)) {
       globalCounter.addTrue();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
     } else {
       globalCounter.addFalse();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
     }
-    final String label = Objects.equals(referenceValue, extractedValue) ? "OK" : "ERROR";
-    return record(label, id, fieldName, referenceValue, extractedValue,
-        extracted.getContext(), extracted.getRule());
+    final String label = Objects.equals(referenceValueNorm, extractedValueNorm) ? "OK" : "ERROR";
+    return record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
+        "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
   }
 
   synchronized private <T> List<List<String>> evalSets(final String id,
@@ -226,12 +220,13 @@ public class ActionEval extends Action {
     for (final String reference : referenceValues.keySet()) {
       if (extractedValues.containsKey(reference)) {
         final FieldContext<T> context = extractedValues.get(reference);
-        records.add(record("OK", id, fieldName, reference, reference,
+        records.add(record("OK", id, fieldName, reference, reference, reference, reference,
             context.getContext(), context.getRule()));
         globalCounter.addTrue();
         counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
       } else {
-        records.add(record("ERROR", id, fieldName, reference, "FalseNegative",
+        records.add(record("ERROR", id, fieldName, reference,
+            "FalseNegative", "", "",
             "", ""));
         globalCounter.addFalse();
         counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
@@ -241,7 +236,8 @@ public class ActionEval extends Action {
 
     for (final String value : extractedValues.keySet()) {
       final FieldContext<T> context = extractedValues.get(value);
-      records.add(record("ERROR", id, fieldName, "FalsePositive", value,
+      records.add(record("ERROR", id, fieldName,
+          "FalsePositive", value, "", "",
           context.getContext(), context.getRule()));
       globalCounter.addFalse();
       counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
@@ -250,9 +246,11 @@ public class ActionEval extends Action {
   }
 
   private List<String> record(final String label, final String id, final String field,
+                              final String valueReferenceNorm, final String valueExtractedNorm,
                               final String valueReference, final String valueExtracted,
                               final String context, final String rule) {
-    return Lists.newArrayList(label, id, field, valueReference, valueExtracted, context, rule);
+    return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
+        valueReference, valueExtracted, context, rule);
   }
 
 }
