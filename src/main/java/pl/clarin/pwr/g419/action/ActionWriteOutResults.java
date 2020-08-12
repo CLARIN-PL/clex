@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.ActionOptionInput;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
+import pl.clarin.pwr.g419.action.options.ActionOptionReport;
 import pl.clarin.pwr.g419.action.options.ActionOptionSelectOne;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
 import pl.clarin.pwr.g419.io.reader.HocrReader;
@@ -100,7 +100,7 @@ public class ActionWriteOutResults extends Action {
 
     printRecords(records);
 
-    Path path = Path.of(optionOutput.getString());
+    final Path path = Path.of(optionOutput.getString());
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
