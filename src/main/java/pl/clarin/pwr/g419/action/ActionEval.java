@@ -103,7 +103,7 @@ public class ActionEval extends Action {
 
     printSummary();
 
-    Path path = Path.of("outfile.csv");
+    Path path = Path.of("outfile.tsv");
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
@@ -190,6 +190,7 @@ public class ActionEval extends Action {
     }
 
     Metadata outFileMetadata = Metadata.of(records);
+    outFileMetadata.setPeople(metadata.getPeople().stream().map(fc -> fc.getField()).collect(Collectors.toList()));
     outFileMetadataList.add(outFileMetadata);
 
     return records;

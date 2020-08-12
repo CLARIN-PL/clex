@@ -6,7 +6,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -84,9 +83,7 @@ public class ActionWriteOutResults extends Action {
 
     printRecords(records);
 
-    printSummary();
-
-    Path path = Path.of("outfile.csv");
+    Path path = Path.of("outfile.tsv");
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
@@ -157,25 +154,8 @@ public class ActionWriteOutResults extends Action {
             metadata.getStreetNo())
     );
 
-    //List<List<String>> outRecords = composeOutRecord(records);
-
-//    final String pev = optionPersonEvaluationVariants.getString();
-//    int intPev = 3;
-//    if ((pev != null) && (pev.equals("2"))) {
-//      intPev = 2;
-//    }
-//
-//    if (intPev == 3) {
-//      records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-//          metadata.getPeople()));
-//    } else if (intPev == 2) {
-//      records.addAll(evalSets(document.getId(), "person-role", normalizer.getPersonRole(),
-//          metadata.getPeople()));
-//      records.addAll(evalSets(document.getId(), "person-date", normalizer.getPersonDate(),
-//          metadata.getPeople()));
-//    }
-
     Metadata outFileMetadata = Metadata.of(records);
+    outFileMetadata.setPeople(metadata.getPeople().stream().map(fc -> fc.getField()).collect(Collectors.toList()));
     outFileMetadataList.add(outFileMetadata);
 
     return records;
@@ -195,48 +175,6 @@ public class ActionWriteOutResults extends Action {
     return record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
         "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
   }
-  
-
-  /*
-  synchronized private <T> List<List<String>> evalSets(final String id,
-                                                       final String fieldName,
-                                                       final Normalizer<T> normalizer,
-                                                       final Collection<FieldContext<T>> extracts) {
-//    final Map<String, T> referenceValues = references.stream()
-//        .collect(Collectors.toMap(o -> normalizer.normalize(o), Function.identity()));
-    final Map<String, FieldContext<T>> extractedValues = extracts.stream()
-        .collect(Collectors.toMap(o -> normalizer.normalize(o.getField()), Function.identity()));
-
-    final List<List<String>> records = Lists.newArrayList();
-    for (final String reference : referenceValues.keySet()) {
-      if (extractedValues.containsKey(reference)) {
-        final FieldContext<T> context = extractedValues.get(reference);
-        records.add(record("OK", id, fieldName, reference, reference, reference, reference,
-            context.getContext(), context.getRule()));
-        globalCounter.addTrue();
-        counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
-      } else {
-        records.add(record("ERROR", id, fieldName, reference,
-            "FalseNegative", "", "",
-            "", ""));
-        globalCounter.addFalse();
-        counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
-      }
-    }
-    referenceValues.keySet().stream().forEach(extractedValues::remove);
-
-    for (final String value : extractedValues.keySet()) {
-      final FieldContext<T> context = extractedValues.get(value);
-      records.add(record("ERROR", id, fieldName,
-          "FalsePositive", value, "", "",
-          context.getContext(), context.getRule()));
-      globalCounter.addFalse();
-      counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
-    }
-    return records;
-  }
-   */
-
 
   private List<String> record(final String label, final String id, final String field,
                               final String valueReferenceNorm, final String valueExtractedNorm,
