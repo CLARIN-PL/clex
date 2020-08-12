@@ -2,10 +2,7 @@ package pl.clarin.pwr.g419.action;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -18,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.*;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
+import pl.clarin.pwr.g419.io.writer.MetadataWriter;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.Metadata;
@@ -26,6 +24,8 @@ import pl.clarin.pwr.g419.text.InformationExtractor;
 import pl.clarin.pwr.g419.text.normalization.MetadataNormalizer;
 import pl.clarin.pwr.g419.text.normalization.Normalizer;
 import pl.clarin.pwr.g419.utils.TrueFalseCounter;
+
+import static pl.clarin.pwr.g419.struct.Metadata.*;
 
 @Component
 @Slf4j
@@ -44,6 +44,8 @@ public class ActionEval extends Action {
   Map<String, TrueFalseCounter> counters = Maps.newHashMap();
 
   MetadataNormalizer normalizer = new MetadataNormalizer();
+
+  List<Metadata> outFileMetadataList = new LinkedList<>();
 
   public ActionEval() {
     super("eval", "evaluate the information extraction module against a dataset");
@@ -101,7 +103,10 @@ public class ActionEval extends Action {
 
     printSummary();
 
+    // gdybyśmy jeszcze tu chcieli drukować plik zgodny z z formatem konkursu PolEval 2020
+    //printPolEvalFile();
   }
+
 
   // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
   private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final Map<String, Metadata> idToMetadata, final List<List<String>> records)
@@ -150,21 +155,21 @@ public class ActionEval extends Action {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList(
-        evalField(document.getId(), "drawing_date", normalizer.getDate(),
+        evalField(document.getId(), DRAWING_DATE, normalizer.getDate(),
             ref.getDrawingDate(), metadata.getDrawingDate()),
-        evalField(document.getId(), "period_from", normalizer.getDate(),
+        evalField(document.getId(), PERIOD_FROM, normalizer.getDate(),
             ref.getPeriodFrom(), metadata.getPeriodFrom()),
-        evalField(document.getId(), "period_to", normalizer.getDate(),
+        evalField(document.getId(), PERIOD_TO, normalizer.getDate(),
             ref.getPeriodTo(), metadata.getPeriodTo()),
-        evalField(document.getId(), "company", normalizer.getCompany(),
+        evalField(document.getId(), COMPANY, normalizer.getCompany(),
             ref.getCompany(), metadata.getCompany()),
-        evalField(document.getId(), "postal_code", normalizer.getPostalCode(),
+        evalField(document.getId(), POSTAL_CODE, normalizer.getPostalCode(),
             ref.getPostalCode(), metadata.getPostalCode()),
-        evalField(document.getId(), "city", normalizer.getCity(),
+        evalField(document.getId(), CITY, normalizer.getCity(),
             ref.getCity(), metadata.getCity()),
-        evalField(document.getId(), "street", normalizer.getStreet(),
+        evalField(document.getId(), STREET, normalizer.getStreet(),
             ref.getStreet(), metadata.getStreet()),
-        evalField(document.getId(), "street_no", normalizer.getStreetNo(),
+        evalField(document.getId(), STREET_NO, normalizer.getStreetNo(),
             ref.getStreetNo(), metadata.getStreetNo())
     );
 
@@ -183,6 +188,10 @@ public class ActionEval extends Action {
       records.addAll(evalSets(document.getId(), "person-date", normalizer.getPersonDate(),
           ref.getPeople(), metadata.getPeople()));
     }
+
+    Metadata outFileMetadata = Metadata.of(records);
+    outFileMetadata.setPeople(metadata.getPeople().stream().map(fc -> fc.getField()).collect(Collectors.toList()));
+    outFileMetadataList.add(outFileMetadata);
 
     return records;
   }
@@ -252,5 +261,11 @@ public class ActionEval extends Action {
     return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
         valueReference, valueExtracted, context, rule);
   }
+
+  private void printPolEvalFile() throws IOException {
+    Path path = Path.of("outfile.tsv");
+    new MetadataWriter().write(outFileMetadataList, path);
+  }
+
 
 }

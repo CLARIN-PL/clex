@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class AnnotatorCity extends Annotator {
 
-  public static String CITY = "city";
+  public static final String CITY = "city";
 
   // bierzemy tylko największe 2000 miast - nawet
   // niektóre z nich są oznaczone postfixem "DELETE" by nie brać ich pod uwagę

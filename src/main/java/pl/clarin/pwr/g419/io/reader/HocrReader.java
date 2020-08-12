@@ -107,7 +107,7 @@ public class HocrReader extends DefaultHandler {
   }
 
 
-  private static String getIdFromPath(final Path path) {
+  public static String getIdFromPath(final Path path) {
     return path.getParent().toFile().getName();
   }
 
@@ -141,7 +141,7 @@ public class HocrReader extends DefaultHandler {
       if (ATTR_CLASS_PAGE.equals(attrClass)) {
         this.page = new HocrPage(document);
         final String title = attributes.getValue(ATTR_TITLE);
-        Box box = titleToBox(title);
+        final Box box = titleToBox(title);
         this.page.setBox(box);
         this.page.setNo(pageNo++);
         //log.trace(" For page " + pageNo + " set Box =" + this.page.getBox());
@@ -201,7 +201,7 @@ public class HocrReader extends DefaultHandler {
     mergeLines(page, 2);
   }
 
-  private void mergeLines(final HocrPage page, int iteration) {
+  private void mergeLines(final HocrPage page, final int iteration) {
     final List<HocrLine> hocrLines = BboxUtils.createLines(page);
     if (iteration == 1) {
       page.setNumberOfOriginalLines(hocrLines.size());
@@ -253,10 +253,10 @@ public class HocrReader extends DefaultHandler {
   }
 
 
-  private void eliminateRedundantLines(HocrPage page) {
+  private void eliminateRedundantLines(final HocrPage page) {
     for (int i = page.getLines().size() - 1; i > 0; i--) {
-      HocrLine current = page.getLines().get(i);
-      HocrLine previous = page.getLines().get(i - 1);
+      final HocrLine current = page.getLines().get(i);
+      final HocrLine previous = page.getLines().get(i - 1);
 
       if ((current.overlapY(previous) > 0.8) && ((current.overlapX(previous) > 0.2))) {
         if (current.getText().contains(previous.getText())) {
@@ -346,15 +346,15 @@ public class HocrReader extends DefaultHandler {
   }
 
 
-  private HocrDocument regenerateDocumentFromLines(HocrDocument doc) {
-    HocrDocument resultDoc = new HocrDocument();
+  private HocrDocument regenerateDocumentFromLines(final HocrDocument doc) {
+    final HocrDocument resultDoc = new HocrDocument();
     resultDoc.setDocContextInfo(doc.getDocContextInfo());
     resultDoc.setId(doc.getId());
 
-    List<HocrPage> pages = new ArrayList<>();
+    final List<HocrPage> pages = new ArrayList<>();
     for (int i = 0; i < document.size(); i++) {
-      HocrPage page = document.get(i);
-      HocrPage newPage = new HocrPage(resultDoc, page.generateBboxesFromSortedLines());
+      final HocrPage page = document.get(i);
+      final HocrPage newPage = new HocrPage(resultDoc, page.generateBboxesFromSortedLines());
       newPage.setBox(page.getBox());
       newPage.setNo(page.getNo());
       pages.add(newPage);
