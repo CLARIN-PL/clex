@@ -29,11 +29,11 @@ class AnnotatorCompanyTest extends Specification {
 
         where:
             text                                                                        || norm
-            "sprawozdanie finansowe oktan sa"                                           || ["OKTAN SA"]
-            "nazwa jednostki : oktan sa"                                                || ["OKTAN SA"]
-            "nazwa jednostki : oktan s.a."                                              || ["OKTAN S.A."]
-            "działalności grupy kapitałowej energamontaż-północ w I-szym półroczu 2009" || ["ENERGAMONTAŻ-PÓŁNOC"]
-            "Raport Grupy Kapitałowej Banku Milennium S.A."                             || ["BANKU MILENNIUM S.A."]
+            "sprawozdanie finansowe oktan sa"                                           || ["oktan sa"]
+            "nazwa jednostki : oktan sa"                                                || ["oktan sa"]
+            "nazwa jednostki : oktan s.a."                                              || ["oktan s.a."]
+            "działalności grupy kapitałowej energamontaż-północ w I-szym półroczu 2009" || ["energamontaż-północ"]
+            "Raport Grupy Kapitałowej Banku Milennium S.A."                             || ["Banku Milennium S.A."]
             "Grupy Kapitałowej ELEKTROTIM"                                              || ["ELEKTROTIM"]
             "Grupy Kapitałowej ELEKTROTIM AA"                                           || []
             "Grupy Kapitałowej| ELEKTROTIM"                                             || []

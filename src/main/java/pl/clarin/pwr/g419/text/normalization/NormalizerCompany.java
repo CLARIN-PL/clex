@@ -10,7 +10,7 @@ public class NormalizerCompany extends NormalizerString {
     if (name == null || name.length() == 0) {
       return name;
     }
-    return suffix.stripFromName(name.toUpperCase())
+    return suffix.stripFromName(name)
         .replaceAll("( )*([-.-])( )*", "$2")
         .replaceAll("–", "-")
         .replaceAll("[„”\"]", "")
