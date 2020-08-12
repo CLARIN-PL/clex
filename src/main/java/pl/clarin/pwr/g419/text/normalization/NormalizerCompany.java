@@ -14,7 +14,8 @@ public class NormalizerCompany extends NormalizerString {
         .replaceAll("( )*([-.-])( )*", "$2")
         .replaceAll("–", "-")
         .replaceAll("[„”\"]", "")
-        .replaceAll("[.]$", "");
+        .replaceAll("[.]$", "") + " SA";
+
   }
 
 }
