@@ -32,6 +32,7 @@ public class ActionWriteOutResults extends Action {
 
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
+  ActionOptionReport optionReport = new ActionOptionReport();
   ActionOptionSelectOne optionSelectOne = new ActionOptionSelectOne();
 
   InformationExtractor extractor = new InformationExtractor();
@@ -48,6 +49,7 @@ public class ActionWriteOutResults extends Action {
 
     this.options.add(optionInput);
     this.options.add(optionOutput);
+    this.options.add(optionReport);
     this.options.add(optionSelectOne);
   }
 
@@ -81,9 +83,11 @@ public class ActionWriteOutResults extends Action {
       }
     });
 
-    printRecords(records);
+    if (optionReport.getString() != null) {
+      printReport(records);
+    }
 
-    Path path = Path.of("outfile.tsv");
+    Path path = Path.of(optionOutput.getString());
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
@@ -99,8 +103,8 @@ public class ActionWriteOutResults extends Action {
   }
 
 
-  private void printRecords(final List<List<String>> records) throws IOException {
-    try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
+  private void printReport(final List<List<String>> records) throws IOException {
+    try (final Writer out = new BufferedWriter(new FileWriter(optionReport.getString()));
          final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
       try {
         csvPrinter.printRecord(record("Eval", "Document", "Field",
@@ -115,28 +119,11 @@ public class ActionWriteOutResults extends Action {
     }
   }
 
-  private void printSummary() {
-    System.out.println(String.format("%20s | %5s | %5s | %8s",
-        "Type", "True", "False", "Accuracy"));
-    System.out.println(StringUtils.repeat("-", 80));
-    for (final Map.Entry<String, TrueFalseCounter> entry : counters.entrySet()) {
-      final TrueFalseCounter tfc = entry.getValue();
-      System.out.println(String.format("%20s | %5d | %5d | %8.2f%%",
-          entry.getKey(), tfc.getTrue(), tfc.getFalse(), tfc.getAccuracy()));
-    }
-    System.out.println(StringUtils.repeat("-", 80));
-    final TrueFalseCounter tfc = globalCounter;
-    System.out.println(String.format("%20s | %5d | %5d | %8.2f%%",
-        "TOTAL", tfc.getTrue(), tfc.getFalse(), tfc.getAccuracy()));
-  }
-
   private List<List<String>> processDocument(final HocrDocument document) {
-
     final MetadataWithContext metadata = extractor.extract(document);
 
-
     final List<List<String>> records = Lists.newArrayList(
-        getValForField(document.getId(), Metadata.DRAWING_DATE, normalizer.getDate(),
+        getValForField(document.getId(), DRAWING_DATE, normalizer.getDate(),
             metadata.getDrawingDate()),
         getValForField(document.getId(), PERIOD_FROM, normalizer.getDate(),
             metadata.getPeriodFrom()),
