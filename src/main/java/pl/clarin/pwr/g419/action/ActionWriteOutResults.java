@@ -2,7 +2,10 @@ package pl.clarin.pwr.g419.action;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -10,10 +13,13 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import pl.clarin.pwr.g419.action.options.*;
+import pl.clarin.pwr.g419.action.options.ActionOptionInput;
+import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
+import pl.clarin.pwr.g419.action.options.ActionOptionReport;
+import pl.clarin.pwr.g419.action.options.ActionOptionSelectOne;
 import pl.clarin.pwr.g419.io.reader.DocumentsReader;
+import pl.clarin.pwr.g419.io.reader.HocrReader;
 import pl.clarin.pwr.g419.io.writer.MetadataWriter;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
@@ -69,31 +75,40 @@ public class ActionWriteOutResults extends Action {
     // jeśli jest podane zawężenie do katalogu o podanym numerze to weż poda uwagę tylko ten dokument
     if (optionSelectOne.getString() != null) {
       log.info("Podano parameter selectOne = " + optionSelectOne.getString());
-      paths = paths.stream().filter(p -> p.getParent().endsWith(optionSelectOne.getString())).collect(Collectors.toList());
+      paths = paths.stream()
+          .filter(p -> p.getParent().endsWith(optionSelectOne.getString()))
+          .collect(Collectors.toList());
     }
 
-    // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
-    // jego przetwarzania
+    final List<String> documentsFailed = Lists.newArrayList();
+
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
     paths.parallelStream().forEach(path -> {
       try {
         evaluateOneDocumentWithPath(reader, path, records);
       } catch (final Exception ex) {
+        documentsFailed.add(HocrReader.getIdFromPath(path));
         getLogger().error("Failed evaluate the document. Path = " + path, ex);
       }
     });
 
-    if (optionReport.getString() != null) {
-      printReport(records);
+    for (final String documentId : documentsFailed) {
+      final Metadata metadata = new Metadata();
+      metadata.setId(documentId);
+      outFileMetadataList.add(metadata);
     }
 
-    Path path = Path.of(optionOutput.getString());
+    printRecords(records);
+
+    final Path path = Path.of(optionOutput.getString());
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
 
   // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
-  private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final List<List<String>> records)
+  private void evaluateOneDocumentWithPath(final DocumentsReader reader,
+                                           final Path path,
+                                           final List<List<String>> records)
       throws Exception {
     getLogger().info(String.format("Starting processing document %s", path.toString()));
     final HocrDocument document = reader.loadHocrDocument(path);
@@ -103,8 +118,8 @@ public class ActionWriteOutResults extends Action {
   }
 
 
-  private void printReport(final List<List<String>> records) throws IOException {
-    try (final Writer out = new BufferedWriter(new FileWriter(optionReport.getString()));
+  private void printRecords(final List<List<String>> records) throws IOException {
+    try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
          final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
       try {
         csvPrinter.printRecord(record("Eval", "Document", "Field",
@@ -119,33 +134,30 @@ public class ActionWriteOutResults extends Action {
     }
   }
 
+
   private List<List<String>> processDocument(final HocrDocument document) {
+
     final MetadataWithContext metadata = extractor.extract(document);
-
-    final List<List<String>> records = Lists.newArrayList(
-        getValForField(document.getId(), DRAWING_DATE, normalizer.getDate(),
-            metadata.getDrawingDate()),
-        getValForField(document.getId(), PERIOD_FROM, normalizer.getDate(),
-            metadata.getPeriodFrom()),
-        getValForField(document.getId(), PERIOD_TO, normalizer.getDate(),
-            metadata.getPeriodTo()),
-        getValForField(document.getId(), COMPANY, normalizer.getCompany(),
-            metadata.getCompany()),
-        getValForField(document.getId(), POSTAL_CODE, normalizer.getPostalCode(),
-            metadata.getPostalCode()),
-        getValForField(document.getId(), CITY, normalizer.getCity(),
-            metadata.getCity()),
-        getValForField(document.getId(), STREET, normalizer.getStreet(),
-            metadata.getStreet()),
-        getValForField(document.getId(), STREET_NO, normalizer.getStreetNo(),
-            metadata.getStreetNo())
-    );
-
-    Metadata outFileMetadata = Metadata.of(records);
-    outFileMetadata.setPeople(metadata.getPeople().stream().map(fc -> fc.getField()).collect(Collectors.toList()));
+    final List<List<String>> records = metadataToRecord(document.getId(), metadata);
+    final Metadata outFileMetadata = Metadata.of(records);
+    outFileMetadata.setPeople(metadata.getPeople().stream()
+        .map(fc -> fc.getField()).collect(Collectors.toList()));
     outFileMetadataList.add(outFileMetadata);
 
     return records;
+  }
+
+  private List<List<String>> metadataToRecord(final String documentId, final MetadataWithContext metadata) {
+    return Lists.newArrayList(
+        getValForField(documentId, DRAWING_DATE, normalizer.getDate(), metadata.getDrawingDate()),
+        getValForField(documentId, PERIOD_FROM, normalizer.getDate(), metadata.getPeriodFrom()),
+        getValForField(documentId, PERIOD_TO, normalizer.getDate(), metadata.getPeriodTo()),
+        getValForField(documentId, COMPANY, normalizer.getCompany(), metadata.getCompany()),
+        getValForField(documentId, POSTAL_CODE, normalizer.getPostalCode(), metadata.getPostalCode()),
+        getValForField(documentId, CITY, normalizer.getCity(), metadata.getCity()),
+        getValForField(documentId, STREET, normalizer.getStreet(), metadata.getStreet()),
+        getValForField(documentId, STREET_NO, normalizer.getStreetNo(), metadata.getStreetNo())
+    );
   }
 
   synchronized private <T> List<String> getValForField(final String id,
@@ -155,9 +167,9 @@ public class ActionWriteOutResults extends Action {
 
     final String extractedValueNorm = normalizer.normalize(extracted.getField());
 
-    String label = "";
-    String referenceValueNorm = "";
-    String reference = "";
+    final String label = "";
+    final String referenceValueNorm = "";
+    final String reference = "";
 
     return record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
         "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
