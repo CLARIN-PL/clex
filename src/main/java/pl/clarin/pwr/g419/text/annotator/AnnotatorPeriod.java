@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.time.YearMonth;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import pl.clarin.pwr.g419.text.pattern.PatternMatch;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherAnnotationType;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherLowerText;
 import pl.clarin.pwr.g419.text.pattern.matcher.MatcherRegexText;
+
 import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
 @Slf4j
@@ -135,11 +137,15 @@ public class AnnotatorPeriod extends Annotator {
     }
 
     if (monthBegin.isPresent() && monthEnd.isPresent() && year.isPresent()) {
-      final int monthDays = YearMonth.of(Integer.parseInt(year.get()), Integer.parseInt(monthEnd.get()))
-          .lengthOfMonth();
-      final String begin = String.format("%s-%s-01", year.get(), monthBegin.get());
-      final String end = String.format("%s-%s-%02d", year.get(), monthEnd.get(), monthDays);
-      return String.format("%s:%s", begin, end);
+      try {
+        final int monthDays = YearMonth.of(Integer.parseInt(year.get()), Integer.parseInt(monthEnd.get()))
+            .lengthOfMonth();
+        final String begin = String.format("%s-%s-01", year.get(), monthBegin.get());
+        final String end = String.format("%s-%s-%02d", year.get(), monthEnd.get(), monthDays);
+        return String.format("%s:%s", begin, end);
+      } catch (DateTimeException dte) {
+        getLogger().error("Failed to parse date '{}'", pm.getText());
+      }
     }
 
     if (dateEnd.isPresent()) {
@@ -153,6 +159,8 @@ public class AnnotatorPeriod extends Annotator {
         final String startDate = format.format(c.getTime());
         return String.format("%s:%s", startDate, dateEnd.get());
       } catch (final ParseException e) {
+        getLogger().error("Failed to parse date '{}'", dateEnd.get());
+      } catch (final DateTimeException dte) {
         getLogger().error("Failed to parse date '{}'", dateEnd.get());
       }
     }
