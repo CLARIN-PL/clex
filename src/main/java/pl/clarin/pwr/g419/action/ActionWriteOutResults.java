@@ -29,14 +29,11 @@ import static pl.clarin.pwr.g419.struct.Metadata.*;
 
 @Component
 @Slf4j
-public class ActionEval extends Action {
+public class ActionWriteOutResults extends Action {
 
-  ActionOptionMetadata optionMetadata = new ActionOptionMetadata();
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
   ActionOptionSelectOne optionSelectOne = new ActionOptionSelectOne();
-  ActionOptionPersonEvaluationVariants optionPersonEvaluationVariants
-      = new ActionOptionPersonEvaluationVariants();
 
   InformationExtractor extractor = new InformationExtractor();
 
@@ -47,26 +44,17 @@ public class ActionEval extends Action {
 
   List<Metadata> outFileMetadataList = new LinkedList<>();
 
-  public ActionEval() {
-    super("eval", "evaluate the information extraction module against a dataset");
-    this.options.add(optionMetadata);
+  public ActionWriteOutResults() {
+    super("writeOut", "write out the information extraction to file");
+
     this.options.add(optionInput);
     this.options.add(optionOutput);
     this.options.add(optionSelectOne);
-    this.options.add(optionPersonEvaluationVariants);
-
-    //normalizer.setPerson(new NormalizerPersonRole());
   }
 
   @Override
   public void run() throws Exception {
     final DocumentsReader reader = new DocumentsReader();
-
-    // do pamięci zaczytujemy wszystkie metadane ...
-    final Path metadataCsv = Paths.get(optionMetadata.getString());
-    final List<Metadata> metadata = reader.loadMetadata(metadataCsv);
-    final Map<String, Metadata> idToMetadata =
-        metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
 
     // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
     final Path hocrIndex = Paths.get(optionInput.getString());
@@ -83,17 +71,12 @@ public class ActionEval extends Action {
       paths = paths.stream().filter(p -> p.getParent().endsWith(optionSelectOne.getString())).collect(Collectors.toList());
     }
 
-    if (optionPersonEvaluationVariants.getString() != null) {
-      log.info("Podano parameter personevalvariant = " + optionPersonEvaluationVariants.getString());
-    }
-
-
     // dla każdej pojedynczej ścieżki zaczytuajemy jej dokument i zapamiętujemy tylko wyniki
     // jego przetwarzania
     final List<List<String>> records = Collections.synchronizedList(new LinkedList<>());
     paths.parallelStream().forEach(path -> {
       try {
-        evaluateOneDocumentWithPath(reader, path, idToMetadata, records);
+        evaluateOneDocumentWithPath(reader, path, records);
       } catch (final Exception ex) {
         getLogger().error("Failed evaluate the document. Path = " + path, ex);
       }
@@ -109,12 +92,11 @@ public class ActionEval extends Action {
   }
 
   // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
-  private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final Map<String, Metadata> idToMetadata, final List<List<String>> records)
+  private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final List<List<String>> records)
       throws Exception {
     getLogger().info(String.format("Starting processing document %s", path.toString()));
     final HocrDocument document = reader.loadHocrDocument(path);
     getLogger().info(String.format("%3d page(s) in %s", document.size(), path.toString()));
-    document.setMetadata(idToMetadata.getOrDefault(document.getId(), new Metadata()));
     final List<List<String>> result = processDocument(document);
     records.addAll(result);
   }
@@ -152,42 +134,46 @@ public class ActionEval extends Action {
   }
 
   private List<List<String>> processDocument(final HocrDocument document) {
-    final Metadata ref = document.getMetadata();
+
     final MetadataWithContext metadata = extractor.extract(document);
+
+
     final List<List<String>> records = Lists.newArrayList(
-        evalField(document.getId(), DRAWING_DATE, normalizer.getDate(),
-            ref.getDrawingDate(), metadata.getDrawingDate()),
-        evalField(document.getId(), PERIOD_FROM, normalizer.getDate(),
-            ref.getPeriodFrom(), metadata.getPeriodFrom()),
-        evalField(document.getId(), PERIOD_TO, normalizer.getDate(),
-            ref.getPeriodTo(), metadata.getPeriodTo()),
-        evalField(document.getId(), COMPANY, normalizer.getCompany(),
-            ref.getCompany(), metadata.getCompany()),
-        evalField(document.getId(), POSTAL_CODE, normalizer.getPostalCode(),
-            ref.getPostalCode(), metadata.getPostalCode()),
-        evalField(document.getId(), CITY, normalizer.getCity(),
-            ref.getCity(), metadata.getCity()),
-        evalField(document.getId(), STREET, normalizer.getStreet(),
-            ref.getStreet(), metadata.getStreet()),
-        evalField(document.getId(), STREET_NO, normalizer.getStreetNo(),
-            ref.getStreetNo(), metadata.getStreetNo())
+        getValForField(document.getId(), Metadata.DRAWING_DATE, normalizer.getDate(),
+            metadata.getDrawingDate()),
+        getValForField(document.getId(), PERIOD_FROM, normalizer.getDate(),
+            metadata.getPeriodFrom()),
+        getValForField(document.getId(), PERIOD_TO, normalizer.getDate(),
+            metadata.getPeriodTo()),
+        getValForField(document.getId(), COMPANY, normalizer.getCompany(),
+            metadata.getCompany()),
+        getValForField(document.getId(), POSTAL_CODE, normalizer.getPostalCode(),
+            metadata.getPostalCode()),
+        getValForField(document.getId(), CITY, normalizer.getCity(),
+            metadata.getCity()),
+        getValForField(document.getId(), STREET, normalizer.getStreet(),
+            metadata.getStreet()),
+        getValForField(document.getId(), STREET_NO, normalizer.getStreetNo(),
+            metadata.getStreetNo())
     );
 
-    final String pev = optionPersonEvaluationVariants.getString();
-    int intPev = 3;
-    if ((pev != null) && (pev.equals("2"))) {
-      intPev = 2;
-    }
+    //List<List<String>> outRecords = composeOutRecord(records);
 
-    if (intPev == 3) {
-      records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
-          ref.getPeople(), metadata.getPeople()));
-    } else if (intPev == 2) {
-      records.addAll(evalSets(document.getId(), "person-role", normalizer.getPersonRole(),
-          ref.getPeople(), metadata.getPeople()));
-      records.addAll(evalSets(document.getId(), "person-date", normalizer.getPersonDate(),
-          ref.getPeople(), metadata.getPeople()));
-    }
+//    final String pev = optionPersonEvaluationVariants.getString();
+//    int intPev = 3;
+//    if ((pev != null) && (pev.equals("2"))) {
+//      intPev = 2;
+//    }
+//
+//    if (intPev == 3) {
+//      records.addAll(evalSets(document.getId(), "person", normalizer.getPerson(),
+//          metadata.getPeople()));
+//    } else if (intPev == 2) {
+//      records.addAll(evalSets(document.getId(), "person-role", normalizer.getPersonRole(),
+//          metadata.getPeople()));
+//      records.addAll(evalSets(document.getId(), "person-date", normalizer.getPersonDate(),
+//          metadata.getPeople()));
+//    }
 
     Metadata outFileMetadata = Metadata.of(records);
     outFileMetadataList.add(outFileMetadata);
@@ -195,32 +181,29 @@ public class ActionEval extends Action {
     return records;
   }
 
-  synchronized private <T> List<String> evalField(final String id,
-                                                  final String fieldName,
-                                                  final Normalizer<T> normalizer,
-                                                  final T reference,
-                                                  final FieldContext<T> extracted) {
-    final String referenceValueNorm = normalizer.normalize(reference);
+  synchronized private <T> List<String> getValForField(final String id,
+                                                       final String fieldName,
+                                                       final Normalizer<T> normalizer,
+                                                       final FieldContext<T> extracted) {
+
     final String extractedValueNorm = normalizer.normalize(extracted.getField());
-    if (Objects.equals(referenceValueNorm, extractedValueNorm)) {
-      globalCounter.addTrue();
-      counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addTrue();
-    } else {
-      globalCounter.addFalse();
-      counters.computeIfAbsent(fieldName, o -> new TrueFalseCounter()).addFalse();
-    }
-    final String label = Objects.equals(referenceValueNorm, extractedValueNorm) ? "OK" : "ERROR";
+
+    String label = "";
+    String referenceValueNorm = "";
+    String reference = "";
+
     return record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
         "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
   }
+  
 
+  /*
   synchronized private <T> List<List<String>> evalSets(final String id,
                                                        final String fieldName,
                                                        final Normalizer<T> normalizer,
-                                                       final Collection<T> references,
                                                        final Collection<FieldContext<T>> extracts) {
-    final Map<String, T> referenceValues = references.stream()
-        .collect(Collectors.toMap(o -> normalizer.normalize(o), Function.identity()));
+//    final Map<String, T> referenceValues = references.stream()
+//        .collect(Collectors.toMap(o -> normalizer.normalize(o), Function.identity()));
     final Map<String, FieldContext<T>> extractedValues = extracts.stream()
         .collect(Collectors.toMap(o -> normalizer.normalize(o.getField()), Function.identity()));
 
@@ -252,6 +235,8 @@ public class ActionEval extends Action {
     }
     return records;
   }
+   */
+
 
   private List<String> record(final String label, final String id, final String field,
                               final String valueReferenceNorm, final String valueExtractedNorm,
@@ -260,5 +245,6 @@ public class ActionEval extends Action {
     return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
         valueReference, valueExtracted, context, rule);
   }
+
 
 }
