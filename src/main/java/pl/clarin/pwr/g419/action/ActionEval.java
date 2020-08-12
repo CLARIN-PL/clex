@@ -103,10 +103,10 @@ public class ActionEval extends Action {
 
     printSummary();
 
-    Path path = Path.of("outfile.tsv");
-    new MetadataWriter().write(outFileMetadataList, path);
-
+    // gdybyśmy jeszcze tu chcieli drukować plik zgodny z z formatem konkursu PolEval 2020
+    //printPolEvalFile();
   }
+
 
   // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
   private void evaluateOneDocumentWithPath(final DocumentsReader reader, final Path path, final Map<String, Metadata> idToMetadata, final List<List<String>> records)
@@ -261,5 +261,11 @@ public class ActionEval extends Action {
     return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
         valueReference, valueExtracted, context, rule);
   }
+
+  private void printPolEvalFile() throws IOException {
+    Path path = Path.of("outfile.tsv");
+    new MetadataWriter().write(outFileMetadataList, path);
+  }
+
 
 }

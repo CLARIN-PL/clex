@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.clarin.pwr.g419.action.options.ActionOptionInput;
 import pl.clarin.pwr.g419.action.options.ActionOptionOutput;
@@ -37,6 +38,7 @@ public class ActionWriteOutResults extends Action {
 
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
+  ActionOptionReport optionReport = new ActionOptionReport();
   ActionOptionSelectOne optionSelectOne = new ActionOptionSelectOne();
 
   InformationExtractor extractor = new InformationExtractor();
@@ -53,6 +55,7 @@ public class ActionWriteOutResults extends Action {
 
     this.options.add(optionInput);
     this.options.add(optionOutput);
+    this.options.add(optionReport);
     this.options.add(optionSelectOne);
   }
 
@@ -97,7 +100,7 @@ public class ActionWriteOutResults extends Action {
 
     printRecords(records);
 
-    final Path path = Path.of("outfile.tsv");
+    Path path = Path.of(optionOutput.getString());
     new MetadataWriter().write(outFileMetadataList, path);
 
   }
@@ -131,13 +134,16 @@ public class ActionWriteOutResults extends Action {
     }
   }
 
+
   private List<List<String>> processDocument(final HocrDocument document) {
+
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = metadataToRecord(document.getId(), metadata);
     final Metadata outFileMetadata = Metadata.of(records);
     outFileMetadata.setPeople(metadata.getPeople().stream()
         .map(fc -> fc.getField()).collect(Collectors.toList()));
     outFileMetadataList.add(outFileMetadata);
+
     return records;
   }
 
