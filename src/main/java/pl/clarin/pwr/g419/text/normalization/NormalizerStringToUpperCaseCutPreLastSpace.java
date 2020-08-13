@@ -7,11 +7,9 @@ public class NormalizerStringToUpperCaseCutPreLastSpace extends Normalizer<Strin
   public String normalize(final String value) {
     if (value == null) return null;
 
-    String result = value; //.toUpperCase();
-    if (
-        (result.indexOf("LOK") == -1)
-            && (result.indexOf("Lok") == -1)
-            && (result.indexOf("lok") == -1)) {
+    final String upperCased = value.toUpperCase();
+    String result = value;
+    if (upperCased.indexOf("LOK") == -1) {
       if (result.length() > 2) {
         final int index = result.length() - 1 - 1;
         if (result.charAt(index) == ' ') {
