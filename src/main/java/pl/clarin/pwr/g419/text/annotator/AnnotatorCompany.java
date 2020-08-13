@@ -73,7 +73,7 @@ public class AnnotatorCompany extends Annotator {
 
   @Override
   protected String normalize(final PatternMatch pm) {
-    return pm.getGroupValue(COMPANY).orElse(pm.getText()).toUpperCase();
+    return pm.getGroupValue(COMPANY).orElse(pm.getText());
   }
 
 }

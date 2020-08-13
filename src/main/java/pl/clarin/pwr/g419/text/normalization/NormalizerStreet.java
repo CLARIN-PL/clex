@@ -12,18 +12,18 @@ public class NormalizerStreet extends Normalizer<String> {
 
     final Set<String> trimStartWords = Set.of(
         "ul. ",
-        "ul ",
-        "al. ",
-        "al ",
-        "pl. ",
-        "pl "
+        "ul "
+        //"al. ",
+        //"al ",
+        //"pl. ",
+        //"pl "
     );
 
-    String result = trimFromStartIfMatch(value, trimStartWords).toUpperCase();
+    String result = trimFromStartIfMatch(value, trimStartWords);
 
-    String[] words = result.split(" ");
+    final String[] words = result.split(" ");
     if (words.length > 0) {
-      String lastWord = words[words.length - 1];
+      final String lastWord = words[words.length - 1];
       if (Character.isDigit(lastWord.charAt(0))) {
         result = result.substring(0, result.length() - lastWord.length() - 1);
       }
