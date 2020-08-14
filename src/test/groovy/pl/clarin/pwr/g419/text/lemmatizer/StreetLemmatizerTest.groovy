@@ -21,6 +21,7 @@ class StreetLemmatizerTest extends Specification {
             phrase              || lemma
             "Zamkowej"          || "Zamkowa"
             "Unii Europejskiej" || "Unii Europejskiej"
+            "al. Hubskiej"      || "al. Hubska"
     }
 
 }
