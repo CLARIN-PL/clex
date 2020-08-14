@@ -35,7 +35,8 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorStreetOnly(),
       new AnnotatorStreet(),
 //
-      new AnnotatorHeadQuarters()
+      new AnnotatorHeadQuarters(),
+      new AnnotatorCityWithDate()
   );
 
   ExtractorPeople extractorPeople = new ExtractorPeople();
@@ -66,7 +67,7 @@ public class InformationExtractor implements HasLogger {
   }
 
 
-  private MetadataWithContext extractFromAnnotationsToMetadata(HocrDocument document) {
+  private MetadataWithContext extractFromAnnotationsToMetadata(final HocrDocument document) {
 
     final MetadataWithContext metadata = new MetadataWithContext();
 

@@ -155,6 +155,8 @@ public class ActionEval extends Action {
     final Metadata ref = document.getMetadata();
     final MetadataWithContext metadata = extractor.extract(document);
     final List<List<String>> records = Lists.newArrayList(
+//        evalField(document.getId(), "sign_page", normalizer.getSignPage(),
+//            ref.getSignsPage(), metadata.getSignsPage()),
         evalField(document.getId(), DRAWING_DATE, normalizer.getDate(),
             ref.getDrawingDate(), metadata.getDrawingDate()),
         evalField(document.getId(), PERIOD_FROM, normalizer.getDate(),
