@@ -35,6 +35,8 @@ class NormalizerPersonRoleTest extends Specification {
 
         where:
             value               || expected
-            "członek, dyrektor" || "członek"
+            "członek, dyrektor" || "Członek"
+            "prezes zarządu"    || "Prezes Zarządu"
+            "PREZES ZARZĄDU"    || "Prezes Zarządu"
     }
 }
