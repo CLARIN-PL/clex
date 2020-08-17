@@ -141,7 +141,8 @@ public class ActionWriteOutResults extends Action {
     final List<List<String>> records = metadataToRecord(document.getId(), metadata);
     final Metadata outFileMetadata = Metadata.of(records);
     outFileMetadata.setPeople(metadata.getPeople().stream()
-        .map(fc -> fc.getField()).collect(Collectors.toList()));
+        .map(fc -> fc.getField())
+        .collect(Collectors.toList()));
     outFileMetadataList.add(outFileMetadata);
 
     return records;

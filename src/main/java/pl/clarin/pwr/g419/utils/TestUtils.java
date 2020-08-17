@@ -1,11 +1,10 @@
 package pl.clarin.pwr.g419.utils;
 
 import com.google.common.collect.Lists;
-import pl.clarin.pwr.g419.struct.Bbox;
-import pl.clarin.pwr.g419.struct.Box;
-
 import java.util.List;
 import java.util.Optional;
+import pl.clarin.pwr.g419.struct.Bbox;
+import pl.clarin.pwr.g419.struct.Box;
 
 public class TestUtils {
 

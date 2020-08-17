@@ -1,22 +1,19 @@
 package pl.clarin.pwr.g419.text;
 
 import com.google.common.collect.Lists;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.HasLogger;
-import pl.clarin.pwr.g419.struct.*;
+import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.struct.LineHeightHistogram;
+import pl.clarin.pwr.g419.struct.MetadataWithContext;
 import pl.clarin.pwr.g419.text.annotator.*;
 import pl.clarin.pwr.g419.text.extractor.*;
-
-import static pl.clarin.pwr.g419.utils.DateUtils.parseDate;
 
 @Slf4j
 public class InformationExtractor implements HasLogger {
 
   List<Annotator> annotators = Lists.newArrayList(
-      // kolejność ma znaczenie 
       new AnnotatorDate(),
       new AnnotatorPeriod(),
       new AnnotatorCompanyPrefix(),
@@ -29,12 +26,10 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorSignsPage(),
       new AnnotatorPostalCode(),
       new AnnotatorCity(),
-
       new AnnotatorStreetNrLok(),
       new AnnotatorStreetNameStartAbbreviation(),
       new AnnotatorStreetOnly(),
       new AnnotatorStreet(),
-//
       new AnnotatorHeadQuarters()
   );
 
@@ -47,13 +42,11 @@ public class InformationExtractor implements HasLogger {
   ExtractorCity extractorCity = new ExtractorCity();
   ExtractorDrawingDate extractorDrawingDate = new ExtractorDrawingDate();
 
-
   public MetadataWithContext extract(final HocrDocument document) {
 
     final LineHeightHistogram documentHistogram = new LineHeightHistogram(document);
     document.getDocContextInfo().setHistogram(documentHistogram);
 
-    // wartość do wykorzystania przy znajdywaniu "dużych" linii ...
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
@@ -66,7 +59,7 @@ public class InformationExtractor implements HasLogger {
   }
 
 
-  private MetadataWithContext extractFromAnnotationsToMetadata(HocrDocument document) {
+  private MetadataWithContext extractFromAnnotationsToMetadata(final HocrDocument document) {
 
     final MetadataWithContext metadata = new MetadataWithContext();
 
