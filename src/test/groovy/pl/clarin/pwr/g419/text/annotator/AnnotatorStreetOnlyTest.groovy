@@ -32,33 +32,26 @@ class AnnotatorStreetOnlyTest extends Specification {
             " znajduje się przy ul. Opolskiej na Nowym Dworze"                 || ["Opolska"]
             " znajduje się przy ul. Hutniczej we Warszawie"                    || ["Hutnicza"]
             " zlokalizowane jest przy ul. Znojnej"                             || ["Znojna"]
-            "al. Brygadzistów "                                                || ["Brygadzistów"]
-            " jest na al. Nyskiej "                                            || ["Nyska"]
-
+            "al. Brygadzistów "                                                || ["al. Brygadzistów"]
+            " jest na al. Nyskiej "                                            || ["al. Nyska"]
             "ul. Słowiańska 15 we Wrocławiu"                                   || ["Słowiańska"]
             "przy ul. Opolskiej 21 we Wrocławiu"                               || ["Opolska"]
             " na ul. Hutniczej 134 w Poznaniu "                                || ["Hutnicza"]
-
             "ul. Obrońców Westerplatte "                                       || ["Obrońców Westerplatte"]
-
             "ul. Słowiańska 13b"                                               || ["Słowiańska"]
-            "al Słowiańska 13b"                                                || ["Słowiańska"]
+            "al Słowiańska 13b"                                                || ["al Słowiańska"]
             "ul. Słowiańska 19A"                                               || ["Słowiańska"]
-
             "ul. Słowiańska 13/19"                                             || ["Słowiańska"]
             "ul. Słowiańska 13D/19"                                            || ["Słowiańska"]
             "na ul. Opolskiej 2-4"                                             || ["Opolska"]
-            ///"przy ul. Łąkowej 39-44"                           || [ "Łąkowa"  -- Orzeszkowej]
             "przy ul. Kasprzaka 39-44"                                         || ["Kasprzaka"]
             "przy ul. Kasprzaka 302-304 ."                                     || ["Kasprzaka"]
             "przy ul. Mihai Bravu 302-304 ."                                   || ["Mihai Bravu"]
             "(ul. Gdańska 4a  )"                                               || ["Gdańska"]
-            "(ul. Gdańska 4a lok.  )"                                          || ["Gdańska"]   /// !!!!
+            "(ul. Gdańska 4a lok.  )"                                          || ["Gdańska"]
             "(ul. Gdańska 4a lok C4 )"                                         || ["Gdańska"]
             "(ul. Gdańska 4a lok. C4 )"                                        || ["Gdańska"]
-            // właściwie takie jak poniżej wystepują w dokumentach
             "(ul. Armii Krajowej 4a lok . C4 )"                                || ["Armii Krajowej"]
-
             "ul. Słowiańska 19A-19D"                                           || ["Słowiańska"]
             "ul Słowiańska 19A-19D"                                            || ["Słowiańska"]
             "ul . Słowiańska 19A-19D"                                          || ["Słowiańska"]
@@ -66,17 +59,11 @@ class AnnotatorStreetOnlyTest extends Specification {
             "ul. Słowiańska 18 lok. 3b"                                        || ["Słowiańska"]
             "przy ulicy Kasprzaka 39-44"                                       || ["Kasprzaka"]
             "przy alei Bohaterów Getta 39a-44c"                                || ["Bohaterów Getta"]
-
-            // przechodzą gdy jest włączona flaga isPrepositionPartiallyDeterminingLemmatization
-            //"Adres siedziby Warszawa, ul. Orzeszkowej"                       || ["Orzeszkowej"]
-            // "Wrocław, ul. Konopnickiej 23"                                  || ["Konopnickiej"]
-
             "miejscem jest Poznań, ul. Komisji Edukacji Narodowej"             || ["Komisji Edukacji Narodowej"]
             "adres mieści się w Poznaniu, przy ul. Komisji Edukacji Narodowej" || ["Komisji Edukacji Narodowej"]
             "Opole, ul. Komuny Paryskiej 15 lok . 5c"                          || ["Komuny Paryskiej"]
             "Opole, ul Komuny Paryskiej 15 lok . 5c"                           || ["Komuny Paryskiej"]
-            "Wrocław, pl. Jana Pawła II"                                       || ["Jana Pawła II"]
-
+            "Wrocław, pl. Jana Pawła II"                                       || ["pl. Jana Pawła II"]
             "w Warszawie przy ul. Tamka 16 lok. U-4"                           || ["Tamka"]
             "w Warszawie przy ul. Tamka 16 lok . U-4 ."                        || ["Tamka"]
             " ul. Józefa Hellera"                                              || ["Józefa Hellera"]
@@ -93,7 +80,6 @@ class AnnotatorStreetOnlyTest extends Specification {
             " ul Gr"                                                           || []
             " Ul Gr"                                                           || []
             " UL Ic Am I"                                                      || []
-
             "ul. Prof . Michała Bobrzyńskiego 14"                              || ["Prof. Michała Bobrzyńskiego"]
     }
 
