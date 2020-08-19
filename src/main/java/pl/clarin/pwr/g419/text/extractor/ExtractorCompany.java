@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.kbase.lexicon.CompanyLexicon;
-import pl.clarin.pwr.g419.struct.Annotation;
-import pl.clarin.pwr.g419.struct.FieldContext;
-import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.struct.HocrLine;
+import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorCompany;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorPeriod;
 import pl.clarin.pwr.g419.text.lemmatizer.CompanyLemmatizer;
@@ -36,8 +33,15 @@ public class ExtractorCompany implements IExtractor<FieldContext<String>> {
     document.getAllPagesAnnotations()
         .filterByType(AnnotatorCompany.COMPANY).forEach(an -> an.calculateScore(null));
 
-    final Optional<FieldContext<String>> value = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorCompany.COMPANY)
+    AnnotationList companyCandidates = document.getAllPagesAnnotations()
+        .filterByType(AnnotatorCompany.COMPANY);
+
+    final AnnotationList firstPage = companyCandidates.filterByPageNo(1);
+    if (firstPage.size() > 0) {
+      companyCandidates = firstPage;
+    }
+
+    final Optional<FieldContext<String>> value = companyCandidates
         .topScore()
         .sortByLoc()
         .getFirst();
