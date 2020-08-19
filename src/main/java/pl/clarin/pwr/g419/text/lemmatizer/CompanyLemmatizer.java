@@ -6,105 +6,102 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import pl.clarin.pwr.g419.kbase.CompanySuffix;
 
 public class CompanyLemmatizer {
 
-  Map<String, String> lemmas = Maps.newHashMap();
+  CompanySuffix suffix = new CompanySuffix();
+
+  Map<String, String> lemmasWords = Maps.newHashMap();
+  Map<String, String> lemmasNames = Maps.newHashMap();
 
   Set<String> ignore = Sets.newHashSet();
 
   public CompanyLemmatizer() {
-    lemmas.put("AGORY", "AGORA");
-    lemmas.put("BANKU", "BANK");
-    lemmas.put("DOMU", "DOM");
-    lemmas.put("FABRYKI", "FABRYKA");
-    lemmas.put("GRUPY", "GRUPA");
-    lemmas.put("HANDLOWEGO", "HANDLOWY");
-    lemmas.put("MAKLERSKIEGO", "MAKLERSKI");
-    lemmas.put("NARODOWEGO", "NARODOWY");
-    lemmas.put("TOWARZYSTWA", "TOWARZYSTWO");
-    lemmas.put("ZACHODNIEGO", "ZACHODNI");
-    lemmas.put("FUNDUSZU", "FUNDUSZ");
-    lemmas.put("PRZEDSIĘBIORSTWA", "PRZEDSIĘBIORSTWO");
-    lemmas.put("PRODUKCYJNO-HANDLOWEGO", "PRODUKCYJNO-HANDLOWE");
-    lemmas.put("INWESTYCYJNEGO", "INWESTYCYJNY");
-    lemmas.put("FABRYK", "FABRYKI");
-    lemmas.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
-    lemmas.put("POLSKIEGO", "POLSKI");
-    lemmas.put("POLSKIEJ", "POLSKA");
-
-//    TODO : czy takie rozwinięcia pomagają ?
-    lemmas.put("PKO", "POWSZECHNA KASA OSZCZĘDNOŚCI");
-    lemmas.put("DM", "DOM MAKLERSKI");
-    lemmas.put("PTI", "POWSZECHNE TOWARZYSTWO INWESTYCYJNE");
-    lemmas.put("BOŚ", "BANK OCHRONY ŚRODOWISKA");
-    lemmas.put("PEKAO", "POLSKA KASA OPIEKI");
-    lemmas.put("PBKM", "POLSKI BANK KOMÓREK MACIERZYSTYCH");
+    lemmasWords.put("AGORY", "AGORA");
+    lemmasWords.put("BANKU", "BANK");
+    lemmasWords.put("DOMU", "DOM");
+    lemmasWords.put("FABRYKI", "FABRYKA");
+    lemmasWords.put("GRUPY", "GRUPA");
+    lemmasWords.put("HANDLOWEGO", "HANDLOWY");
+    lemmasWords.put("MAKLERSKIEGO", "MAKLERSKI");
+    lemmasWords.put("NARODOWEGO", "NARODOWY");
+    lemmasWords.put("TOWARZYSTWA", "TOWARZYSTWO");
+    lemmasWords.put("ZACHODNIEGO", "ZACHODNI");
+    lemmasWords.put("FUNDUSZU", "FUNDUSZ");
+    lemmasWords.put("PRZEDSIĘBIORSTWA", "PRZEDSIĘBIORSTWO");
+    lemmasWords.put("PRODUKCYJNO-HANDLOWEGO", "PRODUKCYJNO-HANDLOWE");
+    lemmasWords.put("INWESTYCYJNEGO", "INWESTYCYJNY");
+    lemmasWords.put("FABRYK", "FABRYKI");
+    lemmasWords.put("NFI", "NARODOWY FUNDUSZ INWESTYCYJNY");
+    lemmasWords.put("POLSKIEGO", "POLSKI");
+    lemmasWords.put("POLSKIEJ", "POLSKA");
+    lemmasWords.put("PKO", "POWSZECHNA KASA OSZCZĘDNOŚCI");
+    lemmasWords.put("DM", "DOM MAKLERSKI");
+    lemmasWords.put("PTI", "POWSZECHNE TOWARZYSTWO INWESTYCYJNE");
+    lemmasWords.put("BOŚ", "BANK OCHRONY ŚRODOWISKA");
+    lemmasWords.put("PEKAO", "POLSKA KASA OPIEKI");
+    lemmasWords.put("PBKM", "POLSKI BANK KOMÓREK MACIERZYSTYCH");
 
 // z arkusza :
-    lemmas.put("", "POWSZECHNA KASA OSZCZĘDNOŚCI");
-
-
-    lemmas.put("- GRAAL SA", "GRAAL SA");
-    lemmas.put(".BUDOPOL-WROCŁAW SA", "BUDOPOL-WROCŁAW SA");
-    lemmas.put(".PZU SA", "POWSZECHNY ZAKŁAD UBEZPIECZEŃ SA");
-    lemmas.put("4 FUN MEDIA SA", "4FUN MEDIA SA");
-    lemmas.put("AD.DRĄGOWSKI SA", "AD.DRĄGOWSKI SPOŁKA AKCYJNA");
-    lemmas.put("AMREST HOLDINGS SE SA", "AMREST HOLDINGS SA");
-    lemmas.put("ARMATURA SA", "ARMATURA KRAKÓW SA");
-    lemmas.put("ASSECO SA", "ASSECO POLAND SA");
-    lemmas.put("ATM SA", "ATM SYSTEMY INFORMATYCZNE SA");
-    lemmas.put("AZOTY SA", "GRUPA AZOTY SA");
-    lemmas.put("BANK MILLENNIUM SA", "ZAKŁADY MIĘSNE HENRYK KANIA SA");
-    lemmas.put("CASH FLOW SA", "CASH FLOW SPÓŁA AKCYJNA");
-    lemmas.put("CENTRUM GIEŁDOWE SA", "GIEŁDA PAPIERÓW WARTOŚCIOWYCH W WARSZAWIE SA");
-    lemmas.put("CNT SA", "CENTRUM NOWOCZESNYCH TECHNOLOGII SA");
-    lemmas.put("COLIAN HOLDING SA", "COLIAN HOLDINGS SA");
-    lemmas.put("DOM MAKLERSKI WDM SA", "DOM MAKLERSKI WDM S. A.");
-    lemmas.put("EFH SA", "EUROPEJSKI FUNDUSZ HIPOTECZNY SA");
-    lemmas.put("ELZAB SA", "ZAKŁADY URZĄDZEŃ KOMPUTEROWYCH ELZAB SA");
-    lemmas.put("EMERYTALNE PZU SA", "POWSZECHNY ZAKŁAD UBEZPIECZEŃ SA");
-    lemmas.put("EUROPEJSKIEGO FUNDUSZ HIPOTECZNEGO SA", "EUROPEJSKI FUNDUSZ HIPOTECZNY SA");
-    lemmas.put("FAMUR SA", "FABRYKA MASZYN FAMUR SA");
-    lemmas.put("FON SE SA", "FON SA");
-    lemmas.put("FOTA SA", "FOTA SA W UPADŁOŚCI UKŁADOWEJ");
-    lemmas.put("GROCLIN SA", "INTER GROCLIN AUTO SA");
-    lemmas.put("GRUPA AZOTY SA", "GRUPA AZOTY ZAKŁADY CHEMICZNE POLICE SA");
-    lemmas.put("INVESTMENT FRIENDS SA", "FON SA");
-    lemmas.put("INVESTMENT FRIENDS SE SA", "INVESTMENT FRIENDS SPÓŁKA EUROPEJSKA");
-    lemmas.put("KOGENERACJA SA", "ZESPÓŁ ELEKTROCIEPŁOWNI WROCŁAWSKICH KOGENERACJA SA");
-    lemmas.put("LENTEX SA", "ZAKŁADY LENTEX SA");
-    lemmas.put("MEWA SA", "ZAKŁADY DZIEWIARSKIE MEWA SA");
-    lemmas.put("MOSTOSTAL SA", "MOSTOSTAL ZABRZE HOLDING SA");
-    lemmas.put("NAVIMOR INVEST SA", "ZAKŁAD BUDOWY MASZYN ZREMB-CHOJNICE SA");
-    lemmas.put("OCTAVA SA", "NARODOWY FUNDUSZ INWESTYCYJNY OCTAVA SA");
-    lemmas.put("P.A.NOVA SA", "P.A. NOVA SA");
-    lemmas.put("P.R.I.POL-AQUA SA", "PRZEDSIĘBIORSTWO ROBÓT INŻYNIERYJNYCH POL-AQUA SA");
-    lemmas.put("PAK-VOLT SA", "ZESPÓŁ ELEKTROWNI PĄTNÓW-ADAMÓW-KONIN SA");
-    lemmas.put("PEKABEX SA", "POZNAŃSKA KORPORACJA BUDOWLANA PEKABEX SA");
-    lemmas.put("PGNIG SA", "POLSKIE GÓRNICTWO NAFTOWE I GAZOWNICTWO SA");
-    lemmas.put("PKN ORLEN SA", "POLSKI KONCERN NAFTOWY ORLEN SA");
-    lemmas.put("PONAR SA", "PONAR - WADOWICE SA");
-    lemmas.put("PPWK SA", "PPWK. IM E. ROMERA SA");
-    lemmas.put("PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ HYDROTOR SA", "PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ 'HYDROTOR' SA");
-//lemmas.put("PSR 2008 SA","HYPERION SA");
-//lemmas.put("PSR KORPORACJI GOSPODARCZEJ EFEKT SA","KORPORACJA GOSPODARCZA EFEKT SA");
-//lemmas.put("PSR KORPORACJI GOSPODARCZEJ EFEKT SA","KORPORACJA GOSPODARCZA EFEKT SA");
-    lemmas.put("RAFAKO SA", "FABRYKA KOTŁÓW RAFAKO SA");
-    lemmas.put("RAFAMET SA", "FABRYKA OBRABIAREK RAFAMET SA");
-//lemmas.put("SEGMENT SIEDZIBA W INVESTMENTS SA", "W INVESTMENTS SA");
-    lemmas.put("STOMIL SANOK SA", "SZPG STOMIL SANOK SA");
-    lemmas.put("SWISSMED SA", "SWISSMED CENTRUM ZDROWIA SA");
-    lemmas.put("TOWARZYSTWO FINANSOWEGO SKOK SA", "TOWARZYSTWO FINANSOWE SPÓŁDZIELCZYCH KAS OSZCZĘDNOŚCIOWO-KREDYTOWYCH SA");
-    lemmas.put("TRIGON TFI SA", "BAKALLAND SA");
-    lemmas.put("ULMA CONSTRUCCION POLSKA SA", "ULMA CONSTRUCCION SA");
-    lemmas.put("UNIMA2000 SA", "UNIMA 2000 SYSTEMY TELEINFORMATYCZNE S.A");
-    lemmas.put("WSIP ORAZ WSIP SA", "WYDAWNICTWA SZKOLNE I PEDAGOGICZNE SA");
-    lemmas.put("ZAKŁADÓW LENTEX SA", "ZAKŁADY LENTEX SA");
-    lemmas.put("ZAKŁADY CHEMICZNE POLICE SA", "GRUPA AZOTY ZAKŁADY CHEMICZNE POLICE SA");
-    lemmas.put("ZM ROPCZYCE SA", "ZAKŁADY MAGNEZYTOWE ROPCZYCE SA");
-    lemmas.put("ZREMB CHOJNICE SA", "ZAKŁAD BUDOWY MASZYN ZREMB-CHOJNICE SA");
-
+    lemmasNames.put("- GRAAL", "GRAAL");
+    lemmasNames.put(".BUDOPOL-WROCŁAW", "BUDOPOL-WROCŁAW");
+    lemmasNames.put(".PZU", "POWSZECHNY ZAKŁAD UBEZPIECZEŃ");
+    lemmasNames.put("4 FUN MEDIA", "4FUN MEDIA");
+    lemmasNames.put("AD.DRĄGOWSKI", "AD.DRĄGOWSKI SPOŁKA AKCYJNA");
+    lemmasNames.put("AMREST HOLDINGS SE", "AMREST HOLDINGS");
+    lemmasNames.put("ARMATURA", "ARMATURA KRAKÓW");
+    lemmasNames.put("ASSECO", "ASSECO POLAND");
+    lemmasNames.put("ATM", "ATM SYSTEMY INFORMATYCZNE");
+    lemmasNames.put("AZOTY", "GRUPA AZOTY");
+    lemmasNames.put("BANK MILLENNIUM", "ZAKŁADY MIĘSNE HENRYK KANIA");
+    lemmasNames.put("CASH FLOW", "CASH FLOW SPÓŁA AKCYJNA");
+    lemmasNames.put("CENTRUM GIEŁDOWE", "GIEŁDA PAPIERÓW WARTOŚCIOWYCH W WARSZAWIE");
+    lemmasNames.put("CNT", "CENTRUM NOWOCZESNYCH TECHNOLOGII");
+    lemmasNames.put("COLIAN HOLDING", "COLIAN HOLDINGS");
+    lemmasNames.put("DOM MAKLERSKI WDM", "DOM MAKLERSKI WDM");
+    lemmasNames.put("EFH", "EUROPEJSKI FUNDUSZ HIPOTECZNY");
+    lemmasNames.put("ELZAB", "ZAKŁADY URZĄDZEŃ KOMPUTEROWYCH ELZAB");
+    lemmasNames.put("EMERYTALNE PZU", "POWSZECHNY ZAKŁAD UBEZPIECZEŃ");
+    lemmasNames.put("EUROPEJSKIEGO FUNDUSZ HIPOTECZNEGO", "EUROPEJSKI FUNDUSZ HIPOTECZNY");
+    lemmasNames.put("FAMUR", "FABRYKA MASZYN FAMUR");
+    lemmasNames.put("FON SE", "FON");
+    lemmasNames.put("FOTA", "FOTA SA W UPADŁOŚCI UKŁADOWEJ");
+    lemmasNames.put("GROCLIN", "INTER GROCLIN AUTO");
+    lemmasNames.put("GRUPA AZOTY", "GRUPA AZOTY ZAKŁADY CHEMICZNE POLICE");
+    lemmasNames.put("INVESTMENT FRIENDS", "FON");
+    lemmasNames.put("INVESTMENT FRIENDS SE", "INVESTMENT FRIENDS SPÓŁKA EUROPEJSKA");
+    lemmasNames.put("KOGENERACJA", "ZESPÓŁ ELEKTROCIEPŁOWNI WROCŁAWSKICH KOGENERACJA");
+    lemmasNames.put("LENTEX", "ZAKŁADY LENTEX");
+    lemmasNames.put("MEWA", "ZAKŁADY DZIEWIARSKIE MEWA");
+    lemmasNames.put("MOSTOSTAL", "MOSTOSTAL ZABRZE HOLDING");
+    lemmasNames.put("NAVIMOR INVEST", "ZAKŁAD BUDOWY MASZYN ZREMB-CHOJNICE");
+    lemmasNames.put("OCTAVA", "NARODOWY FUNDUSZ INWESTYCYJNY OCTAVA");
+    lemmasNames.put("P.A.NOVA", "P.A. NOVA");
+    lemmasNames.put("P.R.I.POL-AQUA", "PRZEDSIĘBIORSTWO ROBÓT INŻYNIERYJNYCH POL-AQUA");
+    lemmasNames.put("PAK-VOLT", "ZESPÓŁ ELEKTROWNI PĄTNÓW-ADAMÓW-KONIN");
+    lemmasNames.put("PEKABEX", "POZNAŃSKA KORPORACJA BUDOWLANA PEKABEX");
+    lemmasNames.put("PGNIG", "POLSKIE GÓRNICTWO NAFTOWE I GAZOWNICTWO");
+    lemmasNames.put("PKN ORLEN", "POLSKI KONCERN NAFTOWY ORLEN");
+    lemmasNames.put("PONAR", "PONAR - WADOWICE");
+    lemmasNames.put("PPWK", "PPWK. IM E. ROMERA");
+    lemmasNames.put("PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ HYDROTOR", "PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ 'HYDROTOR'");
+    lemmasNames.put("PSR KORPORACJI GOSPODARCZEJ EFEKT", "KORPORACJA GOSPODARCZA EFEKT");
+    lemmasNames.put("PSR KORPORACJI GOSPODARCZEJ EFEKT", "KORPORACJA GOSPODARCZA EFEKT");
+    lemmasNames.put("RAFAKO", "FABRYKA KOTŁÓW RAFAKO");
+    lemmasNames.put("RAFAMET", "FABRYKA OBRABIAREK RAFAMET");
+    lemmasNames.put("SEGMENT SIEDZIBA W INVESTMENTS", "W INVESTMENTS");
+    lemmasNames.put("STOMIL SANOK", "SZPG STOMIL SANOK");
+    lemmasNames.put("SWISSMED", "SWISSMED CENTRUM ZDROWIA");
+    lemmasNames.put("TOWARZYSTWO FINANSOWEGO SKOK", "TOWARZYSTWO FINANSOWE SPÓŁDZIELCZYCH KAS OSZCZĘDNOŚCIOWO-KREDYTOWYCH");
+    lemmasNames.put("TRIGON TFI", "BAKALLAND");
+    lemmasNames.put("ULMA CONSTRUCCION POLSKA", "ULMA CONSTRUCCION");
+    lemmasNames.put("UNIMA2000", "UNIMA 2000 SYSTEMY TELEINFORMATYCZNE");
+    lemmasNames.put("WSIP ORAZ WSIP", "WYDAWNICTWA SZKOLNE I PEDAGOGICZNE");
+    lemmasNames.put("ZAKŁADÓW LENTEX", "ZAKŁADY LENTEX");
+    lemmasNames.put("ZAKŁADY CHEMICZNE POLICE", "GRUPA AZOTY ZAKŁADY CHEMICZNE POLICE");
+    lemmasNames.put("ZM ROPCZYCE", "ZAKŁADY MAGNEZYTOWE ROPCZYCE");
+    lemmasNames.put("ZREMB CHOJNICE", "ZAKŁAD BUDOWY MASZYN ZREMB-CHOJNICE");
 
     ignore.add("PÓŁROCZNY");
     ignore.add("DOMINUJĄCA");
@@ -112,17 +109,13 @@ public class CompanyLemmatizer {
     ignore.add("FIRMY");
     ignore.add("UDZIAŁ");
     ignore.add("%");
-
-    ignore.add("SPÓŁKA AKCYJNA");
-    ignore.add("S.A");
-    ignore.add("S.A.");
-
   }
 
   public String lemmatize(final String text) {
-    return Arrays.stream(text.split(" "))
-        .map(orth -> lemmas.getOrDefault(orth, orth))
+    final String name = Arrays.stream(suffix.stripFromName(text).split(" "))
+        .map(orth -> lemmasWords.getOrDefault(orth, orth))
         .filter(orth -> !ignore.contains(orth))
         .collect(Collectors.joining(" "));
+    return lemmasNames.getOrDefault(name, name);
   }
 }

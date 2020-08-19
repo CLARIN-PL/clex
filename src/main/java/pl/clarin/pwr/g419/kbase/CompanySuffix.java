@@ -5,7 +5,7 @@ import java.util.List;
 public class CompanySuffix {
 
   List<String> companySuffixes = List.of("SPÓŁKA AKCYJNA", "SPÓLKA AKCYJNA",
-      "S.A.", "SA", "S.A", "S. A.", "S. A", "S A");
+      "S.A.", "SA", "S.A .", "S.A", "S. A.", "S. A", "S A");
 
 
   public String stripFromName(final String name) {
