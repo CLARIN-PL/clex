@@ -1,11 +1,15 @@
 package pl.clarin.pwr.g419.text.lemmatizer;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Map;
+import java.util.Set;
 
 public class StreetLemmatizer {
 
   Map<String, String> endings = Maps.newHashMap();
+
+  Set<String> ignorePrefixes = Sets.newHashSet("al", "al.", "pl", "pl.");
 
   public StreetLemmatizer() {
     endings.put("ej", "a");
@@ -20,7 +24,14 @@ public class StreetLemmatizer {
   }
 
   public String lemmatize(final String text) {
-    return text.split(" ").length == 1 ? lemmatizeWord(text) : text;
+    final String[] parts = text.split(" ");
+    if (parts.length == 1) {
+      return lemmatizeWord(text);
+    } else if (parts.length == 2 && ignorePrefixes.contains(parts[0].toLowerCase())) {
+      return parts[0] + " " + lemmatizeWord(parts[1]);
+    } else {
+      return text;
+    }
   }
 
   private String lemmatizeWord(final String text) {
