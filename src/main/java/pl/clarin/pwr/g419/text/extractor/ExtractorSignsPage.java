@@ -1,12 +1,11 @@
 package pl.clarin.pwr.g419.text.extractor;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import pl.clarin.pwr.g419.struct.Annotation;
-import pl.clarin.pwr.g419.struct.FieldContext;
-import pl.clarin.pwr.g419.struct.HocrDocument;
-import pl.clarin.pwr.g419.struct.HocrPage;
+import pl.clarin.pwr.g419.struct.*;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorCityWithDate;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorSignsPage;
 
 @Slf4j
@@ -29,6 +28,49 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
       vc.setField(String.valueOf(vc.getPage()));
       document.getDocContextInfo().setPageNrWithSigns(vc.getPage());
     });
+
+    // jeszcze nie używane - w InfoExtractor nie jest włączony ten annotator
+
+    if (value.isEmpty()) {
+      log.debug(" signPage value is empty ... Checking city_with_date");
+      final AnnotationList cityWithDateAnnotationList = document.getAnnotations()
+          .filterByType(AnnotatorCityWithDate.CITY_WITH_DATE);
+
+      final int nrOfCityWithDateAnnotations = cityWithDateAnnotationList.size();
+
+      final Optional<FieldContext<String>> cityWithDateAnn =
+          cityWithDateAnnotationList
+              .topScore()
+              .sortByLocDesc()
+              .getFirst();
+
+      log.debug("city_with_date ann = " + cityWithDateAnn);
+
+      FieldContext<String> result = new FieldContext<>();
+      result.setPage(-1);
+
+      if (cityWithDateAnn.isPresent()) {
+        var vc = cityWithDateAnn.get();
+        log.debug(" cityWithDate present vc.getPAge =  " + vc.getPage());
+        // nie bierzemy getAllPages bo one są z nagłówkami // TODO - trzeba by to jednak zmienić
+        if (vc.getPage() == document.size()) {
+          result.setField(String.valueOf(vc.getPage()));
+          result.setContext(cityWithDateAnn.get().getContext());
+          result.setPage(vc.getPage());
+          document.getDocContextInfo().setPageNrWithSigns(result.getPage());
+        }
+      }
+
+      if (result.getPage() == -1) {
+        result.setField(String.valueOf("0"));
+        document.getDocContextInfo().setPageNrWithSigns(0);
+      }
+      
+
+      log.debug("returning  = " + result);
+      return Optional.of(result);
+    }
+
 
     return value;
 
