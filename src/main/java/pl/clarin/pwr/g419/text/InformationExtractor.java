@@ -30,7 +30,9 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorStreetNameStartAbbreviation(),
       new AnnotatorStreetOnly(),
       new AnnotatorStreet(),
-      new AnnotatorHeadQuarters()
+//
+      new AnnotatorHeadQuarters(),
+      new AnnotatorCityWithDate()
   );
 
   ExtractorPeople extractorPeople = new ExtractorPeople();

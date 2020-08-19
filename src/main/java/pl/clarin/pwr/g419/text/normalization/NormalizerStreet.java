@@ -1,13 +1,20 @@
 package pl.clarin.pwr.g419.text.normalization;
 
+import lombok.extern.slf4j.Slf4j;
 import java.util.Set;
 
+@Slf4j
 public class NormalizerStreet extends Normalizer<String> {
 
   @Override
   public String normalize(final String value) {
+
     if (value == null) {
       return null;
+    }
+
+    if (value.isEmpty()) {  // TODO : dlaczego tu w ogóle docierają takie rzeczy ?
+      return value;
     }
 
     final Set<String> trimStartWords = Set.of(
@@ -25,7 +32,10 @@ public class NormalizerStreet extends Normalizer<String> {
     if (words.length > 0) {
       final String lastWord = words[words.length - 1];
       if (Character.isDigit(lastWord.charAt(0))) {
-        result = result.substring(0, result.length() - lastWord.length() - 1);
+        final int endIndex = result.length() - lastWord.length() - 1;
+        if (endIndex >= 0) {  // np: 11-listopada
+          result = result.substring(0, endIndex);
+        }
       }
     }
 
