@@ -1,0 +1,2540 @@
+MUZA:
+  address__city: Warszawa
+MIRBUD:
+  address__postal_code: 96-100
+  address__street_no: '18'
+LENA LIGHTING:
+  address__city: Środa Wielkopolska
+  address__postal_code: 63-000
+  address__street: Kórnicka
+  address__street_no: '52'
+POLENERGIA:
+  address__city: Warszawa
+  address__postal_code: 00-526
+  address__street: Krucza
+  address__street_no: 24/26
+PROTEKTOR:
+  address__city: Lublin
+  address__postal_code: 20-277
+  address__street: Vetterów
+  address__street_no: 24a-24b
+BUDOPOL-WROCŁAW:
+  address__city: Wrocław
+  address__postal_code: 53-149
+  address__street: Racławicka
+  address__street_no: 15/19
+DEKPOL:
+  address__city: Pinczyn
+  address__postal_code: 83-251
+  address__street: Gajowa
+  address__street_no: '31'
+ZAKŁADY MIĘSNE HENRYK KANIA:
+  address__city: Pszczyna
+  address__postal_code: 43-200
+  address__street: Korczaka
+  address__street_no: '5'
+HYDROBUDOWA POLSKA:
+  address__city: Wysogotowo
+  address__postal_code: 62-081
+  address__street: Skórzewska
+  address__street_no: '35'
+TESGAS:
+  address__postal_code: 62-070
+  address__street: Batorowska
+  address__street_no: '9'
+TELE-POLSKA HOLDING:
+  address__city: Warszawa
+  address__postal_code: 02-017
+  address__street: al. Jerozolimskie
+  address__street_no: '123'
+IZOBLOK:
+  address__city: Chorzów
+  address__postal_code: 41-503
+  address__street: Kluczborska
+  address__street_no: '11'
+POLSKI HOLDING NIERUCHOMOŚCI:
+  address__city: Warszawa
+UNIMOT:
+  address__city: ZAWADZKIE
+  address__postal_code: 47-120
+  address__street: ŚWIERKLAŃSKA
+  address__street_no: 2A
+'"GRUPA AZOTY ZAKŁADY AZOTOWE ""PUŁAWY"" SA"':
+  address__city: Puławy
+  address__postal_code: 24-110
+  address__street: Al. Tysiąclecia Państwa Polskiego
+  address__street_no: '13'
+P.A. NOVA:
+  address__city: Gliwice
+  address__postal_code: 44-100
+  address__street_no: '42'
+PMPG POLSKIE MEDIA:
+  address__city: Warszawa
+  address__postal_code: 02-486
+  address__street: Al. Jerozolimskie
+  address__street_no: '212'
+POWSZECHNY ZAKŁAD UBEZPIECZEŃ:
+  address__city: Warszawa
+  address__postal_code: 00-133
+  address__street: al. Jana Pawła II
+  address__street_no: '24'
+TRAVELPLANET.PL:
+  address__city: Wrocław
+  address__postal_code: 50-079
+  address__street: Ruska
+  address__street_no: 11/12
+4FUN MEDIA:
+  address__city: Warszawa
+  address__postal_code: 00-728
+  address__street: Bobrowiecka
+  address__street_no: 1A
+'"PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ ""HYDROTOR"" SA"':
+  address__city: Tuchola
+  address__postal_code: 89-500
+  address__street: Chojnicka
+  address__street_no: '72'
+ULMA CONSTRUCCION:
+  address__city: Warszawa
+  address__postal_code: 03-115
+  address__street: Klasyków
+  address__street_no: '10'
+HUTMEN:
+  address__city: Wrocław
+  address__postal_code: 53-234
+  address__street: Grabiszyńska
+  address__street_no: '241'
+WIKANA:
+  address__city: Lublin
+  address__postal_code: 20-703
+  address__street: Cisowa
+  address__street_no: '11'
+PAMAPOL:
+  address__postal_code: 97-438
+  address__street_no: '2'
+'"""POLIMEX-MOSTOSTAL"" SA"':
+  address__city: Warszawa
+  address__postal_code: 00-124
+  address__street: Jana Pawła II
+  address__street_no: '12'
+CERSANIT:
+  address__city: Kielce
+  address__postal_code: 25-323
+  address__street: al. Solidarności
+  address__street_no: '36'
+GETIN NOBLE BANK:
+  address__city: WARSZAWA
+  address__postal_code: 02-675
+  address__street: DOMANIEWSKA
+  address__street_no: 39B
+LPP:
+  address__city: Gdańsk
+  address__postal_code: 80-769
+  address__street_no: 39-44
+POLSKIE GÓRNICTWO NAFTOWE I GAZOWNICTWO:
+  address__city: Warszawa
+CAPITAL. PARTNERS:
+  address__city: Warszawa
+  address__postal_code: 00-103
+  address__street: Królewska
+  address__street_no: '16'
+TELL:
+  address__city: Poznań
+POWSZECHNE TOWARZYSTWO INWESTYCYJNE:
+  address__city: Poznań
+FERRO:
+  address__city: Skawina
+  address__postal_code: 32-050
+  address__street: Przemysłowa
+  address__street_no: '7'
+MACROLOGIC:
+  address__city: Warszawa
+COLIAN:
+  address__city: Opatówek
+  address__postal_code: 62-860
+  address__street: Zdrojowa
+  address__street_no: '1'
+DELKO:
+  address__city: Śrem
+  address__postal_code: 63-100
+RUBICON PARTNERS:
+  address__city: Warszawa
+GIEŁDA PRAW MAJĄTKOWYCH VINDEXUS:
+  address__city: Warszawa
+  address__postal_code: 04-333
+  address__street: Serocka
+SYNTHOS:
+  address__city: Oświęcim
+  address__postal_code: 32-600
+  address__street: Chemików
+  address__street_no: '1'
+UNIBEP:
+  address__city: Bielsk Podlaski
+  address__postal_code: 17-100
+  address__street_no: '19'
+BOWIM:
+  address__city: Sosnowiec
+  address__postal_code: 41-200
+  address__street: Niwecka
+  address__street_no: 1E
+REDAN:
+  address__city: Łódź
+  address__postal_code: 94-250
+  address__street: Żniwna
+  address__street_no: 10/14
+HYGIENIKA:
+  address__city: Lubliniec
+  address__postal_code: 42-700
+  address__street: Powstańców Śląskich
+  address__street_no: '54'
+MAKRUM:
+  address__city: Bydgoszcz
+  address__postal_code: 85-676
+  address__street: Leśna
+  address__street_no: 11-19
+PFLEIDERER GRAJEWO:
+  address__city: Grajewo
+  address__postal_code: 19-203
+  address__street: Wiórowa
+  address__street_no: '1'
+MAGELLAN:
+  address__city: Łódź
+PPWK IM. E. ROMERA:
+  address__city: Warszawa
+  address__postal_code: 02-389
+  address__street: Al. Bohaterów Września
+  address__street_no: '9'
+PRÓCHNIK:
+  address__city: Łódź
+  address__postal_code: 93-124
+  address__street: Kilińskiego
+  address__street_no: '228'
+SOHO DEVELOPMENT:
+  address__city: Warszawa
+  address__postal_code: 03-808
+  address__street: Mińska
+  address__street_no: '25'
+TRAKCJA PRKII:
+  address__city: Warszawa
+  address__postal_code: 00-120
+  address__street: Złota
+  address__street_no: '59'
+STORMM:
+  address__city: Warszawa
+  address__postal_code: 02-683
+  address__street: Gotarda
+  address__street_no: '9'
+K2 INTERNET:
+  address__city: Warszawa
+  address__postal_code: 00-145
+  address__street: al. Solidarności
+  address__street_no: 74A
+FAST FINANCE:
+  address__city: Wrocław
+EKO EXPORT:
+  address__city: Bielsko-Biała
+  address__postal_code: 43-382
+  address__street: Strażacka
+  address__street_no: '81'
+POLCOLORIT:
+  address__city: Piechowice
+  address__postal_code: 58-573
+  address__street: Jeleniogórska
+  address__street_no: '7'
+UNIMA 2000 SYSTEMY TELEINFORMATYCZNE S.A:
+  address__city: Kraków
+PPWK.IM E.ROMERA:
+  address__city: Warszawa
+  address__postal_code: 02-389
+  address__street: Al. Bohaterów Września
+  address__street_no: '9'
+REDWOOD HOLDING:
+  address__city: Łódź
+  address__postal_code: 92-312
+  address__street: Papiernicza
+BNP PARIBAS BANK POLSKA:
+  address__city: WARSZAWA
+PKP CARGO:
+  address__city: Warszawa
+  address__postal_code: 02-021
+  address__street: Grójecka
+  address__street_no: '17'
+SECO/WARWICK:
+  address__city: Świebodzin
+  address__postal_code: 66-200
+  address__street: Sobieskiego
+  address__street_no: '8'
+KRUK:
+  address__city: Wrocław
+COMPLEX:
+  address__city: Łódź
+CDRL:
+  address__city: Pianowo
+  address__postal_code: 64-000
+  address__street: Kwiatowa
+  address__street_no: '2'
+MOSTOSTAL-EXPORT:
+  address__city: Warszawa
+  address__postal_code: 00-845
+  address__street: Łucka
+  address__street_no: 2/4/6
+COMARCH:
+  address__city: Kraków
+  address__postal_code: 31-864
+  address__street: Al. Jana Pawła II
+  address__street_no: 39A
+BANK OCHRONY ŚRODOWISKA:
+  address__city: Warszawa
+  address__postal_code: 00-950
+  address__street: Al. Jana Pawła II
+  address__street_no: '12'
+ZAKŁAD BUDOWY MASZYN ZREMB-CHOJNICE:
+  address__city: Chojnice
+  address__postal_code: 89-600
+  address__street: Przemysłowa
+  address__street_no: '15'
+SUWARY:
+  address__city: Pabianice
+  address__postal_code: 95-200
+  address__street: Piotra Skargi
+  address__street_no: 45/47
+CENTRUM MEDYCZNE ENEL-MED:
+  address__city: Warszawa
+  address__postal_code: 00-195
+  address__street: Słomińskiego
+  address__street_no: '19'
+KCI:
+  address__city: Kraków
+FABRYKA FARB I LAKIERÓW ŚNIEŻKA:
+  address__city: Lubzina
+  address__postal_code: 39-102
+  address__street: Lubzina
+  address__street_no: 34a
+VOTUM:
+  address__city: Wrocław
+  address__postal_code: 53-012
+  address__street: Wyścigowa
+  address__street_no: 56i
+'GASTEL ŻURAWIE ':
+  address__city: Warszawa
+  address__postal_code: 03-236
+  address__street: Annopol
+  address__street_no: '5'
+GRUPA AZOTY:
+  address__city: Tarnów
+  address__postal_code: 33-101
+  address__street: Kwiatkowskiego
+  address__street_no: '8'
+POL-MOT WARFAMA SA:
+  address__city: Dobre Miasto
+  address__postal_code: 11-040
+  address__street: Fabryczna
+  address__street_no: '21'
+INSTAL. KRAKÓW:
+  address__city: Kraków
+  address__postal_code: 30-732
+  address__street: Konstantego Brandla
+  address__street_no: '1'
+PRZEDSIĘBIORSTWO PRODUKCYJNO-HANDLOWE KOMPAP:
+  address__city: Kwidzyn
+  address__postal_code: 82-500
+  address__street: Piastowska
+  address__street_no: '39'
+DINO POLSKA:
+  address__city: Krotoszyn
+  address__postal_code: 63-700
+  address__street: Ostrowska
+  address__street_no: '122'
+JHM DEVELOPMENT:
+  address__city: SKIERNIEWICE
+  address__postal_code: 96-100
+  address__street: UNII EUROPEJSKIEJ
+  address__street_no: '18'
+SARE:
+  address__city: Rybnik
+  address__postal_code: 44-200
+  address__street: Raciborska
+  address__street_no: 35A
+ES-SYSTEM:
+  address__city: Kraków
+  address__postal_code: 30-701
+  address__street: Przemysłowa
+  address__street_no: '2'
+AMBRA:
+  address__city: Warszawa
+  address__postal_code: 02-819
+  address__street: Puławska
+  address__street_no: '336'
+FARMACOL:
+  address__city: Katowice
+  address__postal_code: 40-541
+  address__street: Rzepakowa
+  address__street_no: '2'
+INC:
+  address__city: Poznań
+  address__postal_code: 60-830
+  address__street: Krasińskiego
+  address__street_no: '16'
+STELMET:
+  address__city: Zielona Góra
+  address__postal_code: 65-127
+  address__street: Gorzowska
+  address__street_no: '20'
+EUROCASH:
+  address__postal_code: 62-052
+  address__street: Wiśniowa
+  address__street_no: '11'
+INTERBUD-LUBLIN:
+  address__city: Lublin
+  address__postal_code: 20-207
+  address__street: Turystyczna
+  address__street_no: '36'
+ATENDE:
+  address__city: Warszawa
+TORFARM:
+  address__city: Toruń
+  address__postal_code: 87-100
+  address__street: Szosa Bydgoska
+  address__street_no: '58'
+VOXEL:
+  address__city: Kraków
+  address__postal_code: 30-663
+  address__street: Wielicka
+  address__street_no: '265'
+ENERGOINSTAL.:
+  address__city: Katowice
+  address__postal_code: 40-203
+  address__street: Al. Roździeńskiego
+  address__street_no: 188d
+PRAGMA FAKTORING:
+  address__city: Katowice
+OEX:
+  address__city: Warszawa
+  address__postal_code: 02-797
+  address__street: F. Klimczaka
+  address__street_no: '1'
+'SKYSTONE  CAPITAL. ':
+  address__city: Warszawa
+  address__postal_code: 00 - 688
+  address__street: E. Plater
+  address__street_no: '28'
+APATOR:
+  address__city: Toruń
+  address__postal_code: 87-100
+PRZEDSIĘBIORSTWO HANDLU ZAGRANICZNEGO BALTONA:
+  address__city: Warszawa
+AIRWAY MEDIX:
+  address__city: Warszawa
+  address__postal_code: 00-195
+  address__street: Słomińskiego
+  address__street_no: '15'
+GETIN HOLDING:
+  address__city: Wrocław
+INTERNET GROUP:
+  address__city: Warszawa
+ZELMER:
+  address__city: Rzeszów
+  address__postal_code: 35-016
+  address__street: Hoffmanowej
+  address__street_no: '19'
+ERBUD:
+  address__city: Warszawa
+PCC EXOL:
+  address__city: Brzeg Dolny
+  address__postal_code: 56-120
+  address__street: Sienkiewicza
+  address__street_no: '4'
+PEKAO BANK HIPOTECZNY:
+  address__city: Warszawa
+  address__postal_code: 01 - 230
+  address__street: Skierniewicka
+  address__street_no: 10A
+INVESTCON GROUP:
+  address__city: Poznań
+  address__postal_code: 60-830
+  address__street: Krasińskiego
+  address__street_no: '16'
+NG2:
+  address__city: Polkowice
+  address__postal_code: 59-101
+  address__street: Strefowa
+  address__street_no: '6'
+DOM MAKLERSKI IDM:
+  address__city: KRAKÓW
+  address__postal_code: 31-041
+  address__street: MAŁY RYNEK
+  address__street_no: '7'
+RAINBOW TOURS:
+  address__postal_code: 90-361
+  address__street: Piotrkowska
+  address__street_no: '270'
+PRZETWÓRSTWO TWORZYW SZTUCZNYCH PLAST-BOX:
+  address__city: Słupsk
+  address__postal_code: 76-200
+  address__street: Witolda Lutosławskiego
+  address__street_no: 17a
+RAWLPLUG:
+  address__city: Wrocław
+  address__postal_code: 51-416
+  address__street: Kwidzyńska
+  address__street_no: '6'
+SOVEREIGN CAPITAL.:
+  address__city: Warszawa
+  address__postal_code: 00-688
+  address__street: Emilii Plater
+  address__street_no: '28'
+ZAKŁADY AUTOMATYKI POLNA:
+  address__city: Przemyśl
+  address__postal_code: 37-700
+  address__street: Obozowa
+  address__street_no: '23'
+DOM MAKLERSKI WDM S. A.:
+  address__city: Wrocław
+NORTH COAST:
+  address__city: Pruszków
+  address__postal_code: 05-800
+  address__street_no: '8'
+EUROPEJSKIE CENTRUM ODSZKODOWAŃ:
+  address__city: LEGNICA
+  address__postal_code: 59-220
+  address__street: M. KOLBE
+  address__street_no: '18'
+IDEA BANK:
+  address__city: Warszawa
+  address__postal_code: 01-208
+  address__street: Przyokopowa
+  address__street_no: '33'
+MOSTOSTAL. WARSZAWA:
+  address__city: Warszawa
+  address__postal_code: 02-673
+  address__street: Konstruktorska
+SELVITA:
+  address__city: Kraków
+  address__postal_code: 30-348
+  address__street: Bobrzyńskiego
+  address__street_no: '14'
+GRUPA LOTOS:
+  address__city: Gdańsk
+  address__postal_code: 80-718
+  address__street: Elbląska
+  address__street_no: '135'
+INTEGER.PL:
+  address__city: Kraków
+  address__postal_code: 30-624
+  address__street: Malborska
+  address__street_no: '130'
+CD PROJEKT:
+  address__city: Warszawa
+  address__postal_code: 03-301
+  address__street: Jagiellońska
+  address__street_no: '74'
+LIVECHAT SOFTWARE:
+  address__city: Wrocław
+ARCUS:
+  address__city: Warszawa
+INDYKPOL:
+  address__city: Olsztyn
+  address__postal_code: 10-370
+  address__street: Jesienna
+  address__street_no: '3'
+RELPOL:
+  address__city: Żary
+  address__postal_code: 68-200
+  address__street: 11 listopada
+  address__street_no: '37'
+M. W. TRADE:
+  address__city: Wrocław
+  address__postal_code: 53-317
+  address__street: Powstańców Śląskich
+  address__street_no: 125/200
+PONAR:
+  address__city: Kraków
+  address__postal_code: 30-011
+  address__street: Wrocławska
+  address__street_no: '53'
+POL-MOT WARFAMA:
+  address__city: Dobre Miasto
+  address__postal_code: 11-040
+  address__street: Fabryczna
+  address__street_no: '21'
+POWSZECHNA KASA OSZCZĘDNOŚCI BANK POLSKI:
+  address__city: WARSZAWA
+  address__postal_code: 02-515
+  address__street: PUŁAWSKA
+  address__street_no: '15'
+POLISH ENERGY PARTNERS:
+  address__city: Warszawa
+FIRMA HANDLOWA JAGO SA LIKWIDACYJNEJ:
+  address__city: Książenice
+  address__postal_code: 44-213
+  address__street: Klimka
+  address__street_no: '74'
+PCC ROKITA:
+  address__city: Brzeg Dolny
+  address__postal_code: 56-120
+  address__street: Sienkiewicza
+  address__street_no: '4'
+MACROSOFT:
+  address__city: Warszawa
+  address__postal_code: 03-719
+  address__street: Jagiellońska
+  address__street_no: '36'
+ZASTAL.:
+  address__city: Zielona Góra
+  address__postal_code: 65-119
+  address__street: Sulechowska
+  address__street_no: 4a
+WIELTON:
+  address__postal_code: 98-300
+NORDEA BANK POLSKA:
+  address__city: GDYNIA
+  address__postal_code: 81-303
+  address__street: KIELECKA
+  address__street_no: '2'
+URSUS:
+  address__city: Lublin
+  address__street: Frezerów
+  address__street_no: '7'
+BLACK LION FUND:
+  address__city: Warszawa
+  address__postal_code: 03-808
+  address__street: Mińska
+  address__street_no: '25'
+KOPEX:
+  address__city: Katowice
+  address__postal_code: 40-172
+  address__street: Grabowa
+  address__street_no: '1'
+SMT:
+  address__city: Warszawa
+  address__postal_code: 02-231
+  address__street: Jutrzenki
+  address__street_no: '183'
+INTROL:
+  address__city: Katowice
+  address__postal_code: 40-519
+  address__street: T.Kościuszki
+  address__street_no: '112'
+CIECH:
+  address__city: Warszawa
+  address__postal_code: 02-670
+  address__street: Puławska
+  address__street_no: '182'
+PETROLINVEST:
+  address__city: Gdynia
+  address__postal_code: 81-321
+  address__street: Podolska
+  address__street_no: '21'
+NTT SYSTEM:
+  address__city: Warszawa
+SZPG STOMIL SANOK:
+  address__city: Sanok
+  address__postal_code: 38-500
+  address__street: Reymonta
+  address__street_no: '19'
+KREDYT BANK:
+  address__city: WARSZAWA
+  address__postal_code: 01-211
+  address__street: KASPRZAKA
+  address__street_no: 2/8
+AAT HOLDING:
+  address__city: Warszawa
+  address__postal_code: 02-801
+  address__street: Puławska
+  address__street_no: '431'
+SKYLINE INVESTMENT:
+  address__city: Warszawa
+PKO BANK HIPOTECZNY:
+  address__city: Gdynia
+  address__postal_code: 81-342
+  address__street: Jerzego Waszyngtona
+  address__street_no: '17'
+PROSPER:
+  address__city: Warszawa
+TUP:
+  address__city: Warszawa
+  address__postal_code: 00-108
+  address__street: Zielna
+  address__street_no: '37'
+POLMED:
+  address__city: Starogard Gdański
+  address__postal_code: 83-200
+  address__street: osiedle Kopernika
+  address__street_no: '21'
+ATM:
+  address__city: Warszawa
+  address__postal_code: 04-186
+  address__street: Grochowska
+  address__street_no: 21a
+CELTIC PROPERTY DEVELOPMENTS:
+  address__city: Warszawa
+FIRMA HANDLOWA JAGO:
+  address__city: Krzeszowice
+  address__postal_code: 32-065
+  address__street: Daszyńskiego
+  address__street_no: 10A
+ZAKŁADY LENTEX:
+  address__city: Lubliniec
+  address__street_no: '54'
+QUANTUM SOFTWARE:
+  address__city: Kraków
+  address__postal_code: 30-633
+  address__street: Walerego Sławka
+  address__street_no: 3A
+PBG:
+  address__city: Wysogotowo
+  address__postal_code: 62-081
+  address__street: Skórzewska
+  address__street_no: '35'
+CAPITAL. PARK:
+  address__city: Warszawa
+APLISENS:
+  address__city: Warszawa
+  address__postal_code: 03-192
+  address__street: Morelowa
+  address__street_no: '7'
+CPD:
+  address__city: Warszawa
+  address__postal_code: 02-677
+  address__street: Cybernetyki
+  address__street_no: 7B
+RANK PROGRESS:
+  address__city: Legnica
+  address__postal_code: 59-220
+  address__street: Złotoryjska
+  address__street_no: '63'
+ROVESE:
+  address__city: Kielce
+  address__postal_code: 25-323
+  address__street: al. Solidarności
+  address__street_no: '36'
+POLSKI KONCERN MIĘSNY DUDA:
+  address__city: Warszawa
+  address__postal_code: 02-677
+  address__street: Taśmowa
+  address__street_no: '3'
+COMP SAFE SUPPORT:
+  address__city: Warszawa
+  address__postal_code: 02-230
+  address__street: Jutrzenki
+  address__street_no: '116'
+ABC DATA:
+  address__city: Warszawa
+  address__postal_code: 03-230
+  address__street: Daniszewska
+  address__street_no: '14'
+FABRYKA MASZYN FAMUR:
+  address__city: Katowice
+  address__postal_code: 40-698
+  address__street: Armii Krajowej
+  address__street_no: '51'
+WASKO:
+  address__city: Gliwice
+  address__postal_code: 44-100
+  address__street: Berbeckiego
+  address__street_no: '6'
+SWISSMED CENTRUM ZDROWIA:
+  address__city: Gdańsk
+  address__postal_code: 80-215
+  address__street: Wileńska
+  address__street_no: '44'
+KOELNER:
+  address__city: Wrocław
+  address__postal_code: 51-416
+  address__street: Kwidzyńska
+  address__street_no: '6'
+RUBICON PARTNERS NARODOWY FUNDUSZ INWESTYCYJNY:
+  address__city: Warszawa
+  address__postal_code: 00-113
+  address__street: Emilii Plater
+  address__street_no: '53'
+FABRYKI SPRZĘTU I NARZĘDZI GÓRNICZYCH GRUPA KAPITAŁOWA FASING:
+  address__city: Katowice
+  address__postal_code: 40-142
+  address__street: Modelarska
+  address__street_no: '11'
+PRZEDSIĘBIORSTWO PRZEMYSŁU SPOŻYWCZEGO PEPEES:
+  address__city: Łomża
+  address__postal_code: 18-402
+  address__street: Poznańska
+  address__street_no: '121'
+ARTERIA:
+  address__city: Warszawa
+EUROMARK POLSKA:
+  address__city: Warszawa
+  address__postal_code: 03-152
+  address__street: Modlińska
+  address__street_no: 244A
+HYDROBUDOWA POLSKA SA UKŁADOWEJ:
+  address__city: Wysogotowo
+  address__postal_code: 62-081
+  address__street: Skórzewska
+  address__street_no: '35'
+VIVID GAMES SPÓŁKA A:
+  address__city: Bydgoszcz
+  address__postal_code: 85-674
+  address__street: Gdańska
+  address__street_no: '160'
+FABRYKA OBRABIAREK RAFAMET:
+  address__city: Kuźnia Raciborska
+  address__postal_code: 47-420
+  address__street: Staszica
+  address__street_no: '1'
+ABM SOLID:
+  address__city: Tarnów
+  address__postal_code: 33-100
+  address__street: Bartla
+  address__street_no: '3'
+BANK ZACHODNI WBK:
+  address__city: WROCŁAW
+  address__postal_code: 50-950
+  address__street: RYNEK
+  address__street_no: 9/11
+NETIA:
+  address__postal_code: 02-822
+  address__street_no: '13'
+GLOBE TRADE CENTRE:
+  address__city: Warszawa
+INVESTMENT FRIENDS CAPITAL.:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18C
+WOJAS:
+  address__postal_code: 34-400
+  address__street: Ludźmierska
+  address__street_no: '29'
+ATLANTIS:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18c
+LSI SOFTWARE:
+  address__city: Łódź
+  address__postal_code: 93-120
+  address__street: Przybyszewskiego
+  address__street_no: 176/178
+FAMUR:
+  address__city: Katowice
+  address__postal_code: 40-698
+  address__street: Armii Krajowej
+  address__street_no: '51'
+POLIMEX-MOSTOSTAL.:
+  address__city: Warszawa
+  address__postal_code: 00-124
+  address__street: Jana Pawła II
+  address__street_no: '12'
+ABADON REAL. ESTATE:
+  address__city: Bielsko-Biała
+  address__postal_code: 43-300
+  address__street: Partyzantów
+  address__street_no: '49'
+ERG:
+  address__postal_code: 42-520
+  address__street: Chemiczna
+  address__street_no: '6'
+SATIS GROUP:
+  address__city: Warszawa
+  address__postal_code: 02-803
+  address__street: Bekasów
+  address__street_no: '74'
+ZPUE:
+  address__city: Włoszczowa
+  address__postal_code: 29-100
+  address__street: Jędrzejowska
+  address__street_no: 79c
+GANT DEVELOPMENT:
+  address__city: Legnica
+  address__postal_code: 59-220
+  address__street: Rynek
+  address__street_no: '28'
+FINANCIAL. ASSETS MANAGEMENT GROUP:
+  address__city: Warszawa
+  address__postal_code: 02-627
+  address__street: Naruszewicza
+  address__street_no: '27'
+BANK BGŻ BNP PARIBAS:
+  address__city: WARSZAWA
+  address__postal_code: 01-211
+  address__street: KASPRZAKA
+  address__street_no: 10/16
+PELION:
+  address__city: Łódź
+  address__postal_code: 91-342
+  address__street: Zbąszyńska
+  address__street_no: '3'
+MEDICALGORITHMICS:
+  address__city: Warszawa
+  address__postal_code: 02-001
+  address__street: Al. Jerozolimskie
+  address__street_no: '81'
+ARCTIC PAPER:
+  address__city: Poznań
+  address__postal_code: 60-406
+  address__street: J.H. Dąbrowskiego
+  address__street_no: 334A
+ORION INVESTMENT:
+  address__city: Kraków
+  address__postal_code: 30-701
+  address__street: Przemysłowa
+  address__street_no: '13'
+EVEREST INVESTMENTS:
+  address__city: Warszawa
+BSC DRUKARNIA OPAKOWAŃ:
+  address__city: POZNAŃ
+  address__postal_code: 60-171
+  address__street: ŻMIGRODZKA
+  address__street_no: '37'
+KOMPUTRONIK:
+  address__city: Poznań
+  address__postal_code: 60-003
+  address__street: Wołczyńska
+  address__street_no: '37'
+BARLINEK:
+  address__city: Kielce
+BIURO INWESTYCJI KAPITAŁOWYCH:
+  address__city: KRAKÓW
+  address__postal_code: 30-716
+  address__street: ALBATROSÓW
+  address__street_no: '2'
+VIVID GAMES:
+  address__city: Bydgoszcz
+  address__postal_code: 85-674
+  address__street: Gdańska
+  address__street_no: '160'
+SYGNITY:
+  address__city: Warszawa
+  address__postal_code: 02-486
+POLSKI KONCERN NAFTOWY ORLEN:
+  address__city: Płock
+  address__postal_code: 09-411
+  address__street: Chemików
+  address__street_no: '7'
+GHELAMCO INVEST SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ:
+  address__city: Warszawa
+SIMPLE:
+  address__city: Warszawa
+  address__postal_code: 04-555
+  address__street: Bronisława Czecha
+  address__street_no: 49/51
+IMPEL:
+  address__city: Wrocław
+  address__postal_code: 53-111
+  address__street: Ślężna
+  address__street_no: '118'
+KINO POLSKA TV:
+  address__city: Warszawa
+  address__street: Puławska
+IMPERA CAPITAL.:
+  address__city: Warszawa
+  address__postal_code: 02-675
+  address__street: Wołoska
+  address__street_no: 22A
+INVAR & BIURO SYSTEM:
+  address__city: Łódź
+  address__postal_code: 93-176
+  address__street: Suwalska
+  address__street_no: '16'
+PATENTUS:
+  address__city: Pszczyna
+  address__postal_code: 43-200
+  address__street: Górnośląska
+  address__street_no: '11'
+OT LOGISTICS:
+  address__city: Szczecin
+MOSTOSTAL. ZABRZE HOLDING:
+  address__city: Zabrze
+  address__postal_code: 41-800
+  address__street: Wolności
+  address__street_no: '191'
+RADPOL:
+  address__city: Człuchów
+  address__postal_code: 77-300
+  address__street: Batorego
+  address__street_no: '14'
+LOKUM DEWELOPER:
+  address__city: Wrocław
+  address__postal_code: 50-148
+  address__street: Krawiecka
+  address__street_no: 1/101
+ASSECO POLAND:
+  address__city: Rzeszów
+CHEMOSERVIS-DWORY:
+  address__city: Oświęcim
+  address__postal_code: 32-600
+  address__street: Chemików
+  address__street_no: '1'
+BANK MILLENNIUM:
+  address__city: WARSZAWA
+  address__postal_code: 02-593
+PBO ANIOŁA:
+  address__city: Kostrzyn
+  address__postal_code: 62-025
+  address__street: Wrzesińska
+  address__street_no: '70'
+TAURON POLSKA ENERGIA:
+  address__city: Katowice
+  address__postal_code: 40-389
+  address__street: Lwowska
+  address__street_no: '23'
+AGORA:
+  address__city: Warszawa
+  address__postal_code: 00-732
+  address__street: Czerska
+  address__street_no: 8/10
+GINO ROSSI:
+  address__city: Słupsk
+  address__postal_code: 76-200
+  address__street: Owocowa
+  address__street_no: '24'
+KGHM POLSKA MIEDŹ:
+  address__city: Lubin
+  address__postal_code: 59-301
+  address__street: M. Skłodowskiej-Curie
+  address__street_no: '48'
+INTER CARS:
+  address__city: Warszawa
+  address__postal_code: 02-903
+  address__street: Powsińska
+  address__street_no: '64'
+EUROPEJSKI FUNDUSZ HIPOTECZNY:
+  address__city: Warszawa
+  address__postal_code: 02-952
+  address__street: Wiertnicza
+  address__street_no: '107'
+GRUPA KAPITAŁOWA IMMOBILE:
+  address__city: Bydgoszcz
+FABRYKA ŚRUB W ŁAŃCUCIE ŚRUBEX:
+  address__city: Łańcut
+  address__postal_code: 37-100
+  address__street: Podzwierzyniec
+  address__street_no: '41'
+INTERMA TRADE:
+  address__city: Gniezno
+  address__postal_code: 62-200
+  address__street: Paderewskiego
+  address__street_no: 25-35
+ARCHICOM:
+  address__city: Wrocław
+  address__postal_code: 50-345
+  address__street: Ksawerego Liskego
+  address__street_no: '7'
+FABRYKI MEBLI FORTE:
+  address__city: Ostrów Mazowiecka
+  address__postal_code: 07-300
+  address__street: Biała
+  address__street_no: '1'
+PRZEDSIĘBIORSTWO HYDRAULIKI SIŁOWEJ 'HYDROTOR':
+  address__city: Tuchola
+  address__postal_code: 89-500
+  address__street: Chojnicka
+  address__street_no: '72'
+TRION:
+  address__city: Inowrocław
+  address__postal_code: 88-100
+  address__street: Marcinkowskiego
+  address__street_no: '154'
+POLSKI BANK KOMÓREK MACIERZYSTYCH:
+  address__city: WARSZAWA
+  address__postal_code: 00-867
+  address__street: AL. JANA PAWŁA II
+  address__street_no: '29'
+GRUPA ONET.PL:
+  address__city: Warszawa
+  address__postal_code: 02-952
+  address__street: Wiertnicza
+  address__street_no: '166'
+EUROTEL:
+  address__city: Gdańsk
+IQ PARTNERS:
+  address__city: Warszawa
+ALMA MARKET:
+  address__city: Kraków
+  address__postal_code: 30-964
+  address__street: Pilotów
+  address__street_no: '6'
+VRG:
+  address__city: Kraków
+  address__postal_code: 31-462
+  address__street: Pilotów
+  address__street_no: '10'
+BANK POLSKA KASA OPIEKI:
+  address__city: WARSZAWA
+  address__postal_code: 00-950
+  address__street: GRZYBOWSKA
+  address__street_no: 53/57
+PZ CORMAY:
+  address__city: Łomianki
+  address__postal_code: 05-092
+  address__street: Wiosenna
+  address__street_no: '22'
+MERCATOR MEDICAL.:
+  address__city: Kraków
+  address__postal_code: 31-327
+  address__street: H. Modrzejewskiej
+  address__street_no: '30'
+BENEFIT SYSTEMS:
+  address__city: Warszawa
+GRUPA KOLASTYNA:
+  address__city: Kraków
+ZACHODNI NARODOWY FUNDUSZ INWESTYCYJNY:
+  address__city: Warszawa
+KRAKCHEMIA:
+  address__city: Kraków
+INTER GROCLIN AUTO:
+  address__postal_code: 64-200
+  address__street: Jeziorna
+  address__street_no: '3'
+RAFAKO:
+  address__city: Racibórz
+  address__postal_code: 47-400
+  address__street: Łąkowa
+  address__street_no: '33'
+ATAL.:
+  address__city: Cieszyn
+  address__postal_code: 43-400
+  address__street: Stawowa
+  address__street_no: '27'
+KORPORACJA KGL:
+  address__city: MOŚCISKA
+  address__postal_code: 05-080
+  address__street: POSTĘPU
+  address__street_no: '20'
+MEX POLSKA:
+  address__city: Łódź
+  address__postal_code: 90-105
+  address__street: Piotrkowska
+  address__street_no: '60'
+KORPORACJA GOSPODARCZA EFEKT:
+  address__city: Kraków
+  address__postal_code: 31-323
+  address__street: Opolska
+  address__street_no: '12'
+MNI:
+  address__city: Warszawa
+  address__postal_code: 00-503
+  address__street: Żurawia
+  address__street_no: '8'
+ENERGOMONTAŻ - POŁUDNIE:
+  address__city: Katowice
+  address__postal_code: 40-951
+  address__street: Mickiewicza
+  address__street_no: '15'
+COLIAN HOLDING:
+  address__city: Opatówek
+  address__postal_code: 62-860
+  address__street: Zdrojowa
+  address__street_no: '1'
+FAM:
+  address__city: Wrocław
+  address__postal_code: 54-611
+  address__street: Avicenny
+  address__street_no: '16'
+ECHO INVESTMENT:
+  address__city: Kielce
+MLP GROUP:
+  address__city: Pruszków
+  address__postal_code: 05-800
+  address__street: 3-go Maja
+  address__street_no: '8'
+ELEMENTAL. HOLDING:
+  address__city: Grodzisk Mazowiecki
+  address__postal_code: 05-825
+  address__street: Traugutta
+AUTO PARTNER:
+  address__city: Bieruń
+  address__postal_code: 43-150
+  address__street: Ekonomiczna
+  address__street_no: '20'
+ZAKŁADY DZIEWIARSKIE MEWA:
+  address__city: Biłgoraj
+  address__postal_code: 23-400
+  address__street: Krzeszowska
+  address__street_no: '62'
+ONCOARENDI THERAPEUTICS:
+  address__city: Warszawa
+  address__postal_code: 02-089
+  address__street: Żwirki i Wigury
+  address__street_no: '101'
+ACTION:
+  address__city: Warszawa
+  address__postal_code: 01-248
+  address__street: Jana Kazimierza
+  address__street_no: 46/54
+SKARBIEC HOLDING:
+  address__city: WARSZAWA
+  address__postal_code: 00-609
+  address__street: Lecha Kaczyńskiego
+  address__street_no: '26'
+TRITON DEVELOPMENT:
+  address__city: Warszawa
+DOM DEVELOPMENT:
+  address__city: Warszawa
+  address__postal_code: 00-078
+  address__street_no: '3'
+ZAKŁADY PRZEMYSŁU CUKIERNICZEGO OTMUCHÓW:
+  address__city: Otmuchów
+  address__postal_code: 48-385
+  address__street: Nyska
+  address__street_no: '21'
+TOWARZYSTWO FINANSOWE SPÓŁDZIELCZYCH KAS OSZCZĘDNOŚCIOWO-KREDYTOWYCH:
+  address__city: Gdańsk
+  address__postal_code: 80-387
+  address__street: Arkońska
+  address__street_no: '11'
+WYDAWNICTWA SZKOLNE I PEDAGOGICZNE:
+  address__city: Warszawa
+  address__postal_code: 02-305
+  address__street: Al. Jerozolimskie
+  address__street_no: '136'
+CZERWONA TOREBKA:
+  address__city: Poznań
+  address__postal_code: 61-819
+  address__street: Stanisława Taczaka
+  address__street_no: '24'
+QUMAK:
+  address__city: Warszawa
+  address__postal_code: 02-305
+  address__street: Al. Jerozolimskie
+BIOMED-LUBLIN WYTWÓRNIA SUROWIC I SZCZEPIONEK:
+  address__city: LUBLIN
+  address__postal_code: 20-029
+  address__street: UNIWERSYTECKA
+  address__street_no: '10'
+DECORA:
+  address__city: Środa Wielkopolska
+  address__postal_code: 63-000
+  address__street_no: 24A
+GRAAL.:
+  address__city: Wejherowo
+  address__postal_code: 84-200
+  address__street: Zachodnia
+  address__street_no: '22'
+APLITT:
+  address__city: Gdańsk
+  address__postal_code: 80-387
+  address__street: Arkońska
+  address__street_no: '11'
+GRUPA KĘTY:
+  address__city: Kęty
+  address__postal_code: 32-650
+  address__street: Kościuszki
+  address__street_no: '111'
+HARDEX:
+  address__city: Krosno Odrzańskie
+  address__postal_code: 66-600
+  address__street: Gubińska
+  address__street_no: '63'
+COGNOR HOLDING:
+  address__city: PORAJ
+  address__postal_code: 42-360
+  address__street: ZIELONA
+  address__street_no: '26'
+BBI ZENERIS NARODOWY FUNDUSZ INWESTYCYJNY:
+  address__city: Poznań
+  address__postal_code: 61-770
+  address__street: Paderewskiego
+  address__street_no: '7'
+WORK SERVICE:
+  address__city: Wrocław
+INWEST CONSULTING:
+  address__city: Poznań
+SELENA FM:
+  address__city: Wrocław
+  address__postal_code: 53-611
+  address__street: Strzegomska
+  address__street_no: 2-4
+IMPEXMETAL.:
+  address__city: Warszawa
+  address__postal_code: 00-842
+  address__street: Łucka
+  address__street_no: 7/9
+BEST:
+  address__city: Gdynia
+NETMEDIA:
+  address__city: Warszawa
+  address__postal_code: 02-625
+  address__street: Woronicza
+  address__street_no: '15'
+MAKARONY POLSKIE:
+  address__city: Rzeszów
+  address__postal_code: 35-082
+  address__street: Podkarpacka
+  address__street_no: '15'
+'"ZAKŁADY AZOTOWE ""PUŁAWY"" SA"':
+  address__city: Puławy
+  address__postal_code: 24-110
+  address__street_no: '13'
+ZUE:
+  address__city: Kraków
+  address__postal_code: 30-048
+  address__street: Kazimierza Czapińskiego
+  address__street_no: '3'
+TARCZYŃSKI:
+  address__city: Ujeździec Mały
+  address__postal_code: 55-100
+  address__street: Ujeździec Mały
+  address__street_no: '80'
+TOWER INVESTMENTS:
+  address__city: WARSZAWA
+  address__postal_code: 00-411
+  address__street_no: '8'
+PROJPRZEM:
+  address__city: Bydgoszcz
+  address__postal_code: 85-029
+  address__street: Bernardyńska
+  address__street_no: '13'
+PLATFORMA MEDIOWA POINT GROUP:
+  address__city: Warszawa
+  address__street: Al. Jerozolimskie
+EMC INSTYTUT MEDYCZNY:
+  address__city: Wrocław
+  address__postal_code: 54-144
+  address__street: Pilczycka
+  address__street_no: 144-148
+MIDAS:
+  address__city: Warszawa
+  address__postal_code: 00-660
+  address__street: Lwowska
+  address__street_no: '19'
+ADVADIS SA UKŁADOWEJ:
+  address__city: Kraków
+  address__postal_code: 31-223
+  address__street: Henryka Pachońskiego
+  address__street_no: '5'
+BOMI:
+  address__city: Gdynia
+  address__postal_code: 81-572
+  address__street: Gryfa Pomorskiego
+  address__street_no: '71'
+BIOTON:
+  address__city: Warszawa
+  address__postal_code: 02-516
+  address__street: Starościńska
+  address__street_no: '5'
+VISTAL. GDYNIA:
+  address__city: Gdynia
+  address__postal_code: 81-061
+  address__street: Hutnicza
+  address__street_no: '40'
+J.W. CONSTRUCTION HOLDING:
+  address__city: Ząbki
+  address__postal_code: 05-091
+  address__street: Radzymińska
+  address__street_no: '326'
+EMAX:
+  address__city: Poznań
+  address__postal_code: 61-896
+  address__street: Towarowa
+  address__street_no: '35'
+ATLANTA POLAND:
+  address__city: Gdańsk
+  address__postal_code: 80-557
+  address__street: Załogowa
+  address__street_no: '17'
+ZAKŁADY TWORZYW SZTUCZNYCH ZĄBKOWICE - ERG:
+  address__city: Dąbrowa Górnicza
+  address__postal_code: 42-520
+  address__street: Chemiczna
+  address__street_no: '6'
+MENNICA POLSKA:
+  address__city: Warszawa
+CALATRAVA CAPITAL.:
+  address__city: Warszawa
+FIRMA CHEMICZNA DWORY:
+  address__city: Oświęcim
+  address__postal_code: 32-600
+  address__street: Chemików
+  address__street_no: '1'
+GIEŁDA PAPIERÓW WARTOŚCIOWYCH W WARSZAWIE:
+  address__city: WARSZAWA
+  address__postal_code: 00-498
+  address__street: Książęca
+  address__street_no: '4'
+SONEL:
+  address__city: Świdnica
+  address__postal_code: 58-100
+  address__street: Stanisława Wokulskiego
+  address__street_no: '11'
+CFI HOLDING:
+  address__city: Wrocław
+  address__postal_code: 50-055
+  address__street: Teatralna
+  address__street_no: 10-12
+CENTRUM NOWOCZESNYCH TECHNOLOGII:
+  address__city: Sosnowiec
+  address__postal_code: 41-200
+  address__street: Partyzantów
+  address__street_no: '11'
+NARODOWY FUNDUSZ INWESTYCYJNY MIDAS:
+  address__city: Warszawa
+ASM GROUP:
+  address__city: Warszawa
+MABION:
+  address__city: Konstantynów Łódzki
+  address__postal_code: 95-050
+  address__street: Langiewicza
+  address__street_no: '60'
+'"ZAKŁADY MAGNEZYTOWE ""ROPCZYCE"" SA"':
+  address__city: Ropczyce
+  address__postal_code: 39-100
+  address__street: Przemysłowa
+  address__street_no: '1'
+'"PRZEDSIĘBIORSTWO PRZEMYSŁU SPOŻYWCZEGO ""PEPEES"" SA"':
+  address__city: Łomża
+  address__postal_code: 18-402
+  address__street: Poznańska
+  address__street_no: '121'
+ZAMET INDUSTRY:
+  address__city: Piotrków Trybunalski
+  address__postal_code: 97-300
+  address__street: Dmowskiego
+  address__street_no: 38B
+BANK GOSPODARKI ŻYWNOŚCIOWEJ:
+  address__city: WARSZAWA
+  address__postal_code: 01-211
+  address__street: KASPRZAKA
+  address__street_no: 10/16
+IDEON:
+  address__city: Katowice
+  address__postal_code: 40-282
+  address__street: Paderewskiego
+  address__street_no: 32c
+BRIJU:
+  address__city: Poznań
+  address__postal_code: 61-884
+  address__street: Plac Bernardyński
+  address__street_no: 4/3
+FERRUM:
+  address__city: Katowice
+  address__postal_code: 40-246
+  address__street: Porcelanowa
+  address__street_no: '11'
+BANK HANDLOWY W WARSZAWIE:
+  address__postal_code: 00-923
+  address__street_no: '16'
+INTAKUS:
+  address__city: Wrocław
+MZN PROPERTY:
+  address__city: Warszawa
+  address__postal_code: 02-532
+  address__street: Rakowiecka
+  address__street_no: '36'
+ENERGOMONTAŻ-PÓŁNOC:
+  address__city: Warszawa
+  address__postal_code: 00-450
+  address__street: Przemysłowa
+  address__street_no: '30'
+COMP:
+  address__city: Warszawa
+PAGED:
+  address__city: Warszawa
+VARIANT:
+  address__city: Kraków
+  address__postal_code: 31-319
+  address__street: Czerwieńskiego
+  address__street_no: 3B
+ELEKTRIM:
+  address__city: Warszawa
+  address__postal_code: 00-834
+  address__street: Pańska
+  address__street_no: 77/79
+JC AUTO:
+  address__city: Warszawa
+  address__postal_code: 02-285
+  address__street: Szyszkowa
+  address__street_no: 35/37
+ASSECO BUSINESS SOLUTIONS:
+  address__city: Lublin
+NARODOWY FUNDUSZ INWESTYCYJNY EMPIK MEDIA & FASHION:
+  address__city: Warszawa
+  address__postal_code: 00-017
+  address__street: Marszałkowska
+  address__street_no: 104/122
+DROZAPOL-PROFIL:
+  address__city: Bydgoszcz
+  address__postal_code: 85-880
+  address__street: Toruńska
+  address__street_no: 298a
+LUBELSKIE ZAKŁADY PRZEMYSŁU SKÓRZANEGO PROTEKTOR:
+  address__city: Lublin
+  address__postal_code: 20-417
+  address__street: Kunickiego
+  address__street_no: 20-24
+PANI TERESA MEDICA:
+  address__city: Gutowo Małe
+  address__postal_code: 62-300
+  address__street: Powidzka
+  address__street_no: '50'
+SYNEKTIK:
+  address__city: Warszawa
+  address__postal_code: 00-710
+  address__street: Al. Witosa
+  address__street_no: '31'
+AURUM SA UKŁADOWEJ:
+  address__city: WARSZAWA
+  address__postal_code: 02-952
+  address__street: WIERTNICZA
+  address__street_no: '107'
+CASH FLOW SPÓŁA AKCYJNA:
+  address__city: Dąbrowa Górnicza
+  address__postal_code: 41-300
+  address__street: Perla
+  address__street_no: '14'
+TRAKCJA POLSKA:
+  address__city: Warszawa
+AMREST HOLDINGS SE:
+  address__city: Wrocław
+  address__postal_code: 50-365
+  address__street: pl. Grunwaldzki
+  address__street_no: 25-27
+PLATINUM PROPERTIES GROUP:
+  address__city: Warszawa
+  address__postal_code: 02-626
+  address__street: Al. Niepodległości
+  address__street_no: '58'
+ZAKŁADY URZĄDZEŃ KOMPUTEROWYCH ELZAB:
+  address__city: Zabrze
+  address__postal_code: 41-813
+PRIVATE EQUITY MANAGERS:
+  address__city: Warszawa
+  address__street_no: '1'
+ZESPÓŁ ELEKTROCIEPŁOWNI WROCŁAWSKICH KOGENERACJA:
+  address__city: Wroclaw
+  address__postal_code: 50-220
+  address__street: Łowiecka
+  address__street_no: '24'
+NOBLE BANK:
+  address__city: WARSZAWA
+  address__postal_code: 02-671
+  address__street: DOMANIEWSKA
+  address__street_no: 39B
+ENEA:
+  address__city: Poznań
+IZOSTAL.:
+  address__city: Zawadzkie
+  address__postal_code: 47-120
+  address__street: Polna
+  address__street_no: '3'
+PEKAES:
+  address__city: Błonie
+  address__postal_code: 05-870
+  address__street: Spedycyjna
+  address__street_no: '1'
+I2 DEVELOPMENT:
+  address__city: Wrocław
+POZNAŃSKA KORPORACJA BUDOWLANA PEKABEX:
+  address__city: Poznań
+  address__postal_code: 60-462
+  address__street: Szarych Szeregów
+  address__street_no: '27'
+KRYNICA VITAMIN:
+  address__city: Warszawa
+  address__postal_code: 03-606
+  address__street: Matyldy
+  address__street_no: '35'
+POLSKA GRUPA ODLEWNICZA:
+  address__city: Katowice
+  address__postal_code: 40-698
+  address__street: Armii Krajowej
+  address__street_no: '41'
+STALPRODUKT:
+  address__city: Bochnia
+  address__postal_code: 32-700
+  address__street: Wygoda
+  address__street_no: '69'
+ING BANK ŚLĄSKI:
+  address__city: KATOWICE
+  address__postal_code: 40-086
+  address__street: SOKOLSKA
+  address__street_no: '34'
+CYFROWY POLSAT:
+  address__city: Warszawa
+  address__postal_code: 03-878
+  address__street: Łubinowa
+  address__street_no: 4a
+IMS:
+  address__city: Warszawa
+  address__postal_code: 02-819
+  address__street: Puławska
+  address__street_no: '366'
+ZAKŁADY AZOTOWE W TARNOWIE-MOŚCICACH:
+  address__city: Tarnów
+  address__postal_code: 33-101
+  address__street: Kwiatkowskiego
+  address__street_no: '8'
+MASTERS:
+  address__city: Zamość
+  address__postal_code: 22-400
+  address__street: Fabryczna
+  address__street_no: '1'
+AILLERON:
+  address__city: Kraków
+  address__postal_code: 31-864
+  address__street: Profesora Michała Życzkowskiego
+  address__street_no: '20'
+BOOMBIT:
+  address__city: Gdańsk
+  address__postal_code: 80-283
+  address__street: Zacna
+  address__street_no: '2'
+ML SYSTEM:
+  address__city: Zaczernie
+  address__postal_code: 36-062
+  address__street: Zaczernie
+  address__street_no: 190G
+MEDIACAP:
+  address__city: Warszawa
+  address__postal_code: 02-758
+  address__street: Mangalia
+ELECTUS:
+  address__city: Lubin
+  address__postal_code: 59-300
+  address__street: Słowiańska
+  address__street_no: '17'
+SANOK RUBBER COMPANY:
+  address__city: Sanok
+  address__postal_code: 38-500
+  address__street: Przemyska
+  address__street_no: '24'
+TECHMEX:
+  address__city: Bielsko Biała
+  address__postal_code: 43-316
+  address__street: Partyzantów
+  address__street_no: '71'
+BERLING:
+  address__city: Warszawa
+  address__postal_code: 00-018
+  address__street: Zgoda
+  address__street_no: 5/8
+CP ENERGIA:
+  address__city: Warszawa
+MCI CAPITAL.:
+  address__city: Warszawa
+  address__postal_code: 00-844
+  address__street: Plac Europejski
+  address__street_no: '1'
+PRONOX TECHNOLOGY SA UKŁADOWEJ:
+  address__city: Katowice
+  address__postal_code: 40-282
+  address__street: Paderewskiego
+  address__street_no: 32c
+VANTAGE DEVELOPMENT:
+  address__city: Wrocław
+ELEKTROTIM:
+  address__city: Wrocław
+  address__postal_code: 54-156
+  address__street: Stargardzka
+  address__street_no: '8'
+FORTIS BANK POLSKA:
+  address__city: WARSZAWA
+  address__postal_code: 02-676
+  address__street: SUWAK
+  address__street_no: '3'
+REGNON:
+  address__city: Katowice
+  address__street: Aleja Roździeńskiego
+  address__street_no: 188C
+NARODOWY FUNDUSZ INWESTYCYJNY PROGRESS:
+  address__city: Warszawa
+  address__postal_code: 00-609
+  address__street: Al. Armii Ludowej
+  address__street_no: '26'
+XTPL:
+  address__city: Wrocław
+  address__postal_code: 54-066
+  address__street: Stabłowicka
+  address__street_no: '147'
+BUMECH:
+  address__city: Katowice
+  address__postal_code: 40-389
+  address__street: Krakowska
+  address__street_no: '191'
+LARQ:
+  address__city: Warszawa
+  address__postal_code: 00-349
+  address__street: Tamka
+  address__street_no: '16'
+STARHEDGE:
+  address__city: Warszawa
+  address__postal_code: 02-820
+  address__street: Łączyny
+  address__street_no: '5'
+VENTURE INC:
+  address__city: Wrocław
+  address__postal_code: 52-203
+  address__street: Al. Gen. J. Hellera
+  address__street_no: 180/14
+ERGIS - EUROFILMS:
+  address__city: Warszawa
+  address__postal_code: 00-349
+  address__street: Tamka
+  address__street_no: '16'
+DORADZTWO GOSPODARCZE DGA:
+  address__city: Poznań
+  address__postal_code: 61-896
+  address__street: Biurowiec Delta Towarowa
+  address__street_no: '35'
+TRANS POLONIA:
+  address__city: Tczew
+  address__postal_code: 83-110
+  address__street: Rokicka
+  address__street_no: '16'
+WILBO:
+  address__city: Gdynia
+  address__postal_code: 81-029
+  address__street: Przemysłowa
+  address__street_no: '8'
+PROJPRZEM MAKRUM:
+  address__city: Bydgoszcz
+GLOBAL. COSMED:
+  address__city: RADOM
+  address__postal_code: 26-600
+  address__street: WIELKOPOLSKA
+  address__street_no: '3'
+BAUMA:
+  address__city: Warszawa
+  address__postal_code: 03-115
+  address__street: Klasyków
+  address__street_no: '10'
+VIGO SYSTEM:
+  address__city: Ożarów Mazowiecki
+  address__postal_code: 05-850
+  address__street: Poznańska
+  address__street_no: 129/133
+MBANK HIPOTECZNY:
+  address__city: Warszawa
+  address__postal_code: 00-609
+  address__street: Lecha Kaczyńskiego
+  address__street_no: '26'
+ARTMAN:
+  address__city: Kraków
+  address__postal_code: 30-733
+  address__street: Bagrowa
+  address__street_no: '7'
+GRODNO:
+  address__city: Michałów-Grabina
+  address__postal_code: 05-126
+  address__street: Kwiatowa
+  address__street_no: '14'
+PONAR - WADOWICE:
+  address__city: Wadowice
+  address__postal_code: 34-100
+  address__street: Wojska Polskiego
+  address__street_no: '29'
+MAXCOM:
+  address__city: Tychy
+  address__postal_code: 43-100
+  address__street: Towarowa
+  address__street_no: 23A
+SOLAR COMPANY:
+  address__city: Poznań
+  address__postal_code: 61-315
+  address__street: Torowa
+  address__street_no: '11'
+NEPENTES:
+  address__city: Warszawa
+  address__postal_code: 01-651
+  address__street: Gwiaździsta
+  address__street_no: 69F
+BIPROMET:
+  address__city: Katowice
+  address__postal_code: 40-956
+  address__street: Graniczna
+  address__street_no: '29'
+POLREST:
+  address__city: Kraków
+VISTULA GROUP:
+  address__city: Kraków
+  address__postal_code: 31-035
+  address__street: Starowiślna
+  address__street_no: '48'
+JHM DEVELOPMENT SPÓŁKA AKCYJA:
+  address__city: SKIERNIEWICE
+  address__postal_code: 96-100
+  address__street: UNII EUROPEJSKIEJ
+  address__street_no: '18'
+AMICA WRONKI:
+  address__city: Wronki
+  address__postal_code: 64-510
+  address__street: Mickiewicza
+  address__street_no: '52'
+DROP:
+  address__city: Warszawa
+  address__postal_code: 02-987
+  address__street: Syta
+TOORA POLAND:
+  address__city: Nisko
+  address__postal_code: 37-400
+  address__street: Sandomierska
+  address__street_no: '14'
+AS SILVANO FASHION GROUP:
+  address__city: Tallinn
+  address__postal_code: '10145'
+  address__street: Tartu mnt.
+  address__street_no: '2'
+ZESPÓŁ ELEKTROWNI PĄTNÓW-ADAMÓW-KONIN:
+  address__city: Konin
+  address__postal_code: 62-510
+  address__street: Kazimierska
+  address__street_no: '45'
+WOLA INFO:
+  address__city: Warszawa
+  address__postal_code: 02-677
+  address__street: Cybernetyki
+  address__street_no: '7'
+MIT MOBILE INTERNET TECHNOLOGY:
+  address__city: Warszawa
+CENTROZAP:
+  address__city: Katowice
+  address__postal_code: 40-282
+  address__street: Paderewskiego
+  address__street_no: 32c
+AWBUD:
+  address__city: Ogrodzieniec
+  address__postal_code: 42-440
+  address__street_no: '4'
+POLNORD:
+  address__city: Gdynia
+  address__postal_code: 81-310
+  address__street: Śląska
+  address__street_no: 35/37
+PRIME CAR MANAGEMENT:
+  address__city: Gdańsk
+  address__postal_code: 80-308
+  address__street: Polanki
+  address__street_no: '4'
+ONE-2-ONE:
+  address__city: Poznań
+PRZEDSIĘBIORSTWO PRODUKCYJNO-HANDLOWE BOMI:
+  address__city: Gdynia
+  address__postal_code: 81-572
+  address__street: Gryfa Pomorskiego
+  address__street_no: '71'
+DOLNOŚLĄSKIE SUROWCE SKALNE:
+  address__city: Warszawa
+  address__postal_code: 00-124
+  address__street: Rondo ONZ
+  address__street_no: '1'
+SILVAIR INC:
+  address__city: San Francisco
+  address__postal_code: CA94103
+  address__street: Market Street
+  address__street_no: '717'
+FON SE:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18c
+KOFOLA - HOOP:
+  address__city: Warszawa
+  address__postal_code: 01-102
+  address__street: Jana Olbrachta
+  address__street_no: '94'
+ABM SOLID SA UKŁADOWEJ:
+  address__city: Tarnów
+  address__postal_code: 33-100
+  address__street: Bartla
+  address__street_no: '3'
+GRUPA AZOTY ZAKŁADY CHEMICZNE POLICE:
+  address__city: Police
+  address__postal_code: 72-010
+  address__street: Kuźnicka
+  address__street_no: '1'
+ALUMETAL.:
+  address__city: Kęty
+  address__postal_code: 32-650
+  address__street: Kościuszki
+  address__street_no: '111'
+LARK.PL:
+  address__city: Warszawa
+  address__postal_code: 00-124
+  address__street: Jana Pawła II
+  address__street_no: '12'
+GOBARTO:
+  address__city: Warszawa
+  address__postal_code: 02-699
+  address__street: Kłobucka
+  address__street_no: '25'
+NEWAG:
+  address__city: Nowy Sącz
+  address__postal_code: 33-300
+  address__street: Wyspiańskiego
+  address__street_no: '3'
+KRYNICKI RECYKLING:
+  address__city: Olsztyn
+  address__postal_code: 10-089
+  address__street: Iwaszkiewicza
+  address__street_no: 48/23
+LC CORP:
+  address__city: Wrocław
+  address__postal_code: 53-333
+  address__street: Powstańców Śląskich
+  address__street_no: 2-4
+B3SYSTEM:
+  address__city: Warszawa
+  address__postal_code: 02-829
+  address__street: Taneczna
+  address__street_no: '7'
+INDYGOTECH MINERALS:
+  address__city: Warszawa
+  address__postal_code: 00-116
+  address__street: Świętokrzyska
+  address__street_no: '30'
+ALTERCO:
+  address__city: Warszawa
+BALTIC BRIDGE:
+  address__city: Warszawa
+  address__postal_code: 00 - 124
+  address__street: Rondo ONZ
+  address__street_no: '1'
+ALTUS TOWARZYSTWO FUNDUSZY INWESTYCYJNYCH:
+  address__city: WARSZAWA
+  address__postal_code: 00-696
+  address__street: PANKIEWICZA
+  address__street_no: '3'
+OPTOPOL TECHNOLOGY:
+  address__city: Zawiercie
+  address__postal_code: 42-400
+  address__street: Żabia
+  address__street_no: '42'
+EUROFAKTOR:
+  address__city: Mysłowice
+  address__postal_code: 41-405
+  address__street: Modrzewskiego
+  address__street_no: '42'
+TOYA:
+  address__city: Wrocław
+  address__postal_code: 51-168
+  address__street: Sołtysowicka
+  address__street_no: 13-15
+TORPOL:
+  address__city: Poznań
+  address__postal_code: 61-052
+  address__street: Mogileńska
+  address__street_no: 10G
+DZ BANK POLSKA:
+  address__city: WARSZAWA
+  address__postal_code: 00-078
+  address__street_no: '3'
+MEDIATEL:
+  address__city: Warszawa
+MDI ENERGIA:
+  address__city: Warszawa
+  address__postal_code: 02-681
+  address__street: Aleja Wyścigowa
+  address__street_no: '6'
+ZAKŁADY MAGNEZYTOWE ROPCZYCE:
+  address__city: Ropczyce
+  address__postal_code: 39-100
+  address__street: Przemysłowa
+  address__street_no: '1'
+TVN:
+  address__city: Warszawa
+  address__postal_code: 02-952
+  address__street: Wiertnicza
+  address__street_no: '166'
+CCC:
+  address__city: Polkowice
+  address__postal_code: 59-101
+  address__street: Strefowa
+  address__street_no: '6'
+CI GAMES:
+  address__city: Warszawa
+  address__postal_code: 02-670
+  address__street: Puławska
+  address__street_no: '182'
+BYTOM:
+  address__city: Kraków
+  address__postal_code: 31-864
+  address__street: prof. Michała Życzkowskiego
+  address__street_no: '19'
+URSUS SA:
+  address__city: Dobre Miasto
+  address__postal_code: 11-040
+  address__street: Fabryczna
+  address__street_no: '21'
+MERCOR:
+  address__city: Gdańsk
+  address__postal_code: 80-408
+  address__street: Grzegorza z Sanoka
+  address__street_no: '2'
+INDATA SOFTWARE:
+  address__city: Wrocław
+  address__postal_code: 54-429
+  address__street: Strzegomska
+  address__street_no: '138'
+YAWAL.:
+  address__city: Herby
+  address__postal_code: 42-284
+  address__street: Lublinicka
+  address__street_no: '36'
+TOWARZYSTWO UBEZPIECZEŃ EUROPA:
+  address__city: Wrocław
+  address__postal_code: 53-333
+  address__street: Powstańców Śląskich
+  address__street_no: 2-4
+MONNARI TRADE:
+  address__city: Łódź
+INDATA:
+  address__city: Wrocław
+ADVADIS:
+  address__city: Kraków
+MASTER PHARM:
+  address__city: Łódź
+  address__postal_code: 91-203
+  address__street: Wersalska
+  address__street_no: '8'
+ZAMET:
+  address__city: Piotrków Trybunalski
+  address__postal_code: 97-300
+  address__street: Dmowskiego
+  address__street_no: 38B
+BBI DEVELOPMENT NARODOWY FUNDUSZ INWESTYCYJNY:
+  address__city: Warszawa
+  address__postal_code: 00-688
+  address__street: Emilii Plater
+  address__street_no: '28'
+DOLNOŚLĄSKIE SUROWCE SKALNE SA UKŁADOWEJ:
+  address__city: Warszawa
+  address__postal_code: 01-523
+  address__street: ŚMIAŁA
+  address__street_no: '22'
+MFO:
+  address__city: Sochaczew
+  address__postal_code: 96-500
+  address__street: Kożuszki Parcel
+  address__street_no: 70A
+ELDORADO:
+  address__city: Lublin
+  address__postal_code: 20-234
+  address__street: Metalurgiczna
+  address__street_no: '30'
+AD.DRĄGOWSKI:
+  address__city: Warszawa
+  address__postal_code: 00-924
+  address__street: Kopernika
+  address__street_no: 36/40
+COMPUTER SERVICE SUPPORT:
+  address__city: Warszawa
+  address__postal_code: 03-301
+  address__street: Jagiellońska
+  address__street_no: '78'
+ENERGA:
+  address__city: Gdańsk
+  address__postal_code: 80-309
+  address__street: Grunwaldzka
+  address__street_no: '472'
+ZAKŁADY CHEMICZNE POLICE:
+  address__city: Police
+  address__postal_code: 72-010
+  address__street: Kuźnicka
+  address__street_no: '1'
+KORPORACJA BUDOWLANA DOM:
+  address__city: Krokowa
+  address__postal_code: 84-110
+  address__street_no: '3'
+PRATERM:
+  address__city: Warszawa
+  address__postal_code: 04-555
+  address__street: Bronisława Czecha
+  address__street_no: '36'
+OPONEO.PL:
+  address__city: Bydgoszcz
+  address__postal_code: 85-145
+  address__street: Podleśna
+  address__street_no: '17'
+ADVANCED DISTRIBUTION SOLUTIONS:
+  address__city: Kraków
+  address__postal_code: 30-149
+  address__street: Balicka
+  address__street_no: '35'
+ULMA CONSTRUCCION POLSKA:
+  address__city: Brwinów
+  address__postal_code: 05-840
+  address__street: Koszajec
+  address__street_no: '50'
+P.R.E.S.C.O. GROUP:
+  address__city: Warszawa
+  address__postal_code: 00-105
+  address__street: Twarda
+  address__street_no: '18'
+WANDALEX:
+  address__city: Warszawa
+  address__postal_code: 02-651
+  address__street: Garażowa
+  address__street_no: '7'
+NARODOWY FUNDUSZ INWESTYCYJNY OCTAVA:
+  address__city: Warszawa
+GROCLIN:
+  address__city: Grodzisk Wielkopolski
+  address__postal_code: 62-065
+  address__street: Słowiańska
+  address__street_no: '4'
+PROCHEM:
+  address__city: Warszawa
+  address__postal_code: 01-797
+  address__street: Powązkowska
+  address__street_no: 44c
+IBSM:
+  address__city: Warszawa
+  address__postal_code: 02-627
+11 BIT STUDIOS:
+  address__city: Warszawa
+  address__postal_code: 03-216
+  address__street: Modlińska
+  address__street_no: '6'
+GRUPA FINANSOWA PREMIUM:
+  address__city: Katowice
+  address__postal_code: 40-748
+  address__street: Mieczyków
+  address__street_no: '14'
+GRUPA DUON:
+  address__city: Wysogotowo
+  address__postal_code: 62-081
+  address__street: Serdeczna
+  address__street_no: '8'
+CASH FLOW:
+  address__city: Dąbrowa Górnicza
+  address__postal_code: 41-300
+  address__street: Perla
+  address__street_no: '14'
+VISTULA & WÓLCZANKA:
+  address__city: Kraków
+  address__postal_code: 31-035
+  address__street: Starowiślna
+  address__street_no: '48'
+EKO HOLDING:
+  address__city: Wrocław
+  address__postal_code: 51-114
+  address__street: Paprotna
+  address__street_no: '3'
+REINO CAPITAL.  S. A.:
+  address__city: Warszawa
+  address__postal_code: 00 - 645
+  address__street: LUDWIKA WARYŃSKIEGO
+  address__street_no: 3A
+NKT CABLES:
+  address__city: Warszowice
+  address__postal_code: 43-254
+  address__street_no: '3'
+PCC INTERMODAL.:
+  address__city: Gdynia
+  address__postal_code: 81-061
+  address__street: Hutnicza
+  address__street_no: '16'
+IALBATROS GROUP:
+  address__city: Warszawa
+  address__postal_code: 02-231
+  address__street: Jutrzenki
+  address__street_no: '183'
+TRAKCJA:
+  address__city: Warszawa
+  address__postal_code: 00-120
+  address__street: Złota
+  address__street_no: '59'
+ELEKTROBUDOWA:
+  address__city: Katowice
+  address__postal_code: 40-246
+  address__street: Porcelanowa
+  address__street_no: '12'
+CD PROJEKT RED:
+  address__city: Warszawa
+  address__postal_code: 03-301
+  address__street: Jagiellońska
+  address__street_no: '74'
+BLACK LION NARODOWY FUNDUSZ INWESTYCYJNY:
+  address__city: Warszawa
+  address__postal_code: 03-808
+  address__street: Mińska
+  address__street_no: '25'
+OCTAVA:
+  address__city: Warszawa
+  address__postal_code: 00-121
+  address__street: Sienna
+  address__street_no: '39'
+ATLANTIS SE:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18c
+GRUPA NOKAUT:
+  address__city: Gdynia
+  address__postal_code: 81-300
+  address__street: Sportowa
+  address__street_no: '8'
+JUTRZENKA HOLDING:
+  address__city: Opatówek
+  address__postal_code: 62-860
+  address__street: Zdrojowa
+  address__street_no: '1'
+CENTRUM LEASINGU I FINANSÓW CLIF:
+  address__city: Warszawa
+  address__postal_code: 00-556
+  address__street: Al. Róż
+  address__street_no: '2'
+FABRYKA KOTŁÓW RAFAKO:
+  address__city: Racibórz
+  address__postal_code: 47-400
+  address__street: Łąkowa
+  address__street_no: '33'
+SANWIL HOLDING:
+  address__city: Lublin
+  address__postal_code: 20-703
+  address__street: Cisowa
+  address__street_no: '11'
+WILBO SA UKŁADOWEJ:
+  address__city: Gdynia
+  address__postal_code: 81-029
+  address__street: Przemysłowa
+  address__street_no: '8'
+MULTIMEDIA POLSKA:
+  address__city: Gdynia
+  address__postal_code: 81-341
+  address__street: Tadeusza Wendy
+  address__street_no: 7/9
+ESOTIQ & HENDERSON:
+  address__city: Gdańsk
+  address__postal_code: 80-298
+  address__street: Szybowcowa
+MONDI PACKAGING PAPER ŚWIECIE:
+  address__city: Świecie
+  address__postal_code: 86-100
+  address__street: Bydgoska
+  address__street_no: '1'
+TELFORCEONE:
+  address__city: Wrocław
+  address__postal_code: 50-428
+  address__street: Krakowska
+  address__street_no: '119'
+YOLO:
+  address__city: Warszawa
+  address__postal_code: 00-105
+  address__street: Twarda
+  address__street_no: '18'
+SANOCKIE ZAKŁADY PRZEMYSŁU GUMOWEGO STOMIL SANOK:
+  address__city: Sanok
+  address__postal_code: 38-500
+  address__street: Reymonta
+  address__street_no: '19'
+CENTROSTAL.:
+  address__city: Gdańsk
+  address__postal_code: 80-298
+  address__street: Budowlanych
+  address__street_no: '42'
+MORIZON:
+  address__city: Warszawa
+  address__postal_code: 02-532
+  address__street: Rakowiecka
+  address__street_no: '36'
+RESBUD SPÓŁKA EUROPEJSKA:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18C
+ASSECO SOUTH EASTERN EUROPE:
+  address__city: Rzeszów
+  address__postal_code: 35-322
+  address__street: Olchowa
+  address__street_no: '14'
+'HERKULES ':
+  address__city: Warszawa
+  address__postal_code: 03-236
+  address__street: Annopol
+  address__street_no: '5'
+SOFTBANK:
+  address__city: Warszawa
+  address__postal_code: 02-146
+  address__street: 17 Stycznia
+  address__street_no: 72A
+PGS SOFTWARE:
+  address__city: Wrocław
+  address__postal_code: 54-413
+  address__street: Klecińska
+  address__street_no: '123'
+YAWAL:
+  address__city: Herby
+  address__postal_code: 42-284
+  address__street: Lublinicka
+  address__street_no: '36'
+MOSTOSTAL ZABRZE HOLDING:
+  address__city: Zabrze
+  address__postal_code: 41-800
+  address__street: Wolności
+  address__street_no: '191'
+COLIAN HOLDINGS:
+  address__city: Opatówek
+  address__postal_code: 62-860
+  address__street: Zdrojowa
+  address__street_no: '1'
+INVESTMENT FRIENDS SPÓŁKA EUROPEJSKA:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18C
+JWW INVEST:
+  address__city: Katowice
+  address__postal_code: 40-555
+  address__street: Rolna
+  address__street_no: 43B
+PRAGMA INKASO:
+  address__city: Tarnowskie Góry
+  address__postal_code: 42-600
+  address__street: Czarnohucka
+  address__street_no: '3'
+ENERGOINSTAL:
+  address__city: Katowice
+  address__postal_code: 40-203
+  address__street: Al. Roździeńskiego
+  address__street_no: 188d
+COMPERIA.PL:
+  address__city: Warszawa
+  address__postal_code: 02-672
+  address__street: Konstruktorska
+  address__street_no: '13'
+INFOVIDE-MATRIX:
+  address__city: Warszawa
+  address__postal_code: 00-838
+  address__street: Prosta
+  address__street_no: '51'
+ARMATURA KRAKÓW:
+  address__city: Kraków
+  address__postal_code: 30-418
+  address__street: Zakopiańska
+  address__street_no: '72'
+ELEMENTAL HOLDING:
+  address__city: Grodzisk Mazowiecki
+  address__postal_code: 05-825
+  address__street: Traugutta
+GLOBAL COSMED:
+  address__city: RADOM
+  address__postal_code: 26-600
+  address__street: WIELKOPOLSKA
+  address__street_no: '3'
+INVESTMENT FRIENDS CAPITAL:
+  address__city: Płock
+  address__postal_code: 09-402
+  address__street: Padlewskiego
+  address__street_no: 18C
+CENTROSTAL:
+  address__city: Gdańsk
+  address__postal_code: 80-298
+  address__street: Budowlanych
+  address__street_no: '42'
+ALUMETAL:
+  address__city: Kęty
+  address__postal_code: 32-650
+  address__street: Kościuszki
+  address__street_no: '111'
+MARVIPOL:
+  address__city: Warszawa
+  address__postal_code: 00-193
+  address__street: Stawki
+  address__street_no: 3a
+BANK BPH:
+  address__city: Gdańsk
+  address__postal_code: 80-175
+  address__street: płk. Jana Pałubickiego
+  address__street_no: '2'
+MERCATOR MEDICAL:
+  address__city: Kraków
+  address__postal_code: 31-327
+  address__street_no: '30'
+HOOP:
+  address__city: Warszawa
+  address__postal_code: 01-102
+  address__street: Jana Olbrachta
+  address__street_no: '94'
+GRAAL:
+  address__city: Wejherowo
+  address__postal_code: 84-200
+  address__street: Zachodnia
+  address__street_no: '22'
+MOSTOSTAL WARSZAWA:
+  address__city: Warszawa
+  address__postal_code: 02-673
+  address__street: Konstruktorska
+X-TRADE BROKERS DOM MAKLERSKI:
+  address__city: Warszawa
+  address__postal_code: 00-876
+  address__street: Ogrodowa
+  address__street_no: '58'
+PRZEDSIĘBIORSTWO PRODUKCYJNO-HANDLOWE ELEKTROMONTAŻ-EXPORT:
+  address__city: Warszawa
+  address__postal_code: 00-896
+  address__street: Ogrodowa
+  address__street_no: 28/30
+NOVITA:
+  address__city: Zielona Góra
+  address__postal_code: 65-722
+  address__street: Dekoracyjna
+  address__street_no: '3'
+CAPITAL PARTNERS:
+  address__city: Warszawa
+  address__postal_code: 00-103
+  address__street: Królewska
+  address__street_no: '16'
+SESCOM:
+  address__city: Gdańsk
+  address__postal_code: 80-244
+  address__street: Grunwaldzka
+  address__street_no: '82'
+INSTAL KRAKÓW:
+  address__city: Kraków
+  address__postal_code: 30-732
+  address__street: Konstantego Brandla
+  address__street_no: '1'
+PROCAD:
+  address__city: Gdańsk
+  address__postal_code: 80-122
+  address__street: Kartuska
+  address__street_no: '215'
+ZASTAL:
+  address__city: Zielona Góra
+  address__postal_code: 65-119
+  address__street: Sulechowska
+  address__street_no: 4a
+LABO PRINT:
+  address__city: POZNAŃ
+  address__postal_code: 60-471
+  address__street: Szczawnicka
+  address__street_no: '1'
+BBI DEVELOPMENT:
+  address__city: Warszawa
+  address__postal_code: 02-566
+  address__street: Puławska
+  address__street_no: '2'
+ARTIFEX MUNDI:
+  address__city: Zabrze
+  address__postal_code: 41-800
+  address__street: Michała Archanioła
+  address__street_no: '10'
+PHARMENA:
+  address__city: Łódź
+  address__postal_code: 90-530
+  address__street: Wólczańska
+  address__street_no: '178'
+PPWK. IM E. ROMERA:
+  address__city: Warszawa
+  address__postal_code: 02-389
+  address__street: Al. Bohaterów Września
+  address__street_no: '9'
+AD.DRĄGOWSKI SPOŁKA AKCYJNA:
+  address__city: Warszawa
+  address__postal_code: 00-924
+  address__street: Kopernika
+  address__street_no: 36/40
+MCI CAPITAL:
+  address__city: Warszawa
+  address__postal_code: 00-113
+  address__street: Emilii Plater
+  address__street_no: '53'
+FOTA SA W UPADŁOŚCI UKŁADOWEJ:
+  address__city: Gdynia
+  address__postal_code: 81-506
+  address__street: Stryjska
+  address__street_no: '24'
+BUDIMEX:
+  address__city: Warszawa
+  address__postal_code: 01-040
+  address__street: Stawki
+  address__street_no: '40'
+ATM SYSTEMY INFORMATYCZNE:
+  address__city: Warszawa
+  address__postal_code: 04-186
+  address__street: Grochowska
+  address__street_no: 21a
+CALATRAVA CAPITAL:
+  address__city: Warszawa
+  address__postal_code: 00-461
+  address__street: Al. Ujazdowskie
+  address__street_no: 6A
+IMPEXMETAL:
+  address__city: Warszawa
+  address__postal_code: 00-842
+  address__street: Łucka
+  address__street_no: 7/9
+PRIMETECH:
+  address__city: Katowice
+  address__postal_code: 40-698
+  address__street: Armii Krajowej
+  address__street_no: '51'
+KRAKOWSKA FABRYKA ARMATUR:
+  address__city: Kraków
+  address__postal_code: 30-418
+  address__street: Zakopiańska
+  address__street_no: '72'
+DGA:
+  address__city: Poznań
+  address__postal_code: 61-896
+  address__street: Towarowa
+  address__street_no: '37'
+TRAS-INTUR:
+  address__city: Inowrocław
+  address__postal_code: 88-100
+  address__street: Marcinkowskiego
+  address__street_no: '154'
+BEEF-SAN ZAKŁADY MIĘSNE:
+  address__city: Sanok
+  address__postal_code: 38-500
+  address__street: Mickiewicza
+  address__street_no: '29'
+UNIMA 2000 SYSTEMY TELEINFORMATYCZNE:
+  address__city: Kraków
+  address__postal_code: 31-866
+  address__street: Skarżyńskiego
+  address__street_no: '14'
+PRONOX TECHNOLOGY:
+  address__city: Katowice
+  address__postal_code: 40-282
+  address__street: Paderewskiego
+  address__street_no: 32c
+W INVESTMENTS:
+  address__city: Warszawa
+  address__postal_code: 02-627
+  address__street: Naruszewicza
+  address__street_no: '27'
+VISTAL GDYNIA:
+  address__city: Gdynia
+  address__postal_code: 81-061
+  address__street: Hutnicza
+  address__street_no: '40'
+TXM:
+  address__city: Warszawa
+  address__postal_code: 02-486
+  address__street: Al. Jerozolimskie
+  address__street_no: 200/209
+ORBIS:
+  address__city: Warszawa
+  address__postal_code: 00-028
+  address__street: Bracka
+  address__street_no: '16'
+AMREST HOLDINGS:
+  address__city: Wrocław
+  address__postal_code: 50-365
+  address__street: pl. Grunwaldzki
+  address__street_no: 25-27
+ADIUVO INVESTMENTS:
+  address__city: Warszawa
+  address__postal_code: 00-195
+  address__street: Słomińskiego
+  address__street_no: '15'
+E-KANCELARIA GRUPA PRAWNO-FINANSOWA:
+  address__city: Wrocław
+  address__postal_code: 50-265
+  address__street: Gen. Józefa Bema
+  address__street_no: '2'
+ATAL:
+  address__city: Cieszyn
+  address__postal_code: 43-400
+  address__street: Stawowa
+  address__street_no: '27'
+PROKOM SOFTWARE:
+  address__city: Warszawa
+  address__postal_code: 00-697
+  address__street: Aleje Jerozolimskie
+  address__street_no: 65/79
+TRAKCJA-TILTRA:
+  address__city: Warszawa
+  address__postal_code: 00-120
+  address__street: Złota
+  address__street_no: '59'

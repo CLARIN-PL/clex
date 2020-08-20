@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.pwr.g419.HasLogger;
+import pl.clarin.pwr.g419.kbase.AddressesBase;
+import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
 import pl.clarin.pwr.g419.struct.LineHeightHistogram;
 import pl.clarin.pwr.g419.struct.MetadataWithContext;
@@ -30,7 +32,6 @@ public class InformationExtractor implements HasLogger {
       new AnnotatorStreetNameStartAbbreviation(),
       new AnnotatorStreetOnly(),
       new AnnotatorStreet(),
-//
       new AnnotatorHeadQuarters(),
       new AnnotatorCityWithDate()
   );
@@ -43,6 +44,8 @@ public class InformationExtractor implements HasLogger {
   ExtractorPostalCode extractorPostalCode = new ExtractorPostalCode();
   ExtractorCity extractorCity = new ExtractorCity();
   ExtractorDrawingDate extractorDrawingDate = new ExtractorDrawingDate();
+
+  AddressesBase addressesBase = new AddressesBase();
 
   public MetadataWithContext extract(final HocrDocument document) {
 
@@ -65,16 +68,22 @@ public class InformationExtractor implements HasLogger {
 
     final MetadataWithContext metadata = new MetadataWithContext();
 
-    extractorSignsPage.extract(document).ifPresent(metadata::setSignsPage);
+    extractorSignsPage.extract(document)
+        .ifPresent(metadata::setSignsPage);
     extractorPeriod.extract(document).ifPresent(p -> {
       metadata.setPeriodFrom(p.getLeft());
       metadata.setPeriodTo(p.getRight());
     });
-    extractorDrawingDate.extract(document).ifPresent(metadata::setDrawingDate);
-    extractorCompany.extract(document).ifPresent(metadata::setCompany);
-    extractorPeople.extract(document).ifPresent(metadata::setPeople);
-    extractorPostalCode.extract(document).ifPresent(metadata::setPostalCode);
-    extractorCity.extract(document).ifPresent(metadata::setCity);
+    extractorDrawingDate.extract(document)
+        .ifPresent(metadata::setDrawingDate);
+    extractorCompany.extract(document)
+        .ifPresent(metadata::setCompany);
+    extractorPeople.extract(document)
+        .ifPresent(metadata::setPeople);
+    extractorPostalCode.extract(document)
+        .ifPresent(metadata::setPostalCode);
+    extractorCity.extract(document)
+        .ifPresent(metadata::setCity);
     extractorStreet.extract(document).ifPresent(p -> {
       metadata.setStreet(p.getLeft());
       if (p.getRight().isPresent()) {
@@ -82,9 +91,27 @@ public class InformationExtractor implements HasLogger {
       }
     });
 
+
+    assignDefaultAddress(metadata);
     assignDefaultSignDate(metadata);
 
     return metadata;
+  }
+
+
+  private void assignDefaultAddress(final MetadataWithContext metadata) {
+    addressesBase.getCity(metadata.getCompany().getField()).ifPresent(
+        v -> metadata.setCity(new FieldContext<>(v, "default", "database of addresses"))
+    );
+    addressesBase.getPostalCode(metadata.getCompany().getField()).ifPresent(
+        v -> metadata.setPostalCode(new FieldContext<>(v, "default", "database of addresses"))
+    );
+    addressesBase.getStreet(metadata.getCompany().getField()).ifPresent(
+        v -> metadata.setStreet(new FieldContext<>(v, "default", "database of addresses"))
+    );
+    addressesBase.getStreetNo(metadata.getCompany().getField()).ifPresent(
+        v -> metadata.setStreetNo(new FieldContext<>(v, "default", "database of addresses"))
+    );
   }
 
   private void assignDefaultSignDate(final MetadataWithContext metadata) {
