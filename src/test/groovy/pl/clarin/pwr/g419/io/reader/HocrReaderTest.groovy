@@ -190,12 +190,12 @@ class HocrReaderTest extends Specification {
             documentOnlyParse.get(0).getLines().stream()
                     .map { l -> l.getText() }
                     .filter { text -> text.startsWith("PODPIS OSOBY ,KTÓREJ POWIERZONO PROWADZENIE KSIĄG") }
-                    .count() == 3;
+                    .count() == 3
         and:
             documentOnlyParse.get(0).getLines().stream()
                     .map { l -> l.getText() }
                     .filter { text -> text.endsWith("30 czerwca 2011 r . ") }
-                    .count() == 4;
+                    .count() == 4
 
         cleanup:
             FileUtils.deleteQuietly(hocr)
@@ -214,13 +214,13 @@ class HocrReaderTest extends Specification {
             documentParseAndEliminateAndSort.get(0).getLines().stream()
                     .map { l -> l.getText() }
                     .filter { text -> text.startsWith("PODPIS OSOBY ,KTÓREJ POWIERZONO PROWADZENIE KSIĄG") }
-                    .count() == 1;
+                    .count() == 1
 
         and:
             documentParseAndEliminateAndSort.get(0).getLines().stream()
                     .map { l -> l.getText() }
                     .filter { text -> text.endsWith("30 czerwca 2011 r . ") }
-                    .count() == 2;
+                    .count() == 2
 
 
         cleanup:

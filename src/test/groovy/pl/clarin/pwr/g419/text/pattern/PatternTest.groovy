@@ -126,7 +126,7 @@ class PatternTest extends Specification {
             def page = new HocrPage(null, TestUtils.getSequenceOfBboxes("01.12.2020 stycznia 2020 2 LUTEGO"))
             def pattern = new Pattern()
                     .next(new MatcherRegexText("([0-9]{1,2})[.]([0-9]{1,2})[.]([0-9]{4})", 10,
-                            [1: "day", 2: "month", 3: "year"] as Map).group("date"));
+                            [1: "day", 2: "month", 3: "year"] as Map).group("date"))
 
         when:
             def result = pattern.find(page)

@@ -30,13 +30,7 @@ class AnnotatorPostalCodeTest extends Specification {
             "333-100"             || []
             "33-1000"             || []
             "Strzegomska, 33-100" || ["33-100"]
-            // TODO - dlaczego ?
-            //    "Strzegomska,33-100 " || ["33-100"]
-            //"33-100b"             || ["33-100"]
             "33-100 "             || ["33-100"]
-            //    ",33-100 "            || ["33-100"]
-            //    "33-100,"             || ["33-100"]
-
 
     }
 

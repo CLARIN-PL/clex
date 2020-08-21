@@ -26,7 +26,6 @@ public class Test {
       if (!endWords.contains(w)) {
         rest.add(w);
       }
-      ;
     });
 
 

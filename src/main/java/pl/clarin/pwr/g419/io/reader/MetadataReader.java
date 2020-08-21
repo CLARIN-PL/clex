@@ -3,6 +3,7 @@ package pl.clarin.pwr.g419.io.reader;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,11 +18,13 @@ import pl.clarin.pwr.g419.HasLogger;
 import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.Person;
 
+import static pl.clarin.pwr.g419.utils.DateUtils.strToDate;
+
 public class MetadataReader implements HasLogger {
 
   public List<Metadata> parse(final Path filename) throws Exception {
     final CSVParser parser = CSVParser.parse(filename.toFile(),
-        Charset.forName("utf-8"),
+        StandardCharsets.UTF_8,
         CSVFormat.EXCEL
             .withDelimiter(';')
             .withHeader(Metadata.ID, Metadata.COMPANY, Metadata.DRAWING_DATE,
@@ -36,7 +39,19 @@ public class MetadataReader implements HasLogger {
     return metadata;
   }
 
+
   private Metadata recordToMetadata(final CSVRecord record) throws IOException, ParseException {
+    final Metadata m = recordToMetadataCommon(record);
+    m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
+    if (record.size() > 10) {
+      m.setSignsPage(record.get(Metadata.SIGN_PAGE));
+    }
+
+    return m;
+  }
+
+
+  public static Metadata recordToMetadataCommon(CSVRecord record) throws ParseException {
     final Metadata m = new Metadata();
     m.setId(record.get(Metadata.ID));
     m.setCompany(record.get(Metadata.COMPANY));
@@ -47,20 +62,9 @@ public class MetadataReader implements HasLogger {
     m.setCity(record.get(Metadata.CITY));
     m.setStreet(record.get(Metadata.STREET));
     m.setStreetNo(record.get(Metadata.STREET_NO));
-    m.setPeople(parsePeople(record.get(Metadata.PEOPLE)));
-    if (record.size() > 10) {
-      m.setSignsPage(record.get(Metadata.SIGN_PAGE));
-    }
-
     return m;
   }
 
-  private Date strToDate(final String date) throws ParseException {
-    if (date == null || date.length() == 0) {
-      return null;
-    }
-    return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-  }
 
   @SneakyThrows
   private List<Person> parsePeople(final String str) throws IOException {

@@ -25,10 +25,6 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
     document.getAllPagesAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).forEach(an -> an.calculateScore(this::additionalCalculatePeriodScore));
 
-
-    // TODO - doszlifować wyciąganie i sortowanie annotacji z nagłówków i stopek
-    // TODO - np. wg liczby stron na których jest, kolejności w dokumencie, poziomu w drzewie nagłówków
-
     Optional<FieldContext<String>> period = document.getAllPagesAnnotations()
         .filterByType(AnnotatorPeriod.PERIOD).topScore().sortByLoc().getFirst();
 
@@ -36,7 +32,6 @@ public class ExtractorPeriod implements IExtractor<Pair<FieldContext<Date>, Fiel
 
     log.trace(" PeriodFromTotal=" + resultPeriod);
     return resultPeriod;
-
   }
 
 

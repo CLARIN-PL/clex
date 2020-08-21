@@ -12,8 +12,7 @@ public class NormalizerStreet extends Normalizer<String> {
     if (value == null) {
       return null;
     }
-
-    if (value.isEmpty()) {  // TODO : dlaczego tu w ogóle docierają takie rzeczy ?
+    if (value.isEmpty()) {
       return value;
     }
 

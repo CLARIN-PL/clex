@@ -133,7 +133,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
     for (int i = 0; i < detectedRoles.size(); i++) {
       final int roleIndex = detectedRoles.get(i);
       log.debug("  ");
-      log.debug(" ---------- SZUKAMY DLA ROLI : " + page.get(roleIndex).getText() + "(" + roleIndex + ")  -------------");
+      log.debug(" --- Szukamy dla roli : " + page.get(roleIndex).getText() + "(" + roleIndex + ")  ---");
       // znajdź BBoxy z jakąś treścią powyżej i poniżej BBoxa z rolą
       final List<Integer> above = page.findBBoxesAboveBBox(roleIndex, 1);
       final List<Integer> below = page.findBBoxesBelowBBox(roleIndex, 1);
@@ -259,7 +259,7 @@ public class ExtractorPeople implements IExtractor<List<FieldContext<Person>>> {
 
         // ... jeśli jest ...
         if (newPerson.getIndexBegin() == against.getIndexBegin()) {
-          log.debug("       Konflikt!!! p1: " + newPerson + " p2: " + against);
+          log.debug("       Konflikt! p1: " + newPerson + " p2: " + against);
 
           // (porównywanie wg odległości standardowej)
           final Contour personBbox = newPerson.getContour();

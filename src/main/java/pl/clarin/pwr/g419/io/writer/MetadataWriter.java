@@ -25,7 +25,7 @@ public class MetadataWriter {
                 Metadata.ID, Metadata.COMPANY, Metadata.DRAWING_DATE,
                 Metadata.PERIOD_FROM, Metadata.PERIOD_TO, Metadata.POSTAL_CODE,
                 Metadata.CITY, Metadata.STREET, Metadata.STREET_NO, Metadata.PEOPLE
-            ));
+            ))
     ) {
       for (final Metadata metadataRow : metadata) {
         csvPrinter.printRecord(metadataToRecord(metadataRow));

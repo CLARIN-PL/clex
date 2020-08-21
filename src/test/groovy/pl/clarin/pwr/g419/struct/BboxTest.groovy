@@ -8,7 +8,7 @@ class BboxTest extends Specification {
     @Unroll
     def "#text should give #niceLowText "() {
         given:
-            def Bbox b = new Bbox(1, text, null);
+            Bbox b = new Bbox(1, text, null)
 
         when:
             def result = b.getLowNiceText()

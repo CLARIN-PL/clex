@@ -23,19 +23,7 @@ public class ExtractorCity implements IExtractor<FieldContext<String>> {
     document.getAllPagesAnnotations()
         .filterByType(AnnotatorCity.CITY).forEach(an -> an.calculateScore(null));
 
-    AnnotationList cityCandidates = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorCity.CITY);
-
-    final AnnotationList firstPage = cityCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      cityCandidates = firstPage;
-    }
-
-    Optional<FieldContext<String>> result = cityCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+    Optional<FieldContext<String>> result = getFirstResult(document, AnnotatorCity.CITY);
 
     if (result.isPresent()) {
       document.getDocContextInfo().setPageWithFoundCity(result.get().getPage());
@@ -66,11 +54,8 @@ public class ExtractorCity implements IExtractor<FieldContext<String>> {
     if (cityWithDateAnn.isPresent()) {
       var vc = cityWithDateAnn.get();
       log.debug(" cityWithDate present vc.getPAge =  " + vc.getPage());
-      // nie bierzemy getAllPages bo one są z nagłówkami // TODO - trzeba by to jednak zmienić
       if (vc.getPage() == document.size()) {
-
         String[] splitted = vc.getField().split(":");
-        // TODO - tu trzeba wyciągnąć miasto z tej pary
         city.setField(splitted[0]);
         city.setContext(cityWithDateAnn.get().getContext());
         city.setPage(vc.getPage());
@@ -89,9 +74,6 @@ public class ExtractorCity implements IExtractor<FieldContext<String>> {
       if (result.isPresent()) {
         String standardResult = result.get().getField().trim().toLowerCase();
         String annCityDateResult = city.getField().trim().toLowerCase();
-        // TODO - do poprawki : albo wyeliminować regułę <data>,<miasto> (bo pewnie ona te przypadki dodaje)
-        // TODO - albo obsługiwać specjalnie miasta z nazwami takie jak imiona własne - choć nie ma ich dużo jesli chodzi
-        // TODO - o większe miasta
         if (!annCityDateResult.equals("jarosław")) {
           if (!(standardResult.equals(annCityDateResult))) {
             return Optional.of(city);

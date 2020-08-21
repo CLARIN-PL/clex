@@ -63,22 +63,8 @@ public class ActionWriteOutResults extends Action {
   public void run() throws Exception {
     final DocumentsReader reader = new DocumentsReader();
 
-    // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
-    final Path hocrIndex = Paths.get(optionInput.getString());
-    List<Path> paths;
-    if (hocrIndex.toString().endsWith(".hocr")) {
-      paths = List.of(hocrIndex);
-    } else {
-      paths = reader.loadPaths(hocrIndex);
-    }
-
-    // jeśli jest podane zawężenie do katalogu o podanym numerze to weż poda uwagę tylko ten dokument
-    if (optionSelectOne.getString() != null) {
-      log.info("Podano parameter selectOne = " + optionSelectOne.getString());
-      paths = paths.stream()
-          .filter(p -> p.getParent().endsWith(optionSelectOne.getString()))
-          .collect(Collectors.toList());
-    }
+    // do pamięci zaczytujemy wszystkie ściężki do dokumentów, chyba że opc. selectOne jest włączona
+    List<Path> paths = ActionUtils.getPaths(reader, optionInput.getString(), optionSelectOne);
 
     final List<String> documentsFailed = Lists.newArrayList();
 
@@ -98,7 +84,7 @@ public class ActionWriteOutResults extends Action {
       outFileMetadataList.add(metadata);
     }
 
-    printRecords(records);
+    ActionUtils.printRecords(records, optionOutput.getString());
 
     final Path path = Path.of(optionOutput.getString());
     new MetadataWriter().write(outFileMetadataList, path);
@@ -116,24 +102,6 @@ public class ActionWriteOutResults extends Action {
     final List<List<String>> result = processDocument(document);
     records.addAll(result);
   }
-
-
-  private void printRecords(final List<List<String>> records) throws IOException {
-    try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
-         final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
-      try {
-        csvPrinter.printRecord(record("Eval", "Document", "Field",
-            "Truth Normalized", "Extracted Normalized",
-            "Truth", "Extracted", "Context", "Rule"));
-        csvPrinter.printRecords(records.stream()
-            .sorted(Comparator.comparing(o -> o.get(1)))
-            .collect(Collectors.toList()));
-      } catch (final Exception ex) {
-        getLogger().error("Failed to write to CSV", ex);
-      }
-    }
-  }
-
 
   private List<List<String>> processDocument(final HocrDocument document) {
 
@@ -172,16 +140,8 @@ public class ActionWriteOutResults extends Action {
     final String referenceValueNorm = "";
     final String reference = "";
 
-    return record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
+    return ActionUtils.record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
         "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
-  }
-
-  private List<String> record(final String label, final String id, final String field,
-                              final String valueReferenceNorm, final String valueExtractedNorm,
-                              final String valueReference, final String valueExtracted,
-                              final String context, final String rule) {
-    return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
-        valueReference, valueExtracted, context, rule);
   }
 
 

@@ -19,7 +19,7 @@ class MatcherTwoWordsSequenceInSetTest extends Specification {
 
         when:
             def result = matcher.matchesAt(page, index)
-            print("" + result);
+            print("" + result)
 
         then:
             result.orElse(new MatcherResult(0)).getLength() == length
