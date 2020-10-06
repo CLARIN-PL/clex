@@ -28,7 +28,7 @@ abstract public class ResourceLexicon extends HashSet<String> implements HasLogg
 
   protected void load(int limit) throws IOException {
     try (
-        final InputStream stream = NeLexicon2.class.getResourceAsStream(getResourcePath());
+        final InputStream stream = NeLexicon2.class.getResourceAsStream(getResourcePath())
     ) {
       final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
       reader.lines()

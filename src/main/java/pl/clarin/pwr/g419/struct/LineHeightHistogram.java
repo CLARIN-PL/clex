@@ -32,7 +32,6 @@ public class LineHeightHistogram {
       }
       lineNrs.add(Pair.of(page.getNo(), lineNr));
     }
-    ;
   }
 
   private void buildHistogramOfLinesHeightsForDocument(final HocrDocument document) {
@@ -59,7 +58,7 @@ public class LineHeightHistogram {
       final Map<Integer, Set<Pair<Integer, Integer>>> histogram) {
     final List<Integer> keys = new LinkedList<>(histogram.keySet());
     keys.sort((o1, o2) -> o1 < o2 ? -1 : 1);
-    log.debug(" ---------- Lines Heights histogram for document ");
+    log.debug(" Lines Heights histogram for document: ");
 
     keys.stream().forEach(key ->
         log.debug(" Key : " + key + "  counter: " + histogram.get(key).size() + " [" + histogram.get(key).stream().limit(5).map(v -> v.toString()).collect(Collectors.joining()) + " ]")

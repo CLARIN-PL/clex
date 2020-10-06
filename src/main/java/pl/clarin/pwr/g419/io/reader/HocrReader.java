@@ -376,18 +376,18 @@ public class HocrReader extends DefaultHandler {
       final Bbox bbox = page.get(i);
       final Matcher m = p.matcher(bbox.getText());
       if (m.matches()) {
-        final String head = m.group(1);
-        final String tail = m.group(3);
-        final int headWidth = bbox.getBox().getWidth() * head.length() / bbox.getText().length();
+        final String headText = m.group(1);
+        final String tailText = m.group(3);
+        final int headWidth = bbox.getBox().getWidth() * headText.length() / bbox.getText().length();
         final int tailWidth = bbox.getBox().getWidth() - headWidth;
 
         bbox.getBox().setLeft(bbox.getBox().getLeft() + headWidth);
         bbox.getBox().setRight(bbox.getBox().getLeft() + tailWidth);
-        bbox.setText(tail);
+        bbox.setText(tailText);
 
         final Box headBox = new Box(bbox.getBox().getRight(), bbox.getBox().getRight() + headWidth,
             bbox.getBox().getTop(), bbox.getBox().getBottom());
-        final Bbox headBbox = new Bbox(bbox.getNo(), head, headBox);
+        final Bbox headBbox = new Bbox(bbox.getNo(), headText, headBox);
         headBbox.setLineBegin(bbox.isLineBegin());
         page.add(i, headBbox);
 

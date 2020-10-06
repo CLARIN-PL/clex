@@ -103,11 +103,7 @@ public class AnnotatorPersonVertical extends Annotator {
 
   private boolean isBlock(final Annotation an) {
     final HocrPage page = an.getPage();
-    if (page.get(an.getIndexEnd() - 1).isBlockEnd()) {
-      return true;
-    } else {
-      return false;
-    }
+    return page.get(an.getIndexEnd() - 1).isBlockEnd();
   }
 
   private Optional<Bboxes> findBlockAbove(final Annotation an,

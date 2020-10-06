@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.struct.*;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorPeriod;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorPostalCode;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorStreet;
 import java.util.Date;
 import java.util.Optional;
 
@@ -25,20 +26,7 @@ public class ExtractorPostalCode implements IExtractor<FieldContext<String>> {
     document.getAllPagesAnnotations()
         .filterByType(AnnotatorPostalCode.POSTAL_CODE).forEach(an -> an.calculateScore(null));
 
-    AnnotationList postalCodeCandidates = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorPostalCode.POSTAL_CODE);
-
-    // TODO - sprawdzić tu i w innych podobnych miejscach czy firstPage nie ma konflikótw z pierwszym z nagłówka/stopki
-    final AnnotationList firstPage = postalCodeCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      postalCodeCandidates = firstPage;
-    }
-
-    Optional<FieldContext<String>> result = postalCodeCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
+    Optional<FieldContext<String>> result = getFirstResult(document, AnnotatorPostalCode.POSTAL_CODE);
 
     if (result.isPresent()) {
       document.getDocContextInfo().setPageWithFoundPostalCode(result.get().getPage());

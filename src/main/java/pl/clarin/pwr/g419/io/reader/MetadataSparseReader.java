@@ -3,6 +3,7 @@ package pl.clarin.pwr.g419.io.reader;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,8 @@ import org.apache.commons.csv.CSVRecord;
 import pl.clarin.pwr.g419.struct.Metadata;
 import pl.clarin.pwr.g419.struct.Person;
 
+import static pl.clarin.pwr.g419.io.reader.MetadataReader.recordToMetadataCommon;
+
 public class MetadataSparseReader {
 
   public static String PERSON_DATE = "person_date";
@@ -23,7 +26,7 @@ public class MetadataSparseReader {
 
   public List<Metadata> parse(final Path filename) throws Exception {
     final CSVParser parser = CSVParser.parse(filename.toFile(),
-        Charset.forName("utf-8"),
+        StandardCharsets.UTF_8,
         CSVFormat.EXCEL
             .withDelimiter(';')
             .withHeader(Metadata.ID, Metadata.COMPANY, Metadata.DRAWING_DATE,
@@ -48,16 +51,7 @@ public class MetadataSparseReader {
   }
 
   private Metadata recordToMetadata(final CSVRecord record) throws IOException, ParseException {
-    final Metadata m = new Metadata();
-    m.setId(record.get(Metadata.ID));
-    m.setCompany(record.get(Metadata.COMPANY));
-    m.setDrawingDate(strToDate(record.get(Metadata.DRAWING_DATE)));
-    m.setPeriodFrom(strToDate(record.get(Metadata.PERIOD_FROM)));
-    m.setPeriodTo(strToDate(record.get(Metadata.PERIOD_TO)));
-    m.setPostalCode(record.get(Metadata.POSTAL_CODE));
-    m.setCity(record.get(Metadata.CITY));
-    m.setStreet(record.get(Metadata.STREET));
-    m.setStreetNo(record.get(Metadata.STREET_NO));
+    final Metadata m = MetadataReader.recordToMetadataCommon(record);
     recordToPerson(record).ifPresent(m.getPeople()::add);
     return m;
   }

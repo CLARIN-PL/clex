@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import pl.clarin.pwr.g419.struct.AnnotationList;
 import pl.clarin.pwr.g419.struct.FieldContext;
 import pl.clarin.pwr.g419.struct.HocrDocument;
+import pl.clarin.pwr.g419.text.annotator.AnnotatorCity;
 import pl.clarin.pwr.g419.text.annotator.AnnotatorStreet;
 
 @Slf4j
@@ -25,22 +26,9 @@ public class ExtractorStreet implements IExtractor<Pair<FieldContext<String>, Op
     document.getAllPagesAnnotations()
         .filterByType(AnnotatorStreet.STREET).forEach(an -> an.calculateScore(null));
 
+    Optional<FieldContext<String>> result = getFirstResult(document, AnnotatorStreet.STREET);
 
-    AnnotationList streetCandidates = document.getAllPagesAnnotations()
-        .filterByType(AnnotatorStreet.STREET);
-
-    final AnnotationList firstPage = streetCandidates.filterByPageNo(1);
-    if (firstPage.size() > 0) {
-      streetCandidates = firstPage;
-    }
-
-    final Optional<FieldContext<String>> streetAndNo = streetCandidates
-        .topScore()
-        .sortByPos()
-        .getFirst()
-        .map(vc -> new FieldContext<>(vc.getField(), vc.getContext(), vc.getRule()));
-
-    final var resultStreetAndNo = decomposeStreetAndNo(streetAndNo);
+    final var resultStreetAndNo = decomposeStreetAndNo(result);
     // przetwórzmy i zwrócmy
     return resultStreetAndNo;
   }

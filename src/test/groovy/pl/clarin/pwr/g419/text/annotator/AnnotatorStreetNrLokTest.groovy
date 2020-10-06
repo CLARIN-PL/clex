@@ -1,4 +1,4 @@
-package pl.clarin.pwr.g419.text.annotator;
+package pl.clarin.pwr.g419.text.annotator
 
 
 import pl.clarin.pwr.g419.struct.HocrPage

@@ -2,7 +2,7 @@ package pl.clarin.pwr.g419.struct;
 
 public interface Contour {
 
-  public enum Orientation {VERTICAL, HORIZONTAL}
+  enum Orientation {VERTICAL, HORIZONTAL}
 
   int getLeft();
 

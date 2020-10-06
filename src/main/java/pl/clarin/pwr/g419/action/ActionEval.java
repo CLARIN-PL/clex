@@ -68,20 +68,8 @@ public class ActionEval extends Action {
     final Map<String, Metadata> idToMetadata =
         metadata.stream().collect(Collectors.toMap(Metadata::getId, Function.identity()));
 
-    // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
-    final Path hocrIndex = Paths.get(optionInput.getString());
-    List<Path> paths;
-    if (hocrIndex.toString().endsWith(".hocr")) {
-      paths = List.of(hocrIndex);
-    } else {
-      paths = reader.loadPaths(hocrIndex);
-    }
-
-    // jeśli jest podane zawężenie do katalogu o podanym numerze to weż poda uwagę tylko ten dokument
-    if (optionSelectOne.getString() != null) {
-      log.info("Podano parameter selectOne = " + optionSelectOne.getString());
-      paths = paths.stream().filter(p -> p.getParent().endsWith(optionSelectOne.getString())).collect(Collectors.toList());
-    }
+    // do pamięci zaczytujemy wszystkie ściężki do dokumentów, chyba że opc. selectOne jest włączona
+    List<Path> paths = ActionUtils.getPaths(reader, optionInput.getString(), optionSelectOne);
 
     if (optionPersonEvaluationVariants.getString() != null) {
       log.info("Podano parameter personevalvariant = " + optionPersonEvaluationVariants.getString());
@@ -99,7 +87,7 @@ public class ActionEval extends Action {
       }
     });
 
-    printRecords(records);
+    ActionUtils.printRecords(records, optionOutput.getString());
 
     printSummary();
 
@@ -119,22 +107,6 @@ public class ActionEval extends Action {
     records.addAll(result);
   }
 
-
-  private void printRecords(final List<List<String>> records) throws IOException {
-    try (final Writer out = new BufferedWriter(new FileWriter(optionOutput.getString()));
-         final CSVPrinter csvPrinter = new CSVPrinter(out, CSVFormat.TDF)) {
-      try {
-        csvPrinter.printRecord(record("Eval", "Document", "Field",
-            "Truth Normalized", "Extracted Normalized",
-            "Truth", "Extracted", "Context", "Rule"));
-        csvPrinter.printRecords(records.stream()
-            .sorted(Comparator.comparing(o -> o.get(1)))
-            .collect(Collectors.toList()));
-      } catch (final Exception ex) {
-        getLogger().error("Failed to write to CSV", ex);
-      }
-    }
-  }
 
   private void printSummary() {
     System.out.println(String.format("%20s | %5s | %5s | %8s",

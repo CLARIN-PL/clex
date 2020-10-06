@@ -17,7 +17,7 @@ class ExtractorSignsPageTest extends Specification {
             def hocr = File.createTempFile("hocr", ".hocr")
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-page-2.hocr"), hocr)
             def document = new HocrReader().parse(hocr.toPath())
-            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
+            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document)
 
         expect:
             document.docContextInfo.pageNrWithSigns == 2
@@ -33,7 +33,7 @@ class ExtractorSignsPageTest extends Specification {
             def hocr = File.createTempFile("hocr", ".hocr")
             FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/hocr-signs-no-signs.hocr"), hocr)
             def document = new HocrReader().parse(hocr.toPath())
-            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document);
+            final Optional<FieldContext<String>> signsPageNr = extractor.getSignsPage(document)
 
         expect:
             document.docContextInfo.pageNrWithSigns == 0

@@ -52,7 +52,6 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
       if (cityWithDateAnn.isPresent()) {
         var vc = cityWithDateAnn.get();
         log.debug(" cityWithDate present vc.getPAge =  " + vc.getPage());
-        // nie bierzemy getAllPages bo one są z nagłówkami // TODO - trzeba by to jednak zmienić
         if (vc.getPage() == document.size()) {
           result.setField(String.valueOf(vc.getPage()));
           result.setContext(cityWithDateAnn.get().getContext());
@@ -62,10 +61,10 @@ public class ExtractorSignsPage implements IExtractor<FieldContext<String>> {
       }
 
       if (result.getPage() == -1) {
-        result.setField(String.valueOf("0"));
+        result.setField("0");
         document.getDocContextInfo().setPageNrWithSigns(0);
       }
-      
+
 
       log.debug("returning  = " + result);
       return Optional.of(result);

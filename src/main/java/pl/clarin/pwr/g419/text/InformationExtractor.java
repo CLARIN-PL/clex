@@ -55,7 +55,7 @@ public class InformationExtractor implements HasLogger {
     final int mostCommonHeightOfLineInDocument = documentHistogram.findMostCommonHeightOfLine();
     document.getDocContextInfo().setMostCommonHeightOfLine(mostCommonHeightOfLineInDocument);
 
-    log.debug(" XXXXXXXXXXXXXXXXXXX Annotating XXXXXXXXXXXXXXXXXXXXXXX");
+    log.debug("--- Annotating ---");
     // poprzez wykorzystanie getAllPages annotujemy także sztucznie wygenerowane strony dla nagłówków i stopek
     document.getAllPages().stream()
         .forEach(page -> annotators.forEach(an -> an.annotate(page)));
