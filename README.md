@@ -1,13 +1,40 @@
 # About
 
+CLEX is a rule- and knowledge-based system for information extraction from financial reports. 
+CLEX won the PolEval 2020 [Task 4: Information extraction and entity typing from long documents with complex layouts](http://poleval.pl/tasks/task4/). 
 
-## Credits
+CLEX extracts the following fields from the documents in hOCR format:
+* *company* — name of the company
+* *drawing_date* — date which specifies when the financial report was submitted
+* *period_from* — start of the obligation period
+* *period_to* — end of the obligation period
+* *postal_code* — postal code of the company
+* *city* — the city where the company is registered
+* *street* — the name of the street where the company is registerd
+* *street_no* — the number of the street at which the company is registered
+* *people* — members/chairmen of the company management. A cell contains a list of tuples.
+
+Sample output:
+
+```
+id;company;drawing_date;period_from;period_to;postal_code;city;street;street_no;people
+330236;WOJAS SA;2015-12-31;2016-01-01;2016-06-30;34-400;NOWY TARG;Ludźmierska;29;[('2016-08-22', 'Kazimierz Ostatek', 'Wiceprezes Zarządu'), ('2016-08-22', 'Wiesław Wojas', 'Prezes Zarządu')]
+241420;WILBO SA;2012-06-30;2013-01-01;2013-06-30;81-029;Gdynia;Przemysłowa;8;[]
+174792;INSTAL KRAKÓW SA;;2011-01-01;2011-06-30;30-732;Kraków;Konstantego Brandla;1;[('', 'Rafał Markiewicz', 'Członek Zarządu'), ('', 'Rafał Rajtar', 'Członek Zarządu'), ('', 'Jan Szybiński', 'Członek Zarządu'), ('', 'Piotr Juszczyk', 'Prezes Zarządu')]
+367065;AKCYJNA , RSY SA;2017-10-02;2017-01-01;2017-06-30;65-119;ZIELONA GÓRA;;;[('2017-10-02', 'Grzegorz Wrona', 'Wiceprezes Zarządu'), ('2017-10-02', 'Mariusz Matusik', 'Prezes Zarządu')]
+394366;CDRL SA;2018-08-13;2018-01-01;2018-06-30;64-000;Pianowo;Kwiatowa;2;[('2018-08-13', 'Marek Dworczak', 'Prezes Zarządu'), ('2018-08-13', 'Tomasz Przybyła', 'Wiceprezes Zarządu')]
+92377;MULTIMEDIA POLSKA SA;2007-12-31;2008-01-01;2008-06-30;81-341;Gdynia;Tadeusza Wendy;7/9;[('2007-12-31', 'Andrzej Rogowski', 'Prezes Zarządu')]
+92126;EUROTEL SA;;2008-01-01;2008-06-30;80-286;Gdańsk;Jaśkowa Dolina;57;[('', 'Marek Parnowski', 'Członek Zarządu'), ('', 'Krzysztof Stepokura', 'Prezes Zarządu'), ('', 'Jacek Niedbalski', 'Członek Zarządu'), ('', 'Tomasz Basiński', 'Wiceprezes Zarządu')]
+```
+
+## Contributors
 
 * Michał Marcińczuk
 * Michał Olek
 * Marcin Oleksy
 * Jan Wieczorek
 
+##
 
 # Compile
 
@@ -90,13 +117,10 @@ person_name_sign    0.399±0.042  0.394±0.046  0.410±0.043
 
 ## Custom on the PolEval 2020 train dataset
 
-## Original Ground Truth
-
 ```bash
 ./clex eval -i LOCAL_PATH/task4-train/index-hocr.list \
             -m data/task4-train/ground_truth-train-v1.csv \
             -o report.tsv
-
 ```
 
 Expected output:
@@ -116,3 +140,12 @@ Expected output:
                TOTAL | 12284 |  9094 |    57.46%
 ```
 
+# License
+
+Copyright (C) Wrocław University of Science and Technology (PWr), 2020. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
