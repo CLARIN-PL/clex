@@ -5,7 +5,7 @@ public class ActionOptionOutput extends ActionOption {
   public ActionOptionOutput() {
     super("o");
     setLongOpt("output");
-    setDescription("path to an output file (json)");
+    setDescription("path to an output file");
     setRequired(true);
     setHasArg(true);
   }

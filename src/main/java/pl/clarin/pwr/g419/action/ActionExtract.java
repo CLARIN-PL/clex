@@ -34,7 +34,7 @@ import static pl.clarin.pwr.g419.struct.Metadata.*;
 
 @Component
 @Slf4j
-public class ActionWriteOutResults extends Action {
+public class ActionExtract extends Action {
 
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
@@ -50,8 +50,8 @@ public class ActionWriteOutResults extends Action {
 
   List<Metadata> outFileMetadataList = new LinkedList<>();
 
-  public ActionWriteOutResults() {
-    super("writeOut", "write out the information extraction to file");
+  public ActionExtract() {
+    super("extract", "extract information from hOCR files");
 
     this.options.add(optionInput);
     this.options.add(optionOutput);
@@ -63,7 +63,6 @@ public class ActionWriteOutResults extends Action {
   public void run() throws Exception {
     final DocumentsReader reader = new DocumentsReader();
 
-    // do pamięci zaczytujemy wszystkie ściężki do dokumentów ...
     final Path hocrIndex = Paths.get(optionInput.getString());
     List<Path> paths;
     if (hocrIndex.toString().endsWith(".hocr")) {
@@ -72,7 +71,6 @@ public class ActionWriteOutResults extends Action {
       paths = reader.loadPaths(hocrIndex);
     }
 
-    // jeśli jest podane zawężenie do katalogu o podanym numerze to weż poda uwagę tylko ten dokument
     if (optionSelectOne.getString() != null) {
       log.info("Podano parameter selectOne = " + optionSelectOne.getString());
       paths = paths.stream()
@@ -105,7 +103,6 @@ public class ActionWriteOutResults extends Action {
 
   }
 
-  // Lista records musi tu być przekazana jako synchornized gdy używamy wielu wątków
   private void evaluateOneDocumentWithPath(final DocumentsReader reader,
                                            final Path path,
                                            final List<List<String>> records)
@@ -183,6 +180,5 @@ public class ActionWriteOutResults extends Action {
     return Lists.newArrayList(label, id, field, valueReferenceNorm, valueExtractedNorm,
         valueReference, valueExtracted, context, rule);
   }
-
 
 }
