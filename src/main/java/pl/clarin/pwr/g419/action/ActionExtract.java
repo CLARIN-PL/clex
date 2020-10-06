@@ -34,7 +34,7 @@ import static pl.clarin.pwr.g419.struct.Metadata.*;
 
 @Component
 @Slf4j
-public class ActionWriteOutResults extends Action {
+public class ActionExtract extends Action {
 
   ActionOptionInput optionInput = new ActionOptionInput();
   ActionOptionOutput optionOutput = new ActionOptionOutput();
@@ -50,8 +50,8 @@ public class ActionWriteOutResults extends Action {
 
   List<Metadata> outFileMetadataList = new LinkedList<>();
 
-  public ActionWriteOutResults() {
-    super("writeOut", "write out the information extraction to file");
+  public ActionExtract() {
+    super("extract", "extract information from hOCR files");
 
     this.options.add(optionInput);
     this.options.add(optionOutput);
@@ -143,6 +143,5 @@ public class ActionWriteOutResults extends Action {
     return ActionUtils.record(label, id, fieldName, referenceValueNorm, extractedValueNorm,
         "" + reference, "" + extracted.getField(), extracted.getContext(), extracted.getRule());
   }
-
 
 }
